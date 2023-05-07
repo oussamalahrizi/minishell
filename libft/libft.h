@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Exiled <exiled@owly.com>                   +#+  +:+       +#+        */
+/*   By: exiled <exiled@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/13 23:43:08 by olahrizi          #+#    #+#             */
-/*   Updated: 2022/10/20 04:12:42 by Exiled           ###   ########.fr       */
+/*   Updated: 2023/04/29 17:43:00 by exiled           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <stdio.h>
+# include <stdint.h>
 
 typedef struct s_list
 {

@@ -1,4 +1,8 @@
-SRCS = minishell.c
+SRCS = minishell.c \
+		lib/expander.c \
+		lib/tokenizer.c \
+		lib/signals.c \
+		lib/string_utils.c
 
 OBJS = ${SRCS:.c=.o}
 
@@ -12,7 +16,7 @@ LIBS = -L./libft -lft -lreadline
 all : ${NAME}
 
 ${NAME} : ${OBJS} ${LIBFT}
-	cc -Wall -Wextra  ${OBJS} ${LIBS} -o ${NAME}
+	gcc -Wall -Wextra -g3 -fsanitize=address,leak -fno-omit-frame-pointer ${OBJS} ${LIBS} -o ${NAME}
 
 ${LIBFT}:
 	cd libft && make

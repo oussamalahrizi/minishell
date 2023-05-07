@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Exiled <exiled@owly.com>                   +#+  +:+       +#+        */
+/*   By: exiled <exiled@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 19:05:34 by olahrizi          #+#    #+#             */
-/*   Updated: 2022/10/13 22:12:58 by Exiled           ###   ########.fr       */
+/*   Updated: 2023/05/06 08:06:22 by exiled           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,5 +30,6 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	ft_memcpy(join, s2, ft_strlen(s2));
 	join += ft_strlen(s2);
 	*join = 0;
+	free((void *)s1);
 	return (start);
 }
