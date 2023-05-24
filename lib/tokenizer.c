@@ -1,37 +1,39 @@
 #include "../minishell.h"
 
-
-int skip_spaces(char *str, int index)
+int	skip_spaces(char *str, int index)
 {
-	while (str[index] && (str[index] == ' ' || str[index] == '\t' || str[index] == '\r'))
+	while (str[index] && (str[index] == ' ' || str[index] == '\t'
+			|| str[index] == '\r'))
 		index++;
-	return index;
+	return (index);
 }
 
-int is_space(char c)
+int	is_space(char c)
 {
 	if (c == ' ' || c == '\n' || c == '\t' || c == '\r')
 		return (1);
 	return (0);
 }
 
-int word_count(char *input)
+int	word_count(char *input)
 {
-    int k;
-    int i;
+	int	k;
+	int	i;
 
-    k = 0;
-    i = 0;
-    while (input[i])
-    {
-        i = skip_spaces(input, i);
+	k = 0;
+	i = 0;
+	while (input[i])
+	{
+		i = skip_spaces(input, i);
 		if (!input[i])
-			break;
+			break ;
 		if (input[i] == '\'')
 		{
 			i++;
 			while (input[i] && input[i] != '\'')
 				i++;
+			if (!input[i])
+				return (-1);
 			i++;
 			while (input[i] && !is_space(input[i]))
 				i++;
@@ -43,6 +45,11 @@ int word_count(char *input)
 			i++;
 			while (input[i] && input[i] != '\"')
 				i++;
+			if (!input[i])
+				return (-1);
+			i++;
+			while (input[i] && !is_space(input[i]))
+				i++;
 			k++;
 			i++;
 		}
@@ -52,11 +59,11 @@ int word_count(char *input)
 				i++;
 			k++;
 		}
-    }
-    return k;
+	}
+	return (k);
 }
 
-void tokenize(char *input, char **tokens)
+void	tokenize(char *input, char **tokens)
 {
 	int i = 0;
 	int len = 0;
@@ -67,7 +74,7 @@ void tokenize(char *input, char **tokens)
 	{
 		i = skip_spaces(input, i);
 		if (!input[i])
-			break;
+			break ;
 		if (input[i] == '\'')
 		{
 			start = &input[i];
@@ -93,6 +100,11 @@ void tokenize(char *input, char **tokens)
 			len = 1;
 			i++;
 			while (input[i] && input[i] != '\"')
+			{
+				len++;
+				i++;
+			}
+			while (input[i] && !is_space(input[i]))
 			{
 				len++;
 				i++;
@@ -110,7 +122,7 @@ void tokenize(char *input, char **tokens)
 				{
 					i++;
 					len++;
-					while(input[i] && input[i] != '\"')
+					while (input[i] && input[i] != '\"')
 					{
 						i++;
 						len++;

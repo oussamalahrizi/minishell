@@ -1,15 +1,24 @@
 #include "../minishell.h"
 
+extern int exit_status;
+
 void control_c()
 {
-    ioctl(STDIN_FILENO, TIOCSTI, "\n");
-    rl_replace_line("", 0);
+	exit_status = 130;
+	ioctl(STDIN_FILENO, TIOCSTI, "\n");
+	rl_replace_line("", 0);
 	rl_on_new_line();
-	// rl_replace_line("", 0);
 }
 
+void control_d()
+{
+	ioctl(STDIN_FILENO, TIOCSTI, "exit\n");
+	rl_replace_line("", 0);
+	exit(130);
+}
 
 void signal_handler()
 {
     signal(SIGINT, control_c);
+    signal(SIGQUIT, SIG_IGN);
 }

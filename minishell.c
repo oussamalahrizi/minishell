@@ -1,19 +1,35 @@
 #include "minishell.h"
 
-int main(int ac, char **av, char **env)
-{
-	((void)ac,(void)av);
-	char **tokens;
-	char *input;
+extern int	exit_status;
 
+int	main(int ac, char **av, char **env)
+{
+	char	**tokens;
+	char	*input;
+	int		i;
+	int size = 0;
+
+	((void)ac, (void)av);
 	signal_handler();
+
 	while (1)
 	{
 		input = readline("minishell> ");
 		if (!input)
-			return (2);
+		{
+			printf("exit\n");
+			exit(exit_status);
+		}
+		// add to history
 		add_history(input);
-		tokens = (char **) malloc(sizeof(char *) * (word_count(input) + 1));
+		size = word_count(input);
+		if (size == -1)
+		{
+			write(2, "syntax error\n", 14);
+			free(input);
+			continue;
+		}
+		tokens = (char **)malloc(sizeof(char *) * (size + 1));
 		if (!tokens)
 		{
 			perror("allocation failed : ");
@@ -21,7 +37,7 @@ int main(int ac, char **av, char **env)
 		}
 		tokenize(input, tokens);
 		expander(tokens, env);
-		int i = 0;
+		i = 0;
 		while (tokens[i] != NULL)
 		{
 			printf("%s\n", tokens[i]);

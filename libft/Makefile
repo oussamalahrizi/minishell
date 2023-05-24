@@ -19,21 +19,21 @@ OBONUS = $(BONUS:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBJ)
-		ar -rc $(NAME) $(OBJ)
+	@ar -rc $(NAME) $(OBJ)
 
 $(OBJ): $(SRC)
-	$(CC) -I ./ $(CFLAGS) -c $(SRC)
+	@$(CC) -I ./ $(CFLAGS) -c $(SRC)
 
 $(OBONUS) : $(BONUS)
-		$(CC) -I ./ $(CFLAGS) -c $(BONUS)
-		ar -rc $(NAME) $(OBONUS) $(OBJ)
+	@$(CC) -I ./ $(CFLAGS) -c $(BONUS)
+	@ar -rc $(NAME) $(OBONUS) $(OBJ)
 
 bonus: $(OBJ) $(OBONUS)
 		
 clean:
-		$(RM) $(OBJ) $(OBONUS)
+	@$(RM) $(OBJ) $(OBONUS)
 
 fclean: clean
-		$(RM) $(NAME)
+	@$(RM) $(NAME)
 
 re: fclean all

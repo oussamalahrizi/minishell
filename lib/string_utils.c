@@ -1,17 +1,17 @@
 #include "../minishell.h"
 
-char *append_character(char **string, char c)
+void append_character(char **string, char c)
 {
     if (!*string)
-        return(NULL);
+        return ;
     if (!c)
-        return(*string);
+        return ;
     char *new;
     int i;
 
     new = malloc(sizeof(char) *(ft_strlen(*string) + 2));
     if(!new)
-        return (NULL);
+        return;
     i = 0;
     while(string[0][i])
     {
@@ -21,5 +21,5 @@ char *append_character(char **string, char c)
     new[i++] = c;
     new[i] = 0;
     free(*string);
-    return(new);
+    *string = new;
 }
