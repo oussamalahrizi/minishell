@@ -36,13 +36,14 @@ void	print_split(char **str)
 	}
 }
 
-void	free_double(char **str)
+void	free_double(Token **str)
 {
 	int	i;
 
 	i = 0;
 	while (str[i])
 	{
+		free(str[i]->value);
 		free(str[i]);
 		i++;
 	}
@@ -79,7 +80,7 @@ int	handle_dollar(char **new_token, char *string, int index, char **env)
 	return (i);
 }
 
-void	expander(char **tokens, char **env)
+void	expander(Token **tokens, char **env)
 {
 	int i;
 	char *temp;
@@ -89,7 +90,7 @@ void	expander(char **tokens, char **env)
 	while (tokens[j])
 	{
 		new_token = ft_strdup("");
-		string = tokens[j];
+		string = tokens[j]->value;
 		//loop thru each string and find dollar sign before single or double quotes
 		while (*string)
 		{
@@ -128,8 +129,8 @@ void	expander(char **tokens, char **env)
 			}
 			string += i;
 		}
-		temp = tokens[j];
-		tokens[j] = new_token;
+		temp = tokens[j]->value;
+		tokens[j]->value = new_token;
 		free(temp);
 		j++;
 	}

@@ -2,24 +2,41 @@
 
 extern int	exit_status;
 
+void free_tokens(Token **tokens)
+{
+	int i;
+
+	i = 0;
+	while (tokens[i])
+	{
+		free(tokens[i]->value);
+		free(tokens[i]);
+		i++;
+	}
+	free(tokens);
+}
+
 int	main(int ac, char **av, char **env)
 {
-	char	**tokens;
+	Token	**tokens;
 	char	*input;
-	int		i;
 	int size = 0;
 
-	((void)ac, (void)av);
+	((void)ac, (void)av, (void)env);
 	signal_handler();
 
 	while (1)
 	{
 		input = readline("minishell> ");
-		if (!input)
+		char *test;
+		test = ft_strtrim(input, " ");
+		if (!input || !strncmp(test, "exit", ft_strlen("exit")))
 		{
+			free(test);
 			printf("exit\n");
 			exit(exit_status);
 		}
+		free(test);
 		// add to history
 		add_history(input);
 		size = word_count(input);
@@ -29,7 +46,7 @@ int	main(int ac, char **av, char **env)
 			free(input);
 			continue;
 		}
-		tokens = (char **)malloc(sizeof(char *) * (size + 1));
+		tokens = (Token **)malloc(sizeof(Token *) * (size + 1));
 		if (!tokens)
 		{
 			perror("allocation failed : ");
@@ -37,14 +54,15 @@ int	main(int ac, char **av, char **env)
 		}
 		tokenize(input, tokens);
 		expander(tokens, env);
-		i = 0;
+		int i = 0;
 		while (tokens[i] != NULL)
 		{
-			printf("%s\n", tokens[i]);
+			printf("token with type : %c and value of : %s\n", tokens[i]->type, tokens[i]->value);
 			i++;
 		}
+		extract(tokens);
 		free(input);
-		free_double(tokens);
+		free_tokens(tokens);
 	}
 	return (0);
 }

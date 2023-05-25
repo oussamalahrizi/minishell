@@ -11,16 +11,18 @@ NAME = minishell
 
 LIBFT = libft/libft.a
 
-LIBS = -L./libft -lft -lreadline
+LIBS = -L./libft -lft -lreadline -L./readline/8.2.1/lib
 
+CC = cc
+CFLAGS = -Wall -Wextra -Werror -fsanitize=address -g3 -Ireadline/8.2.1/include
 
 all : ${NAME}
 
 %.o : %.c
-	@gcc -Wall -Wextra -g3 -c $< -o $@
+	@${CC} ${CFLAGS} -c $< -o $@
 
 ${NAME} : ${OBJS} ${LIBFT}
-	@gcc -Wall -Wextra -g3 -fsanitize=address,leak -fno-omit-frame-pointer ${OBJS} ${LIBS} -o ${NAME}
+	@${CC} ${CFLAGS} ${OBJS} ${LIBS} -o ${NAME}
 
 ${LIBFT}:
 	@make -C libft

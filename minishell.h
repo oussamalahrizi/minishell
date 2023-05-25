@@ -14,21 +14,21 @@
 
 #define MAX_LENGTH 99999999999
 
-typedef struct s_attr{
-	struct termios term;
-}	t_attr;
+typedef struct s_token{
+	char type;
+	char *value;
+}	Token;
 
-void expander(char **tokens, char **env);
-void tokenize(char *input, char **tokens);
+void expander(Token **tokens, char **env);
+void tokenize(char *input, Token **tokens);
 int is_space(char c);
-void free_double(char **str);
+void free_double(Token **str);
 int word_count(char *input);
 void print_split(char **str);
 void append_character(char **string, char c);
 void signal_handler();
 int error(char *str);
-void set_new_attr(struct termios *old);
-void restore_attr(struct termios *term);
+void extract(Token **tokens);
 #endif // !MINISHELL_H
 
 
