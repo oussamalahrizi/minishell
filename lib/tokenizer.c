@@ -142,7 +142,6 @@ Token* new_token(char type, char* value)
 {
     Token* token = (Token*)malloc(sizeof(Token));
     token->type = type;
-
     token->value = ft_strdup(value);
     return token;
 }
@@ -204,19 +203,23 @@ void	tokenize(char *input, Token **tokens)
 		}
 		if (ft_strchr(delimiters, input[i]))
 		{
-			char *string = ft_strdup("");
+			char type;
+			string = ft_strdup("");
 			append_character(&string, input[i]);
+			type = input[i];
 			if (input[i + 1] == input[i] && input[i] == '<')
 			{
 				append_character(&string, input[i]);
 				i++;
+				type = 'h';
 			}
 			else if (input[i + 1] == input[i] && input[i] == '>')
 			{
 				append_character(&string, input[i]);
 				i++;
+				type = 'a';
 			}
-			tokens[k++] = new_token(input[i], string);
+			tokens[k++] = new_token(type, string);
 			i++;
 			free(string);
 			continue;

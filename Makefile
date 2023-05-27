@@ -3,7 +3,7 @@ SRCS = minishell.c \
 		lib/tokenizer.c \
 		lib/signals.c \
 		lib/string_utils.c \
-		lib/extract.c
+		# lib/extract.c
 
 OBJS = ${SRCS:.c=.o}
 
@@ -11,10 +11,10 @@ NAME = minishell
 
 LIBFT = libft/libft.a
 
-LIBS = -L./libft -lft -lreadline -L./readline/8.2.1/lib
+LIBS = -L./libft -lft -lreadline
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -fsanitize=address -g3 -Ireadline/8.2.1/include
+CFLAGS = -Wall -Wextra -Werror -fsanitize=address -g3
 
 all : ${NAME}
 
