@@ -19,6 +19,21 @@ typedef struct s_token{
 	char *value;
 }	Token;
 
+typedef struct s_files
+{
+	char * filename;
+	char type;
+	char *del;
+	struct s_files *next;
+} files;
+
+typedef struct
+{
+	char *cmd;
+	char **cmd_args;
+	files *files;
+}	Command;
+
 void expander(Token **tokens, char **env);
 void tokenize(char *input, Token **tokens);
 int is_space(char c);
@@ -28,7 +43,7 @@ void print_split(char **str);
 void append_character(char **string, char c);
 void signal_handler();
 int error(char *str);
-void extract(Token **tokens);
+Command **extract(Token **tokens);
 #endif // !MINISHELL_H
 
 

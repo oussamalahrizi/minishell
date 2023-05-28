@@ -30,7 +30,7 @@ int	main(int ac, char **av, char **env)
 		input = readline("minishell> ");
 		char *test;
 		test = ft_strtrim(input, " ");
-		if (!input || !strncmp(test, "exit", ft_strlen("exit")))
+		if (!input || !ft_strncmp(test, "exit", ft_strlen("exit")))
 		{
 			free(test);
 			printf("exit\n");
@@ -60,7 +60,7 @@ int	main(int ac, char **av, char **env)
 			printf("token with type : %c and value of : %s\n", tokens[i]->type, tokens[i]->value);
 			i++;
 		}
-		// extract(tokens);
+		extract(tokens);
 		free(input);
 		free_tokens(tokens);
 	}

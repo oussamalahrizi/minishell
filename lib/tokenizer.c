@@ -77,9 +77,12 @@ int	word_count(char *input)
 			free(string);
 			continue;
 		}
-		if (ft_strchr(delimiters, input[i]))
+		/*
+			delimiters section
+		*/
+		if (ft_strchr(delimiters, input[i])) 
 		{
-			if ((input[i] == '|' && k == 0) || (input[i] == '>' && is_space(input[i + 1])))
+			if ((input[i] == '|' && k == 0))
 			{
 				free(delimiters);
 				return (-1);
@@ -95,15 +98,31 @@ int	word_count(char *input)
 					return (-1);
 				}
 			}
-			if((input[i] == '>' || input[i] == '<'))
+			if (input[i] == '>')
+			{
+				int start = 0;
+				int temp = i + 1;
+				while (input[temp] && is_space(input[temp]))
+				{
+					temp++;
+					start++;
+				}
+				if (input[temp] == '|' && start != 0)
+				{
+					free(delimiters);
+					return (-1);
+				}
+			}
+			if(input[i] == '>' || input[i] == '<')
 			{
 				char c = input[i];
+				char l = c == '>' ? '<' : '>';
 				int temp = i + 1;
 				if(input[temp] == c)
 					temp++;
 				while (input[temp] && is_space(input[temp]))
 					temp++;
-				if (!input[temp] || input[temp] ==  c)
+				if (!input[temp] || input[temp] == c || input[temp] == l)
 				{
 					free(delimiters);
 					return (-1);

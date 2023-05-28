@@ -1,20 +1,5 @@
 #include "../minishell.h"
 
-typedef struct
-{
-	int file;
-	char type;
-	struct files *next;
-} files;
-
-typedef struct
-{
-	char *cmd;
-	char **cmd_args;
-	files *infiles;
-	files *outfiles;
-}	Command;
-
 
 char **allocate_strings(Token **tokens, int *index)
 {
@@ -42,17 +27,56 @@ char **allocate_strings(Token **tokens, int *index)
 	return (res);
 }
 
-files *allocate_files(Token **tokens, int *index, files **file_list)
+files *allocate_files(Token **tokens, int *index, files *file_list)
 {
 	// guaranteed this token type is an 's'
 	int i;
+	files *current_files;
+	files *start;
+	files *new;
 
 	i = *index;
+	current_files = file_list;
+	new = malloc(sizeof(files));
+	new->next = NULL;
+	new->filename = NULL;
+	new->del = NULL;
 	if (tokens[i]->type != 's')
-	return NULL;
+	{
+		write(2, "token after redirection is not a string\n", 41);
+		free(new);
+		return (NULL);
+	}
+	if(tokens[i - 1]->type == 'h')
+	{
+		new->del = tokens[i]->value;
+		new->type = 'h';
+		i++;
+	}
+	else if (tokens[i - 1]->type == '>' || tokens[i - 1]->type == '<' || tokens[i - 1]->type == 'a')
+	{
+		new->filename = tokens[i]->value;
+		new->type = tokens[i - 1]->type;
+		i++;
+	}
+	if (!current_files)
+	{
+		current_files = new;
+		file_list = current_files;
+	}
+	else
+	{
+		start = current_files;
+		while (current_files->next)
+			current_files = current_files->next;
+		current_files->next = new;
+		file_list = start;
+	}
+	*index = i;
+	return (file_list);
 }
 
-void extract(Token **tokens)
+Command **extract(Token **tokens)
 {
 	int i = 0;
 	Command **commands;
@@ -72,8 +96,7 @@ void extract(Token **tokens)
 		commands[i] = malloc(sizeof(Command));
 		commands[i]->cmd = NULL;
 		commands[i]->cmd_args = NULL;
-		commands[i]->infiles = NULL;
-		commands[i]->outfiles = NULL;
+		commands[i]->files = NULL;
 		i++;
 	}
 	i = 0;
@@ -90,13 +113,14 @@ void extract(Token **tokens)
 				commands[k]->cmd_args = allocate_strings(tokens, &i);
 		}
 		else{
-			k++;
-			if (tokens[i]->type == '|')
+			if (tokens[i]->type == '|' || !tokens[i])
 			{
-				i++;
+				k++;
+				if (tokens[i] && tokens[i]->type == '|')
+					i++;
 				continue;
 			}
-			else if (tokens[i]->type == '>')
+			else if (tokens[i]->type == '>' || tokens[i]->type == '<' || tokens[i]->type == 'h' || tokens[i]->type == 'a')
 			{
 				i++;
 				if (!tokens[i])
@@ -105,21 +129,10 @@ void extract(Token **tokens)
 					break;
 				}
 				if (tokens[i]->type == 's')
-				{
-					commands[k]->infiles = allocate_files(tokens, &i, &commands[k]->infiles);
-				}
+					commands[k]->files = allocate_files(tokens, &i, commands[k]->files);
 			}
-			else break;
 		}
 	}
-	for(int j = 0; j < k; j++)
-	{
-		printf("command : %s\n", commands[j]->cmd);
-		int h = 0;
-		while(commands[j]->cmd_args[h])
-		{
-			printf("command args: %s\n", commands[j]->cmd_args[h]);
-			h++;
-		}
-	}
+	commands[num] = 0;
+	return commands;
 }

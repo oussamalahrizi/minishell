@@ -1,6 +1,6 @@
-#include "minishell.h"
+#include "../minishell.h"
 
-extern exit_status;
+extern int exit_status;
 
 int error(char *str)
 {
