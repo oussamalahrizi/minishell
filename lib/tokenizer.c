@@ -73,19 +73,43 @@ int	word_count(char *input)
 				append_character(&string, input[i]);
 				i++;
 			}
-			k++; // ha wahd
+			k++;
 			free(string);
 			continue;
 		}
 		if (ft_strchr(delimiters, input[i]))
 		{
-			string = ft_strdup("");
-			if (input[i] == '|' && k == 0)
+			if ((input[i] == '|' && k == 0) || (input[i] == '>' && is_space(input[i + 1])))
 			{
-				free(string);
 				free(delimiters);
 				return (-1);
 			}
+			if(input[i] == '|')
+			{
+				int temp = i + 1;
+				while (input[temp] && is_space(input[temp]))
+					temp++;
+				if (!input[temp] || input[temp] ==  '|')
+				{
+					free(delimiters);
+					return (-1);
+				}
+			}
+			if((input[i] == '>' || input[i] == '<'))
+			{
+				char c = input[i];
+				int temp = i + 1;
+				if(input[temp] == c)
+					temp++;
+				while (input[temp] && is_space(input[temp]))
+					temp++;
+				if (!input[temp] || input[temp] ==  c)
+				{
+					free(delimiters);
+					return (-1);
+				}
+			}
+			string = ft_strdup("");
 			append_character(&string, input[i]);
 			if (input[i] == '<')
 			{
@@ -205,6 +229,15 @@ void	tokenize(char *input, Token **tokens)
 		{
 			char type;
 			string = ft_strdup("");
+			if (input[i] == '>' && input[i + 1] == '|')
+			{
+				append_character(&string, input[i]);
+				type = input[i];
+				tokens[k++] = new_token(type, string);
+				i += 2;
+				free(string);
+				continue;
+			}
 			append_character(&string, input[i]);
 			type = input[i];
 			if (input[i + 1] == input[i] && input[i] == '<')
