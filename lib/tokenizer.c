@@ -17,7 +17,6 @@ int	word_count(char *input)
 	int	k;
 	int	i;
 	char quote;
-	char *string;
 	char *delimiters;
 
 	k = 0;
@@ -33,12 +32,9 @@ int	word_count(char *input)
 		if (input[i] == '\'' || input[i] == '\"')
 		{
 			quote = input[i];
-			string = ft_strdup("");
-			append_character(&string, input[i]);
 			i++;
 			while (input[i] && input[i] != quote)
 			{
-				append_character(&string, input[i]);
 				i++;
 			}
 			if (!input[i])
@@ -46,35 +42,26 @@ int	word_count(char *input)
 				free(delimiters);
 				return (-1);
 			}
-			append_character(&string, input[i]);
 			i++;
 			while(input[i] && !ft_strchr(delimiters, input[i]))
 			{
 				if (ft_strchr("'\"", input[i]))
 				{
 					quote = input[i];
-					append_character(&string, input[i]);
 					i++;
 					while(input[i] && input[i] != quote)
-					{
-						append_character(&string, input[i]);
 						i++;
-					}
 					if (!input[i])
 					{
-						free(string);
 						free(delimiters);
 						return (-1);
 					}
-					append_character(&string, input[i]);
 					i++;
 					continue;
 				}
-				append_character(&string, input[i]);
 				i++;
 			}
 			k++;
-			free(string);
 			continue;
 		}
 		/*
@@ -128,8 +115,6 @@ int	word_count(char *input)
 					return (-1);
 				}
 			}
-			string = ft_strdup("");
-			append_character(&string, input[i]);
 			if (input[i] == '<')
 			{
 				int temp = i + 1;
@@ -138,44 +123,29 @@ int	word_count(char *input)
 				if (input[temp] == '|')
 				{
 					free(delimiters);
-					free(string);
 					return (-1);
 				}
 			}
-			if (input[i + 1] == ft_strchr(delimiters, input[i])[0])
-			{
-				append_character(&string, input[i]);
-				i++;
-			}
 			k++;
 			i++;
-			free(string);
 			continue;
 		}
-		string = ft_strdup("");
 		while(input[i] && !ft_strchr(delimiters, input[i]) && !is_space(input[i]))
 		{
 			if (ft_strchr("'\"", input[i]))
 			{
 				quote = input[i];
-				append_character(&string, input[i]);
 				i++;
 				while(input[i] && input[i] != quote)
-				{
-					append_character(&string, input[i]);
 					i++;
-				}
 				if (!input[i])
 					return (-1);
-				append_character(&string, input[i]);
 				i++;
 				continue;
 			}
-			append_character(&string, input[i]);
 			i++;
 		}
 		k++;
-		free(string);
 	}
 	free(delimiters);
 	return (k);
@@ -239,6 +209,7 @@ void	tokenize(char *input, Token **tokens)
 				append_character(&string, input[i]);
 				i++;
 			}
+			printf("%s\n", string);
 			// ha wahd
 			tokens[k++] = new_token('s', string);
 			free(string);

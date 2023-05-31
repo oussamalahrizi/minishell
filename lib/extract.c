@@ -49,13 +49,13 @@ files *allocate_files(Token **tokens, int *index, files *file_list)
 	}
 	if(tokens[i - 1]->type == 'h')
 	{
-		new->del = tokens[i]->value;
+		new->del = ft_strdup(tokens[i]->value);
 		new->type = 'h';
 		i++;
 	}
 	else if (tokens[i - 1]->type == '>' || tokens[i - 1]->type == '<' || tokens[i - 1]->type == 'a')
 	{
-		new->filename = tokens[i]->value;
+		new->filename = ft_strdup(tokens[i]->value);
 		new->type = tokens[i - 1]->type;
 		i++;
 	}
@@ -107,7 +107,7 @@ Command **extract(Token **tokens)
 			if (commands[k]->cmd == NULL)
 			{
 				commands[k]->cmd = ft_strdup(tokens[i]->value);
-				i++;
+				// i++;
 			}	
 			else
 				commands[k]->cmd_args = allocate_strings(tokens, &i);
@@ -134,5 +134,36 @@ Command **extract(Token **tokens)
 		}
 	}
 	commands[num] = 0;
+#if 1
+	int j = 0;
+	while(commands[j])
+	{
+		printf("command : %s\n", commands[j]->cmd);
+		int h = 0;
+		if (commands[j]->cmd_args)
+		{
+			while(commands[j]->cmd_args[h])
+			{
+				printf("command args: %s\n", commands[j]->cmd_args[h]);
+				h++;
+			}
+		}
+		files *node = commands[j]->files;
+		printf("---------------------\n");
+		printf("files : \n");
+		h = 0;
+		while (node)
+		{
+			printf("file number : %d\n", h + 1);
+			printf("type : %c\n", node->type);
+			printf("del if exists : %s\n", node->del);
+			printf("filename if exists : %s\n", node->filename);
+			node = node->next;
+			h++;
+		}
+		printf("going next command\n");
+		j++;
+	}
+#endif
 	return commands;
 }

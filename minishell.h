@@ -34,7 +34,7 @@ typedef struct
 	files *files;
 }	Command;
 
-void expander(Token **tokens, char **env);
+int expander(Token **tokens, char **env);
 void tokenize(char *input, Token **tokens);
 int is_space(char c);
 void free_double(Token **str);

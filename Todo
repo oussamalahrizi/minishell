@@ -1,0 +1,8 @@
+ls <>file : create file empty and output on STDOUT
+ls < >file : syntax error
+
+export $a = "ls -la"
+
+ls > $a --> abiguous error
+
+ls > ls -la --> working : filename = ls

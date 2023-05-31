@@ -9,6 +9,8 @@ char	*get_env(char *string, char **env)
 
 	if (string[0] == '?')
 		return (ft_itoa(exit_status));
+	if (!ft_strlen(string))
+		return(ft_strdup(""));
 	temp = string;
 	while (*env)
 	{
@@ -80,7 +82,7 @@ int	handle_dollar(char **new_token, char *string, int index, char **env)
 	return (i);
 }
 
-void	expander(Token **tokens, char **env)
+int	expander(Token **tokens, char **env)
 {
 	int i;
 	char *temp;
@@ -89,6 +91,16 @@ void	expander(Token **tokens, char **env)
 	char *new_token;
 	while (tokens[j])
 	{
+		if (tokens[j]->type != 's')
+		{
+			j++;
+			continue;
+		}
+		else if (j - 1 >= 0 && tokens[j - 1]->type == 'h' && tokens[j]->type	 == 's')
+		{
+			j++;
+			continue;
+		}
 		new_token = ft_strdup("");
 		string = tokens[j]->value;
 		//loop thru each string and find dollar sign before single or double quotes
@@ -101,7 +113,14 @@ void	expander(Token **tokens, char **env)
 				i++;
 			}
 			if (string[i] == '$')
+			{
+				if (j - 1 >= 0 && (tokens[j - 1]->type == '>' || tokens[j - 1]->type == '<'|| tokens[j - 1]->type == 'a'))
+				{
+					free(new_token);
+					return (-1);
+				}
 				i = handle_dollar(&new_token, string, i + 1, env);
+			}
 			else if (string[i] == '\"')
 			{
 				i += 1;
@@ -134,4 +153,5 @@ void	expander(Token **tokens, char **env)
 		free(temp);
 		j++;
 	}
+	return (0);
 }
