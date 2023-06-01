@@ -59,6 +59,25 @@ int	is_quote(char c)
 	return (0);
 }
 
+char *get_ifs(char **env)
+{
+	char	*variable;
+	char	*temp;
+
+	temp = "IFS";
+	while (*env)
+	{
+		if (!ft_strncmp(temp, *env, ft_strlen(temp)))
+		{
+			variable = ft_strdup(*env + ft_strlen(temp) + 1);
+			return (variable);
+		}
+		env++;
+	}
+	variable = NULL;
+	return (variable);
+}
+
 int check_ifs(char *string, int index, char **env)
 {
 	char	*skip;
@@ -80,13 +99,17 @@ int check_ifs(char *string, int index, char **env)
 	temp = skip;
 	skip = get_env(skip, env);
 	count = 0;
-	ifs = get_env("IFS", env);
-	splited = split_by_str(skip, ifs);
+	ifs = get_ifs(env);
+	if (!ifs)
+		splited = split_by_str(skip, " \t");
+	else
+		splited = split_by_str(skip, ifs);
 	while (splited[count])
 		count++;
 	free(temp);
 	free(skip);
-	free(ifs);
+	if (ifs)
+		free(ifs);
 	i = 0;
 	while (splited[i])
 	{
@@ -154,9 +177,9 @@ int	expander(Token **tokens, char **env)
 			}
 			if (string[i] == '$')
 			{
-				if (j - 1 >= 0 && (tokens[j - 1]->type == '>' || tokens[j - 1]->type == '<'|| tokens[j - 1]->type == 'a'))
+				if (j - 1 >= 0 && (tokens[j - 1]->type == '>' || tokens[j - 1]->type == '<' 
+					|| tokens[j - 1]->type == 'a') && check_ifs(string, i + 1, env) == -1)
 				{
-					check_ifs(string, i + 1, env);
 					free(new_token);
 					return (-1);
 				}
