@@ -96,7 +96,6 @@ int	main(int ac, char **av, char **env)
 			free(input);
 			continue;
 		}
-		printf("size : %d\n", size);
 		tokens = (Token **)malloc(sizeof(Token *) * (size + 1));
 		if (!tokens)
 		{
