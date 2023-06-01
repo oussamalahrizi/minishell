@@ -1,8 +1,16 @@
-ls <>file : create file empty and output on STDOUT
-ls < >file : syntax error
+{
+	ls <>file : create file empty and output on STDOUT
+	ls < >file : syntax error
+} --> ignored --> syntax error
 
-export $a = "ls -la"
+{
+	export $a = "ls -la"
 
-ls > $a --> abiguous error
+	ls > $a --> abiguous error
 
-ls > ls -la --> working : filename = ls
+	ls > ls -la --> working : filename = ls
+} --> fixed | spliting by value of ifs env variable and see word count if greater that 1
+
+{
+	
+}

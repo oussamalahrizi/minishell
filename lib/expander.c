@@ -59,6 +59,46 @@ int	is_quote(char c)
 	return (0);
 }
 
+int check_ifs(char *string, int index, char **env)
+{
+	char	*skip;
+	char	*temp;
+	int count;
+	char **splited;
+	char *ifs;
+
+	int i, len;
+	i = index;
+	len = 0;
+	while (string[i] && !is_space(string[i]) && !is_quote(string[i])
+		&& (ft_isalnum(string[i]) || string[i] == '?'))
+	{
+		i++;
+		len++;
+	}
+	skip = ft_substr(string, index, len);
+	temp = skip;
+	skip = get_env(skip, env);
+	count = 0;
+	ifs = get_env("IFS", env);
+	splited = split_by_str(skip, ifs);
+	while (splited[count])
+		count++;
+	free(temp);
+	free(skip);
+	free(ifs);
+	i = 0;
+	while (splited[i])
+	{
+		free(splited[i]);
+		i++;
+	}
+	free(splited);
+	if (count > 1)
+		return (-1);
+	return (0);
+}
+
 int	handle_dollar(char **new_token, char *string, int index, char **env)
 {
 	char	*skip;
@@ -116,6 +156,7 @@ int	expander(Token **tokens, char **env)
 			{
 				if (j - 1 >= 0 && (tokens[j - 1]->type == '>' || tokens[j - 1]->type == '<'|| tokens[j - 1]->type == 'a'))
 				{
+					check_ifs(string, i + 1, env);
 					free(new_token);
 					return (-1);
 				}

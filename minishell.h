@@ -44,6 +44,9 @@ void append_character(char **string, char c);
 void signal_handler();
 int error(char *str);
 Command **extract(Token **tokens);
+char **split_by_str(char *s, char *del);
+
+
 #endif // !MINISHELL_H
 
 
