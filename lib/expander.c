@@ -101,7 +101,7 @@ int check_ifs(char *string, int index, char **env)
 	count = 0;
 	ifs = get_ifs(env);
 	if (!ifs)
-		splited = split_by_str(skip, " \t");
+		splited = split_by_str(skip, " \t\n");
 	else
 		splited = split_by_str(skip, ifs);
 	while (splited[count])
@@ -131,7 +131,7 @@ int	handle_dollar(char **new_token, char *string, int index, char **env)
 	i = index;
 	len = 0;
 	while (string[i] && !is_space(string[i]) && !is_quote(string[i])
-		&& (ft_isalnum(string[i]) || string[i] == '?'))
+		&& (ft_isalnum(string[i]) || string[i] == '?' || ft_strchr("(){}", string[i])))
 	{
 		i++;
 		len++;
@@ -177,6 +177,11 @@ int	expander(Token **tokens, char **env)
 			}
 			if (string[i] == '$')
 			{
+				if (string[i + 1] == 0)
+				{
+					append_character(&new_token, '$');
+					break;
+				}
 				if (j - 1 >= 0 && (tokens[j - 1]->type == '>' || tokens[j - 1]->type == '<' 
 					|| tokens[j - 1]->type == 'a') && check_ifs(string, i + 1, env) == -1)
 				{
@@ -191,7 +196,15 @@ int	expander(Token **tokens, char **env)
 				while (string[i] && string[i] != '\"')
 				{
 					if (string[i] == '$')
-						i = handle_dollar(&new_token, string, i + 1, env);
+					{
+						if (string[i + 1] == '"' || is_space(string[i + 1]))
+						{
+							append_character(&new_token, '$');
+							i++;
+						}
+						else
+							i = handle_dollar(&new_token, string, i + 1, env);
+					}
 					else
 					{
 						append_character(&new_token, string[i]);

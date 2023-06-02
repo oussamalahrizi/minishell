@@ -12,5 +12,9 @@
 } --> fixed | spliting by value of ifs env variable and see word count if greater that 1
 
 {
-	
+	in the command echo the parser might not put spaces if the cmd args is not in nested quotes for example:
+	echo a a or echo a                   a --> should result in : echo a a
+	meanwhile the parser gives : cmd : echo , cmd args -> [a, a],
+	so please consider adding a single space between command args when executing the command echo
 }
+

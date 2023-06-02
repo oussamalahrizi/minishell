@@ -110,12 +110,15 @@ int	main(int ac, char **av, char **env)
 			free_tokens(tokens);
 			continue;
 		}
-		int i = 0;
-		while (tokens[i] != NULL)
-		{
-			printf("token with type : %c and value of : %s\n", tokens[i]->type, tokens[i]->value);
-			i++;
-		}
+  #if 1
+      
+		  int i = 0;
+		  while (tokens[i] != NULL)
+		  {
+			  printf("token with type : %c and value of :%s|EOF|\n", tokens[i]->type, tokens[i]->value);
+			  i++;
+		  }
+    #endif
 		commands = extract(tokens); // look extract file to print cmds
 		free(input);
 		free_tokens(tokens);
