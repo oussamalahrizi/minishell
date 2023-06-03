@@ -70,6 +70,16 @@ int	main(int ac, char **av, char **env)
 	((void)ac, (void)av, (void)env);
 	signal_handler();
 
+
+	printf("getting env var into linked list\n");
+	t_env *node;
+	node = copy_env(env);
+	while (node)
+	{
+		printf("env name : %s\n", node->name);
+		printf("env value : %s\n", node->value);
+		node = node->next;
+	}
 	while (1)
 	{
 		tcgetattr(0, &term);

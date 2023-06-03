@@ -4,6 +4,7 @@ SRCS = minishell.c \
 		lib/signals.c \
 		lib/string_utils.c \
 		lib/extract.c \
+		lib/env_var_utils.c \
 		lib/utils.c
 
 OBJS = ${SRCS:.c=.o}
@@ -15,7 +16,10 @@ LIBFT = libft/libft.a
 LIBS = -L./libft -lft -lreadline -L./readline/8.2.1/lib
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g3 -Ireadline/8.2.1/include
+
+CFLAGS = -Wall -Wextra -Werror ${sanitize} -g3 -Ireadline/8.2.1/include
+
+sanitize= -fsanitize=address,leak
 
 all : ${NAME}
 

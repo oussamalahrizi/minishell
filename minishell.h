@@ -34,6 +34,13 @@ typedef struct
 	files *files;
 }	Command;
 
+typedef struct s_env
+{
+	char *name;
+	char *value;
+	struct s_env *next;
+}	t_env;
+
 int expander(Token **tokens, char **env);
 void tokenize(char *input, Token **tokens);
 int is_space(char c);
@@ -45,6 +52,8 @@ void signal_handler();
 int error(char *str);
 Command **extract(Token **tokens);
 char **split_by_str(char *s, char *del);
+void free_double_char(char **str);
+t_env *copy_env(char **env);
 
 
 #endif // !MINISHELL_H
