@@ -73,12 +73,14 @@ int	main(int ac, char **av, char **env)
 
 	printf("getting env var into linked list\n");
 	t_env *node;
+	t_env *tmp;
 	node = copy_env(env);
-	while (node)
+	increase_shell_lvl(node);
+	tmp = node;
+	while (tmp)
 	{
-		printf("env name : %s\n", node->name);
-		printf("env value : %s\n", node->value);
-		node = node->next;
+		printf("%s=%s\n", tmp->name, tmp->value);
+		tmp = tmp->next;
 	}
 	while (1)
 	{

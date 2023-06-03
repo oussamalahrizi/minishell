@@ -56,8 +56,27 @@ t_env *copy_env(char **env)
 		free_double_char(temp);
 		node->next = NULL;
 		env_add_back(&new_env, node);
-		free(node);
 		i++;
 	}
 	return (new_env);
+}
+
+void increase_shell_lvl(t_env *env)
+{
+	t_env *node;
+	char *temp;
+	node = env;
+	int n;
+
+	while (node)
+	{
+		if (!ft_strncmp("SHLVL", node->name, 6))
+		{
+			temp = node->value;
+			n = ft_atoi(node->value);
+			node->value = ft_itoa(n + 1);
+			free(temp);
+		}
+		node = node->next;
+	}
 }

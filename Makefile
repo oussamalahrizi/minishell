@@ -19,7 +19,7 @@ CC = cc
 
 CFLAGS = -Wall -Wextra -Werror ${sanitize} -g3 -Ireadline/8.2.1/include
 
-sanitize= -fsanitize=address,leak
+# sanitize= -fsanitize=address
 
 all : ${NAME}
 

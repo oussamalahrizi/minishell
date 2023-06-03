@@ -54,6 +54,7 @@ Command **extract(Token **tokens);
 char **split_by_str(char *s, char *del);
 void free_double_char(char **str);
 t_env *copy_env(char **env);
+void increase_shell_lvl(t_env *env);
 
 
 #endif // !MINISHELL_H

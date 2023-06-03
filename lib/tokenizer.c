@@ -1,13 +1,5 @@
 #include "../minishell.h"
 
-int	skip_spaces(char *str, int index)
-{
-	while (str[index] && (str[index] == ' ' || str[index] == '\t'
-			|| str[index] == '\r'))
-		index++;
-	return (index);
-}
-
 int is_space(char c) {
     return (c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\v' || c == '\f');
 }
