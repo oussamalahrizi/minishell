@@ -1,4 +1,4 @@
-SRCS = minishell.c \
+SRCS = 	minishell.c \
 		lib/expander.c \
 		lib/tokenizer.c \
 		lib/signals.c \
