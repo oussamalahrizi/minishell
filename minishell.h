@@ -41,6 +41,13 @@ typedef struct s_env
 	struct s_env *next;
 }	t_env;
 
+typedef struct s_vars
+{
+	t_env *env;
+	Command **commands;
+}	t_vars;
+
+
 int expander(Token **tokens, char **env);
 void tokenize(char *input, Token **tokens);
 int is_space(char c);
@@ -55,6 +62,8 @@ char **split_by_str(char *s, char *del);
 void free_double_char(char **str);
 t_env *copy_env(char **env);
 void increase_shell_lvl(t_env *env);
+char **get_name_value(char *str);
+void	env_add_back(t_env **node, t_env *data);
 
 
 #endif // !MINISHELL_H

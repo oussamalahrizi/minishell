@@ -66,22 +66,27 @@ int	main(int ac, char **av, char **env)
 	struct termios original;
 	char	*input;
 	int size = 0;
+	t_vars vars;
 
-	((void)ac, (void)av, (void)env);
+
+	((void)ac, (void)av);
 	signal_handler();
 
 
-	printf("getting env var into linked list\n");
+	//printf("getting env var into linked list\n");
 	t_env *node;
-	t_env *tmp;
+	// t_env *tmp;
 	node = copy_env(env);
 	increase_shell_lvl(node);
+	vars.env = node;
+	# if 0
 	tmp = node;
 	while (tmp)
 	{
 		printf("%s=%s\n", tmp->name, tmp->value);
 		tmp = tmp->next;
 	}
+	# endif
 	while (1)
 	{
 		tcgetattr(0, &term);
@@ -122,7 +127,7 @@ int	main(int ac, char **av, char **env)
 			free_tokens(tokens);
 			continue;
 		}
-  #if 1
+  #if 0
       
 		  int i = 0;
 		  while (tokens[i] != NULL)
@@ -132,6 +137,8 @@ int	main(int ac, char **av, char **env)
 		  }
     #endif
 		commands = extract(tokens); // look extract file to print cmds
+		vars.commands = commands;
+		(void)vars;
 		free(input);
 		free_tokens(tokens);
 		free_cmds(commands);

@@ -18,7 +18,6 @@
 	so please consider adding a single space between command args when executing the command echo
 }
 
-
 {
 	signals should be passed to the current process running
 }
