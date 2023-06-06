@@ -10,7 +10,8 @@ SRCS = 	minishell.c \
 		exec/builtins/error.c \
 		exec/builtins/build_exit.c \
 		exec/builtins/build_cd.c \
-		exec/builtins/build_pwd.c 
+		exec/builtins/build_pwd.c \
+		exec/builtins/build_echo.c 
 
 OBJS = ${SRCS:.c=.o}
 

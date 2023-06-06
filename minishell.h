@@ -72,6 +72,7 @@ void exec(t_vars *vars);
 void	build_exit(char **cmd_args);
 void build_cd(char **cmd_args, t_env *env);
 void build_pwd();
+void build_echo(char **cmd_args);
 
 #endif // !MINISHELL_H
 

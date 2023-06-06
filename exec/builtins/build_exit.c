@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 18:55:27 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/06 22:36:30 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/06 23:53:35 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ void too_many_arguments()
 	write(2, "exit\n", 6);
 	write(2, "exit : too many arguments\n", 26);
 	exit_status = 1;
-	exit(1);
 }
 
 void	build_exit(char **cmd_args)

@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 21:34:53 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/06 23:43:22 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/06 23:55:49 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,7 +207,9 @@ void exec(t_vars *vars)
 		else if (!ft_strcmp("cd", vars->commands[0]->cmd))
 			build_cd(vars->commands[0]->cmd_args, vars->env);
 		else if (!ft_strcmp("pwd", vars->commands[0]->cmd))
-			build_pwd(vars->commands[0]->cmd_args);
+			build_pwd();
+		else if (!ft_strcmp("echo", vars->commands[0]->cmd))
+			build_echo(vars->commands[0]->cmd_args);
 	}
 	/*
 		free local pointers please

@@ -11,8 +11,10 @@ void build_echo(char **cmd_args)
     j = 0;
     flag = 1;
     if (ft_strncmp(cmd_args[i], "-n", 3) == 0)
+    {
         flag = 0;
-    i++;
+        i++;
+    }
     while(cmd_args[i])
     {
         ft_putstr_fd(cmd_args[i], 1);
