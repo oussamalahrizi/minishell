@@ -51,12 +51,14 @@ files *allocate_files(Token **tokens, int *index, files *file_list)
 	{
 		new->del = ft_strdup(tokens[i]->value);
 		new->type = 'h';
+		new->fd = -1;
 		i++;
 	}
 	else if (tokens[i - 1]->type == '>' || tokens[i - 1]->type == '<' || tokens[i - 1]->type == 'a')
 	{
 		new->filename = ft_strdup(tokens[i]->value);
 		new->type = tokens[i - 1]->type;
+		new->fd = -1;
 		i++;
 	}
 	if (!current_files)
@@ -134,7 +136,7 @@ Command **extract(Token **tokens)
 		}
 	}
 	commands[num] = 0;
-#if 1
+#if 0
 	int j = 0;
 	while(commands[j])
 	{

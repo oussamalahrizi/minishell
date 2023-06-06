@@ -1,25 +1,27 @@
 #include "../minishell.h"
 
-int		exit_status;
+extern int		exit_status;
 
-char	*get_env(char *string, char **env)
+char	*get_env(char *string, t_env *env)
 {
 	char	*variable;
 	char	*temp;
+	t_env *node;
 
 	if (string[0] == '?')
 		return (ft_itoa(exit_status));
 	if (!ft_strlen(string))
 		return(ft_strdup(""));
 	temp = string;
-	while (*env)
+	node = env;
+	while (node)
 	{
-		if (!ft_strncmp(temp, *env, ft_strlen(temp)))
+		if (!ft_strncmp(temp, node->name, ft_strlen(temp)))
 		{
-			variable = ft_strdup(*env + ft_strlen(temp) + 1);
+			variable = ft_strdup(node->value);
 			return (variable);
 		}
-		env++;
+		node = node->next;
 	}
 	variable = ft_strdup("");
 	return (variable);
@@ -59,26 +61,28 @@ int	is_quote(char c)
 	return (0);
 }
 
-char *get_ifs(char **env)
+char *get_ifs(t_env *env)
 {
 	char	*variable;
 	char	*temp;
+	t_env *node;
 
 	temp = "IFS";
-	while (*env)
+	node = env;
+	while (node)
 	{
-		if (!ft_strncmp(temp, *env, ft_strlen(temp)))
+		if (!ft_strncmp(temp, node->name, ft_strlen(temp)))
 		{
-			variable = ft_strdup(*env + ft_strlen(temp) + 1);
+			variable = ft_strdup(node->value);
 			return (variable);
 		}
-		env++;
+		node = node->next;
 	}
 	variable = NULL;
 	return (variable);
 }
 
-int check_ifs(char *string, int index, char **env)
+int check_ifs(char *string, int index, t_env *env)
 {
 	char	*skip;
 	char	*temp;
@@ -122,7 +126,7 @@ int check_ifs(char *string, int index, char **env)
 	return (0);
 }
 
-int	handle_dollar(char **new_token, char *string, int index, char **env)
+int	handle_dollar(char **new_token, char *string, int index, t_env *env)
 {
 	char	*skip;
 	char	*temp;
@@ -131,7 +135,7 @@ int	handle_dollar(char **new_token, char *string, int index, char **env)
 	i = index;
 	len = 0;
 	while (string[i] && !is_space(string[i]) && !is_quote(string[i])
-		&& (ft_isalnum(string[i]) || string[i] == '?' || ft_strchr("(){}", string[i])))
+		&& (ft_isalnum(string[i]) || string[i] == '?'))
 	{
 		i++;
 		len++;
@@ -145,7 +149,7 @@ int	handle_dollar(char **new_token, char *string, int index, char **env)
 	return (i);
 }
 
-int	expander(Token **tokens, char **env)
+int	expander(Token **tokens, t_env *env)
 {
 	int i;
 	char *temp;

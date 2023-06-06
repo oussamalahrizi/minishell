@@ -4,7 +4,7 @@ extern int exit_status;
 
 void control_c()
 {
-	exit_status = 130;
+	exit_status = 1;
 	ioctl(STDIN_FILENO, TIOCSTI, "\n");
 	rl_replace_line("", 0);
 	rl_on_new_line();
@@ -14,7 +14,7 @@ void control_d()
 {
 	ioctl(STDIN_FILENO, TIOCSTI, "exit\n");
 	rl_replace_line("", 0);
-	exit(130);
+	exit(1);
 }
 
 void signal_handler()

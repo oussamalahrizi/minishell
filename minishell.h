@@ -10,9 +10,10 @@
 #include <sys/ioctl.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <fcntl.h>
+#include <errno.h>
 #include "libft/libft.h"
 
-#define MAX_LENGTH 99999999999
 
 typedef struct s_token{
 	char type;
@@ -24,6 +25,7 @@ typedef struct s_files
 	char * filename;
 	char type;
 	char *del;
+	int fd;
 	struct s_files *next;
 } files;
 
@@ -48,7 +50,7 @@ typedef struct s_vars
 }	t_vars;
 
 
-int expander(Token **tokens, char **env);
+int	expander(Token **tokens, t_env *env);
 void tokenize(char *input, Token **tokens);
 int is_space(char c);
 void free_double(Token **str);
@@ -64,7 +66,12 @@ t_env *copy_env(char **env);
 void increase_shell_lvl(t_env *env);
 char **get_name_value(char *str);
 void	env_add_back(t_env **node, t_env *data);
-
+void	error_cmd(char *str, int code);
+int count_args(char **cmd_args);
+void exec(t_vars *vars);
+void	build_exit(char **cmd_args);
+void build_cd(char **cmd_args, t_env *env);
+void build_pwd();
 
 #endif // !MINISHELL_H
 
