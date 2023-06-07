@@ -6,11 +6,13 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 20:05:40 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/06 23:37:49 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/07 18:31:26 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
+extern int exit_status;
 
 int count_args(char **cmd_args)
 {
@@ -133,6 +135,7 @@ void build_cd(char **cmd_args, t_env *env)
 				}
 				change_oldpwd(env);
 				change_pwd(env);
+				exit_status = 0;
 				return;
 			}
 			node = node->next;
@@ -148,9 +151,11 @@ void build_cd(char **cmd_args, t_env *env)
 		if (chdir(cmd_args[1]))
 		{
 			write(2, "cd : failed to change dir\n", 27);
+			exit_status = 1;
 			return ;
 		}
 		change_oldpwd(env);
 		change_pwd(env);
+		exit_status = 0;
 	}
 }

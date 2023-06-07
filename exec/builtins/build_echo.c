@@ -1,6 +1,8 @@
 
 # include "../../minishell.h"
 
+extern int exit_status;
+
 void build_echo(char **cmd_args)
 {
     int i;
@@ -24,5 +26,6 @@ void build_echo(char **cmd_args)
     }
     if (flag)
         write(1,"\n",1);
+    exit_status = 0;
 }
 

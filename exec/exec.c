@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 21:34:53 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/06 23:55:49 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/07 18:29:31 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,9 +124,7 @@ int open_files(Command **commands, int **fds, int *size)
 					failure = -1;
 				}
 				else
-				{
 					new_fds[count++] = try;
-				}
 			}
 			else if (node->type == '>')
 			{

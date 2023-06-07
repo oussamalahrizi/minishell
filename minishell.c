@@ -119,6 +119,7 @@ int	main(int ac, char **av, char **env)
 		{
 			write(2, "syntax error\n", 14);
 			free(input);
+			exit_status = 258;
 			continue;
 		}
 		tokens = (Token **)malloc(sizeof(Token *) * (size + 1));
@@ -133,6 +134,7 @@ int	main(int ac, char **av, char **env)
 			write(2, "abiguous redirection\n", 22);
 			free(input);
 			free_tokens(tokens);
+			exit_status = 1;
 			continue;
 		}
   #if 0
@@ -140,7 +142,7 @@ int	main(int ac, char **av, char **env)
 		  int i = 0;
 		  while (tokens[i] != NULL)
 		  {
-			  printf("%s\n",tokens[i]->value);
+			  printf("token value : %s\n",tokens[i]->value);
 			  i++;
 		  }
     #endif

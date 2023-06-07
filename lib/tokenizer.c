@@ -201,7 +201,6 @@ void	tokenize(char *input, Token **tokens)
 				append_character(&string, input[i]);
 				i++;
 			}
-			printf("%s\n", string);
 			// ha wahd
 			tokens[k++] = new_token('s', string);
 			free(string);
