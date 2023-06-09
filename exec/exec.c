@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 21:34:53 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/07 18:29:31 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/08 00:28:42 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,6 @@ int open_files(Command **commands, int **fds, int *size)
 		i++;
 	}
 	new_fds = malloc(sizeof(int) * count);
-	// printf("total files : %d\n", count);
 	*size = count;
 	i = 0;
 	count = 0;
@@ -209,6 +208,28 @@ void exec(t_vars *vars)
 		else if (!ft_strcmp("echo", vars->commands[0]->cmd))
 			build_echo(vars->commands[0]->cmd_args);
 	}
+	// else
+	// {
+	// 	int i = 0;
+	// 	open_files(vars->commands, &array_fd, &size);
+	// 	while (vars->commands[i])
+	// 	{
+	// 		if (nbr_cmd > 1)
+	// 		{
+	// 			pipe(fd);
+	// 		}
+	// 		pid = fork();
+	// 		if (pid == 0)
+	// 			child_process(vars, fd);
+	// 		else
+	// 		{
+	// 			waitpid(pid, &child_status, 0);
+	// 			if (WIFEXITED(child_status))
+	// 				exit_status = WEXITSTATUS(child_status);
+	// 			i++;
+	// 		}
+	// 	}
+	// }
 	/*
 		free local pointers please
 	*/

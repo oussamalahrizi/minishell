@@ -50,7 +50,7 @@ typedef struct s_vars
 }	t_vars;
 
 
-int	expander(Token **tokens, t_env *env);
+int	expander(Token ***tokens_i, t_env *env);
 void tokenize(char *input, Token **tokens);
 int is_space(char c);
 void free_double(Token **str);
@@ -60,6 +60,7 @@ void append_character(char **string, char c);
 void signal_handler();
 int error(char *str);
 Command **extract(Token **tokens);
+Token ** retokinize(Token **tokens);
 char **split_by_str(char *s, char *del);
 void free_double_char(char **str);
 t_env *copy_env(char **env);
@@ -73,6 +74,10 @@ void	build_exit(char **cmd_args);
 void build_cd(char **cmd_args, t_env *env);
 void build_pwd();
 void build_echo(char **cmd_args);
+void child_process(t_vars *vars, int *fd);
+Token* new_token(char type, char* value);
+Token **duplicate_tokens(Token **tokens);
+int get_tokens_size(Token **tokens);
 
 #endif // !MINISHELL_H
 

@@ -12,7 +12,7 @@ void build_echo(char **cmd_args)
     i = 1;
     j = 0;
     flag = 1;
-    if (ft_strncmp(cmd_args[i], "-n", 3) == 0)
+    if (cmd_args[i] && !ft_strncmp(cmd_args[i], "-n", 3) )
     {
         flag = 0;
         i++;

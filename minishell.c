@@ -129,7 +129,7 @@ int	main(int ac, char **av, char **env)
 			return (1);
 		}
 		tokenize(input, tokens);
-		if (expander(tokens, vars.env) == -1)
+		if (expander(&tokens, vars.env) == -1)
 		{
 			write(2, "abiguous redirection\n", 22);
 			free(input);
@@ -138,12 +138,11 @@ int	main(int ac, char **av, char **env)
 			continue;
 		}
   #if 0
-      
 		  int i = 0;
 		  while (tokens[i] != NULL)
 		  {
-			  printf("token value : %s\n",tokens[i]->value);
-			  i++;
+			printf("%s\n",tokens[i]->value);
+			i++;
 		  }
     #endif
 		commands = extract(tokens); // look extract file to print cmds

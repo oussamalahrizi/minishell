@@ -84,6 +84,7 @@ Command **extract(Token **tokens)
 	Command **commands;
 	int num = 1;
 	int k = 0;
+
 	while(tokens[i])
 	{
 		if (tokens[i]->type == '|')
@@ -107,10 +108,7 @@ Command **extract(Token **tokens)
 		if (tokens[i]->type == 's')
 		{
 			if (commands[k]->cmd == NULL)
-			{
 				commands[k]->cmd = ft_strdup(tokens[i]->value);
-				// i++;
-			}	
 			else
 				commands[k]->cmd_args = allocate_strings(tokens, &i);
 		}
