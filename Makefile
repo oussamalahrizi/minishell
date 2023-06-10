@@ -9,9 +9,13 @@ SRCS = 	minishell.c \
 		exec/exec.c \
 		exec/builtins/error.c \
 		exec/builtins/build_exit.c \
-		exec/builtins/build_cd.c \
 		exec/builtins/build_pwd.c \
-		exec/builtins/build_echo.c 
+		exec/builtins/build_echo.c \
+		exec/builtins/build_cd.c \
+		exec/builtins/export.c \
+		exec/builtins/build_env.c \
+		exec/builtins/build_unset.c \
+		exec/builtins/utils.c
 
 OBJS = ${SRCS:.c=.o}
 
@@ -25,7 +29,7 @@ CC = cc
 
 CFLAGS = -Wall -Wextra -Werror ${sanitize} -g3 -Ireadline/8.2.1/include
 
-sanitize= -fsanitize=address
+# sanitize= -fsanitize=address
 
 all : ${NAME}
 

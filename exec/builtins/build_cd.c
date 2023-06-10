@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 20:05:40 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/07 18:31:26 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/10 00:49:51 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,6 @@
 
 extern int exit_status;
 
-int count_args(char **cmd_args)
-{
-	int len;
-
-	len = 0;
-	while (cmd_args[len])
-		len++;
-	return (len);
-}
 
 t_env *get_pwd_env(t_env *env)
 {
@@ -119,7 +110,6 @@ void build_cd(char **cmd_args, t_env *env)
 	t_env *node;
 	int len;
 	
-
 	len = count_args(cmd_args);
 	if (len == 1)
 	{

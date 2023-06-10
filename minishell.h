@@ -40,6 +40,7 @@ typedef struct s_env
 {
 	char *name;
 	char *value;
+	int flag;
 	struct s_env *next;
 }	t_env;
 
@@ -71,13 +72,17 @@ void	error_cmd(char *str, int code);
 int count_args(char **cmd_args);
 void exec(t_vars *vars);
 void	build_exit(char **cmd_args);
-void build_cd(char **cmd_args, t_env *env);
+void build_cd(char **cmd, t_env *env);
 void build_pwd();
 void build_echo(char **cmd_args);
 void child_process(t_vars *vars, int *fd);
 Token* new_token(char type, char* value);
 Token **duplicate_tokens(Token **tokens);
 int get_tokens_size(Token **tokens);
+void build_export(char **cmd ,t_env *env);
+int get_env_flag(char *cmd);
+void build_env(t_env *env);
+void	build_unset(char **cmd, t_env **env);
 
 #endif // !MINISHELL_H
 

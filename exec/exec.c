@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 21:34:53 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/08 00:28:42 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/10 01:53:00 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,6 +207,12 @@ void exec(t_vars *vars)
 			build_pwd();
 		else if (!ft_strcmp("echo", vars->commands[0]->cmd))
 			build_echo(vars->commands[0]->cmd_args);
+		else if (!ft_strcmp("export", vars->commands[0]->cmd))
+			build_export(vars->commands[0]->cmd_args, vars->env);
+		else if (!ft_strcmp("env", vars->commands[0]->cmd))
+			build_env(vars->env);
+		else if (!ft_strcmp("unset", vars->commands[0]->cmd))
+			build_unset(vars->commands[0]->cmd_args, &vars->env);
 	}
 	// else
 	// {
