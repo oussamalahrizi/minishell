@@ -21,7 +21,7 @@ char	*get_env(char *string, t_env *env)
 	node = env;
 	while (node)
 	{
-		if (!ft_strncmp(temp, node->name, ft_strlen(temp)))
+		if (!ft_strcmp(temp, node->name))
 		{
 			variable = ft_strdup(node->value);
 			return (variable);
@@ -156,6 +156,8 @@ int	handle_dollar_alone(char *string, int index, int token_index, t_exp *exp, in
 	split = ft_split(skip, ' ');
 	while (split[j])
 		j++;
+	if (!*skip)
+		j = 1;
 	new_tokens = malloc(sizeof(Token *) * (token_size + j));
 	int size = token_size + j - 1;
 	new_tokens[size] = 0;
@@ -166,11 +168,19 @@ int	handle_dollar_alone(char *string, int index, int token_index, t_exp *exp, in
 		j++;
 	}
 	int k = 0;
-	while (split[k])
+	if (!*skip)
 	{
-		new_tokens[j] = new_token('s', split[k]);
-		k++;
+		new_tokens[j] = new_token('s', skip);
 		j++;
+	}
+	else
+	{
+		while (split[k])
+		{
+			new_tokens[j] = new_token('s', split[k]);
+			k++;
+			j++;
+		}
 	}
 	token_index += *new_index + 1;
 	if (token_index < token_size)
@@ -182,7 +192,8 @@ int	handle_dollar_alone(char *string, int index, int token_index, t_exp *exp, in
 			token_index++;
 		}
 	}
-	*new_index += k - 1;
+	if (*skip)
+		*new_index += k - 1;
 	free(temp);
 	free_double_char(split);
 	free(skip);

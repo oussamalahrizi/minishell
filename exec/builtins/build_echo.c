@@ -12,7 +12,7 @@ void build_echo(char **cmd_args)
     i = 1;
     j = 0;
     flag = 1;
-    if (cmd_args[i] && !ft_strncmp(cmd_args[i], "-n", 3) )
+    if (cmd_args[i] && !ft_strcmp(cmd_args[i], "-n") )
     {
         flag = 0;
         i++;
@@ -21,7 +21,7 @@ void build_echo(char **cmd_args)
     {
         ft_putstr_fd(cmd_args[i], 1);
         i++;
-        if (cmd_args[i])
+        if (cmd_args[i] && cmd_args[i - 1][0])
             write(1," ",1);
     }
     if (flag)

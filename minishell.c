@@ -95,7 +95,7 @@ int	main(int ac, char **av, char **env)
 		tcgetattr(0, &original);
 		term.c_lflag &= ~(ECHOCTL);
 		tcsetattr(0, TCSANOW, &term);
-		input = readline("minishell> ");
+		input = readline("minishell$ ");
 		tcsetattr(0, TCSANOW, &original);
 		char *test;
 		test = ft_strtrim(input, " ");
@@ -141,7 +141,7 @@ int	main(int ac, char **av, char **env)
 		  int i = 0;
 		  while (tokens[i] != NULL)
 		  {
-			printf("%s\n",tokens[i]->value);
+			printf("token value : %s$\n",tokens[i]->value);
 			i++;
 		  }
     #endif

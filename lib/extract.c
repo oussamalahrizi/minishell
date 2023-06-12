@@ -5,6 +5,7 @@ char **allocate_strings(Token **tokens, int *index)
 {
 	int i;
 	char **res;
+	char *temp;
 	int c = 0;
 
 	i = *index;
@@ -18,7 +19,14 @@ char **allocate_strings(Token **tokens, int *index)
 	c = 0;
 	while(tokens[i] && tokens[i]->type == 's')
 	{
-		res[c] = ft_strdup(tokens[i]->value);
+		if (i == 0)
+		{
+			temp = ft_strtrim(tokens[i]->value, "'\"");
+			res[c] = ft_strdup(temp);
+			free(temp);
+		}
+		else
+			res[c] = ft_strdup(tokens[i]->value);
 		c++;
 		i++;
 	}
@@ -108,7 +116,11 @@ Command **extract(Token **tokens)
 		if (tokens[i]->type == 's')
 		{
 			if (commands[k]->cmd == NULL)
-				commands[k]->cmd = ft_strdup(tokens[i]->value);
+			{
+				char *temp = ft_strtrim(tokens[i]->value, "'\"");
+				commands[k]->cmd = ft_strdup(temp);
+				free(temp);
+			}
 			else
 				commands[k]->cmd_args = allocate_strings(tokens, &i);
 		}
@@ -138,7 +150,7 @@ Command **extract(Token **tokens)
 	int j = 0;
 	while(commands[j])
 	{
-		printf("command : %s\n", commands[j]->cmd);
+		printf("command : %s$\n", commands[j]->cmd);
 		int h = 0;
 		if (commands[j]->cmd_args)
 		{

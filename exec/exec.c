@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 21:34:53 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/10 01:53:00 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/12 05:00:37 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,12 @@
 
 extern int exit_status;
 
-files *get_last_infile(Command *commands)
+files *get_last_infile(files *cmd_files)
 {
 	files *node;
 	files *res;
 	res = NULL;
-	node = commands->files;
+	node = cmd_files;
 	while (node)
 	{
 		if (node->type == 'h' || node->type == '<')
@@ -29,12 +29,12 @@ files *get_last_infile(Command *commands)
 	return (res);
 }
 
-files *get_last_outfile(Command *commands)
+files *get_last_outfile(files *cmd_files)
 {
 	files *node;
 	files *res;
 	res = NULL;
-	node = commands->files;
+	node = cmd_files;
 	while (node)
 	{
 		if (node->type == 'a' || node->type == '>')
@@ -43,26 +43,6 @@ files *get_last_outfile(Command *commands)
 	}
 	return (res);
 }
-
-// void child_exec(Command *command, t_env *env, int *fd, int index)
-// {
-// 	files *infile;
-// 	files *outfile;
-// 	int infile_fd;
-
-// 	if (!infile)
-// 	{
-// 		if (index != 0)
-// 			dup2(fd[0], STDIN_FILENO);
-// 	}
-// 	// else
-// 	// {
-// 	// 	if (infile->filename)
-// 	// 	{
-// 	// 		dup2(infile->fd, STDIN_FILENO);
-// 	// 	}
-// 	// }
-// }
 
 void close_files(int *files, int size)
 {
@@ -82,7 +62,7 @@ int cmd_count(Command **cmds)
 	return (i);
 }
 
-int open_files(Command **commands, int **fds, int *size)
+int open_files(Command **commands)
 {
 	int i = 0;
 	files *node;
@@ -101,7 +81,6 @@ int open_files(Command **commands, int **fds, int *size)
 		i++;
 	}
 	new_fds = malloc(sizeof(int) * count);
-	*size = count;
 	i = 0;
 	count = 0;
 	while (commands[i])
@@ -123,7 +102,10 @@ int open_files(Command **commands, int **fds, int *size)
 					failure = -1;
 				}
 				else
+				{
 					new_fds[count++] = try;
+					node->fd = try;
+				}
 			}
 			else if (node->type == '>')
 			{
@@ -139,7 +121,10 @@ int open_files(Command **commands, int **fds, int *size)
 					failure = -1;
 				}
 				else
+				{
 					new_fds[count++] = try;
+					node->fd = try;
+				}
 			}
 			else if (node->type == 'a')
 			{
@@ -155,7 +140,10 @@ int open_files(Command **commands, int **fds, int *size)
 					failure = -1;
 				}
 				else
+				{
 					new_fds[count++] = try;
+					node->fd = try;
+				}
 			}
 			else if (node->type == 'h')
 			{
@@ -174,30 +162,29 @@ int open_files(Command **commands, int **fds, int *size)
 					failure = -1;
 				}
 				else
+				{
 					new_fds[count++] = try;
+					node->fd = try;
+				}
 			}
 			node = node->next;
 		}
 		i++;
 	}
-	*fds = new_fds;
+	free(new_fds);
 	return (failure);
 }
 
 void exec(t_vars *vars)
 {
-	// files *infile;
 
 	// int i = 0;
-	// int fd[2];
-	// int pid_open_files;
-	int *array_fd = NULL;
-	// int child_status;
-	int size;
+	int fd[2];
+	int child_status;
 	// int flag_exit = 0;
 	int nbr_cmd = cmd_count(vars->commands);
-	// int pid;
-	if (nbr_cmd == 1 && !open_files(vars->commands, &array_fd, &size))
+	int pid;
+	if (nbr_cmd == 1 && !open_files(vars->commands))
 	{
 		if (!ft_strcmp("exit", vars->commands[0]->cmd))
 			build_exit(vars->commands[0]->cmd_args);
@@ -214,32 +201,29 @@ void exec(t_vars *vars)
 		else if (!ft_strcmp("unset", vars->commands[0]->cmd))
 			build_unset(vars->commands[0]->cmd_args, &vars->env);
 	}
-	// else
-	// {
-	// 	int i = 0;
-	// 	open_files(vars->commands, &array_fd, &size);
-	// 	while (vars->commands[i])
-	// 	{
-	// 		if (nbr_cmd > 1)
-	// 		{
-	// 			pipe(fd);
-	// 		}
-	// 		pid = fork();
-	// 		if (pid == 0)
-	// 			child_process(vars, fd);
-	// 		else
-	// 		{
-	// 			waitpid(pid, &child_status, 0);
-	// 			if (WIFEXITED(child_status))
-	// 				exit_status = WEXITSTATUS(child_status);
-	// 			i++;
-	// 		}
-	// 	}
-	// }
+	else
+	{
+		int i = 0;
+		open_files(vars->commands);
+		while (vars->commands[i])
+		{
+			if (nbr_cmd > 1)
+				pipe(fd);
+			pid = fork();
+			if (pid == 0)
+				child_process(vars->commands[i], fd, vars->env);
+			else
+			{
+				waitpid(pid, &child_status, 0);
+				if (WIFEXITED(child_status))
+					exit_status = WEXITSTATUS(child_status);
+				i++;
+			}
+		}
+	}
 	/*
 		free local pointers please
 	*/
-	free(array_fd);
 	return ;
 	// // if (cmd_count(vars->commands) == 1)
 	// // 	exec_one_command(vars->commands, t_env *env)

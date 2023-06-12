@@ -35,7 +35,7 @@ int	word_count(char *input)
 				return (-1);
 			}
 			i++;
-			while(input[i] && !ft_strchr(delimiters, input[i]))
+			while(input[i] && !ft_strchr(delimiters, input[i]) && !is_space(input[i]))
 			{
 				if (ft_strchr("'\"", input[i]))
 				{
@@ -182,7 +182,7 @@ void	tokenize(char *input, Token **tokens)
 			}
 			append_character(&string, input[i]);
 			i++;
-			while(input[i] && !ft_strchr(delimiters, input[i]))
+			while(input[i] && !ft_strchr(delimiters, input[i]) && !is_space(input[i]))
 			{
 				if (ft_strchr("'\"", input[i]))
 				{
