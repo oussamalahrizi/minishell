@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 20:05:40 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/12 11:11:43 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/12 11:16:07 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,10 @@ char *get_userhome(t_env *env)
 			free(temp);
 			temp = get_env("LOGNAME", env);
 			if (!*temp)
+			{
+				free(str);
 				return (temp);
+			}
 		}
 		str = ft_strjoin(str, temp);
 	}
@@ -174,6 +177,7 @@ void build_cd(char **cmd_args, t_env *env)
 			if (!*str)
 			{
 				error_cmd("cd: HOME/USER/LOGNAME not set\n", 1);
+				free(str);
 				return;
 			}
 		}
