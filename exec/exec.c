@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 21:34:53 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/12 05:00:37 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/13 21:16:29 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,11 +179,11 @@ void exec(t_vars *vars)
 {
 
 	// int i = 0;
-	int fd[2];
-	int child_status;
+	// int fd[2];
+	// int child_status;
 	// int flag_exit = 0;
 	int nbr_cmd = cmd_count(vars->commands);
-	int pid;
+	// int pid;
 	if (nbr_cmd == 1 && !open_files(vars->commands))
 	{
 		if (!ft_strcmp("exit", vars->commands[0]->cmd))
@@ -201,26 +201,26 @@ void exec(t_vars *vars)
 		else if (!ft_strcmp("unset", vars->commands[0]->cmd))
 			build_unset(vars->commands[0]->cmd_args, &vars->env);
 	}
-	else
-	{
-		int i = 0;
-		open_files(vars->commands);
-		while (vars->commands[i])
-		{
-			if (nbr_cmd > 1)
-				pipe(fd);
-			pid = fork();
-			if (pid == 0)
-				child_process(vars->commands[i], fd, vars->env);
-			else
-			{
-				waitpid(pid, &child_status, 0);
-				if (WIFEXITED(child_status))
-					exit_status = WEXITSTATUS(child_status);
-				i++;
-			}
-		}
-	}
+	// else
+	// {
+	// 	int i = 0;
+	// 	open_files(vars->commands);
+	// 	while (vars->commands[i])
+	// 	{
+	// 		if (nbr_cmd > 1)
+	// 			pipe(fd);
+	// 		pid = fork();
+	// 		if (pid == 0)
+	// 			child_process(vars->commands[i], fd, vars->env);
+	// 		else
+	// 		{
+	// 			waitpid(pid, &child_status, 0);
+	// 			if (WIFEXITED(child_status))
+	// 				exit_status = WEXITSTATUS(child_status);
+	// 			i++;
+	// 		}
+	// 	}
+	// }
 	/*
 		free local pointers please
 	*/

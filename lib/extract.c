@@ -1,11 +1,11 @@
 #include "../minishell.h"
 
+char *clean_command(char *string);
 
 char **allocate_strings(Token **tokens, int *index)
 {
 	int i;
 	char **res;
-	char *temp;
 	int c = 0;
 
 	i = *index;
@@ -19,14 +19,7 @@ char **allocate_strings(Token **tokens, int *index)
 	c = 0;
 	while(tokens[i] && tokens[i]->type == 's')
 	{
-		if (i == 0)
-		{
-			temp = ft_strtrim(tokens[i]->value, "'\"");
-			res[c] = ft_strdup(temp);
-			free(temp);
-		}
-		else
-			res[c] = ft_strdup(tokens[i]->value);
+		res[c] = clean_command(tokens[i]->value);
 		c++;
 		i++;
 	}
@@ -51,7 +44,7 @@ files *allocate_files(Token **tokens, int *index, files *file_list)
 	new->del = NULL;
 	if (tokens[i]->type != 's')
 	{
-		write(2, "token after redirection is not a string\n", 41);
+		write(2, "token after redirection is not a string\n", 41);		
 		free(new);
 		return (NULL);
 	}
@@ -86,6 +79,33 @@ files *allocate_files(Token **tokens, int *index, files *file_list)
 	return (file_list);
 }
 
+char *clean_command(char *string)
+{
+	int i = 0;
+	char *res = ft_strdup("");
+	char quote;
+	while (string[i])
+	{
+		if (ft_strchr("'\"", string[i]))
+		{
+			quote = string[i];
+			i++;
+			while (string[i] && string[i] != quote)
+			{
+				append_character(&res, string[i]);
+				i++;
+			}
+			i++;
+		}
+		else
+		{
+			append_character(&res, string[i]);
+			i++;
+		}
+	}
+	return (res);
+}
+
 Command **extract(Token **tokens)
 {
 	int i = 0;
@@ -117,8 +137,8 @@ Command **extract(Token **tokens)
 		{
 			if (commands[k]->cmd == NULL)
 			{
-				char *temp = ft_strtrim(tokens[i]->value, "'\"");
-				commands[k]->cmd = ft_strdup(temp);
+				char *temp = clean_command(tokens[i]->value);
+				commands[k]->cmd = ft_strdup(tokens[i]->value);
 				free(temp);
 			}
 			else

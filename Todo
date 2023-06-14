@@ -38,3 +38,9 @@
 	if it's only one command and it's a built in no need to fork,
 	else it's a must to fork
 }
+
+{
+	l''s : working
+	l""s : working	
+	
+}

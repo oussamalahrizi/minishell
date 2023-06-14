@@ -131,7 +131,7 @@ int check_ifs(char *string, int index, t_env *env)
 	return (0);
 }
 
-int	handle_dollar_alone(char *string, int index, int token_index, t_exp *exp, int *new_index)
+int	handle_dollar_alone(char *string, int index, int token_index, t_exp *exp, int *new_index, char **new_token_value)
 {
 	char	*skip;
 	char	*temp;
@@ -160,7 +160,6 @@ int	handle_dollar_alone(char *string, int index, int token_index, t_exp *exp, in
 		j = 1;
 	new_tokens = malloc(sizeof(Token *) * (token_size + j));
 	int size = token_size + j - 1;
-	new_tokens[size] = 0;
 	j = 0;
 	while (j < token_index + *new_index)
 	{
@@ -170,11 +169,16 @@ int	handle_dollar_alone(char *string, int index, int token_index, t_exp *exp, in
 	int k = 0;
 	if (!*skip)
 	{
-		new_tokens[j] = new_token('s', skip);
+		new_tokens[j] = new_token('s', *new_token_value);
 		j++;
 	}
 	else
 	{
+		// printf("j before : %d\n", j);
+		*new_token_value = ft_strjoin(*new_token_value, split[0]);
+		new_tokens[j] = new_token('s', *new_token_value);
+		k = 1;
+		j++;
 		while (split[k])
 		{
 			new_tokens[j] = new_token('s', split[k]);
@@ -183,17 +187,16 @@ int	handle_dollar_alone(char *string, int index, int token_index, t_exp *exp, in
 		}
 	}
 	token_index += *new_index + 1;
-	if (token_index < token_size)
+	while (j < size)
 	{
-		while (j < size)
-		{
-			new_tokens[j] = new_token(exp->tokens[token_index]->type, exp->tokens[token_index]->value);
-			j++;
-			token_index++;
-		}
+		new_tokens[j] = new_token(exp->tokens[token_index]->type, exp->tokens[token_index]->value);
+		j++;
+		token_index++;
 	}
+	new_tokens[j] = 0;
 	if (*skip)
 		*new_index += k - 1;
+	j = 0;
 	free(temp);
 	free_double_char(split);
 	free(skip);
@@ -255,9 +258,9 @@ int	expander(Token ***tokens_i, t_env *env)
 			continue;
 		}
 		string = tokens[j]->value;
+		new_token = ft_strdup("");
 		while (*string)
 		{
-			new_token = ft_strdup("");
 			i = 0;
 			while (string[i] && string[i] != '$' && !is_quote(string[i]))
 			{
@@ -277,7 +280,7 @@ int	expander(Token ***tokens_i, t_env *env)
 					free(new_token);
 					return (-1);
 				}
-				i = handle_dollar_alone(string , i + 1, j, &vars, &new_index);
+				i = handle_dollar_alone(string , i + 1, j, &vars, &new_index, &new_token);
 			}
 			else if (string[i] == '\"')
 			{
@@ -313,8 +316,8 @@ int	expander(Token ***tokens_i, t_env *env)
 				i++;
 			}
 			string += i;
-			free(new_token);
 		}
+		free(new_token);
 		j++;
 	}
 	free_double(*tokens_i);

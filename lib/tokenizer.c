@@ -26,9 +26,7 @@ int	word_count(char *input)
 			quote = input[i];
 			i++;
 			while (input[i] && input[i] != quote)
-			{
 				i++;
-			}
 			if (!input[i])
 			{
 				free(delimiters);

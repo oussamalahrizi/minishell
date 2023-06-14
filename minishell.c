@@ -137,17 +137,17 @@ int	main(int ac, char **av, char **env)
 			exit_status = 1;
 			continue;
 		}
-  #if 0
-		  int i = 0;
-		  while (tokens[i] != NULL)
-		  {
-			printf("token value : %s$\n",tokens[i]->value);
-			i++;
-		  }
-    #endif
+		#if 0
+				int i = 0;
+				while (tokens[i] != NULL)
+				{
+					printf("token value : %s$\n",tokens[i]->value);
+					i++;
+				}
+		#endif
 		commands = extract(tokens); // look extract file to print cmds
 		vars.commands = commands;
-		exec(&vars);
+		// exec(&vars);
 		free(input);
 		free_tokens(tokens);
 		free_cmds(commands);
