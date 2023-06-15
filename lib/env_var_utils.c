@@ -111,3 +111,34 @@ void increase_shell_lvl(t_env *env)
 		node = node->next;
 	}
 }
+
+char **convert_env(t_env *env)
+{
+	char **list;
+	t_env *node;
+
+	node = env;
+	char *name;
+	char *value;
+	int i = 0;
+	while (node)
+	{
+		i++;
+		node = node->next;
+	}
+	list = malloc(sizeof(char *) *(i + 1));
+	i = 0;
+	node = env;
+	while (node)
+	{
+		name = ft_strdup(node->name);
+		value = ft_strdup(node->value);
+		name = ft_strjoin(name, "=");
+		list[i] = ft_strjoin(name, value);
+		free(value);
+		i++;
+		node = node->next;
+	}
+	list[i] = 0;
+	return (list);
+}

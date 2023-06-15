@@ -75,7 +75,7 @@ void	build_exit(char **cmd_args);
 void build_cd(char **cmd, t_env *env);
 void build_pwd();
 void build_echo(char **cmd_args);
-void child_process(Command *command, int *fd, t_env *env);
+void child_process(Command *command, int *fd, t_env *env, int nbr_cmd, int fd_in, int iterator, int is_failed);
 Token* new_token(char type, char* value);
 Token **duplicate_tokens(Token **tokens);
 int get_tokens_size(Token **tokens);
@@ -86,7 +86,7 @@ void	build_unset(char **cmd, t_env **env);
 files *get_last_infile(files *cmd_files);
 files *get_last_outfile(files *cmd_files);
 char	*get_env(char *string, t_env *env);
-
+char **convert_env(t_env *env);
 #endif // !MINISHELL_H
 
 

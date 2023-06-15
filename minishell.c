@@ -147,7 +147,7 @@ int	main(int ac, char **av, char **env)
 		#endif
 		commands = extract(tokens); // look extract file to print cmds
 		vars.commands = commands;
-		// exec(&vars);
+		exec(&vars);
 		free(input);
 		free_tokens(tokens);
 		free_cmds(commands);

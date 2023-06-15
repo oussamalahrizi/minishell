@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 21:34:53 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/13 21:16:29 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/15 20:13:39 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int cmd_count(Command **cmds)
 	return (i);
 }
 
-int open_files(Command **commands)
+int open_files(Command **commands,int *index)
 {
 	int i = 0;
 	files *node;
@@ -100,6 +100,8 @@ int open_files(Command **commands)
 					perror("");
 					exit_status = 1;
 					failure = -1;
+					if (index)
+						index[i] = -1;
 				}
 				else
 				{
@@ -119,6 +121,8 @@ int open_files(Command **commands)
 					perror("");
 					exit_status = 1;
 					failure = -1;
+					if (index)
+						index[i] = -1;
 				}
 				else
 				{
@@ -138,6 +142,8 @@ int open_files(Command **commands)
 					perror("");
 					exit_status = 1;
 					failure = -1;
+					if (index)
+						index[i] = -1;
 				}
 				else
 				{
@@ -160,6 +166,8 @@ int open_files(Command **commands)
 					perror("");
 					exit_status = 1;
 					failure = -1;
+					if (index)
+						index[i] = -1;
 				}
 				else
 				{
@@ -175,52 +183,99 @@ int open_files(Command **commands)
 	return (failure);
 }
 
+int is_built_in(t_vars *vars)
+{
+	if (!ft_strcmp("exit", vars->commands[0]->cmd))
+		return (1);
+	else if (!ft_strcmp("cd", vars->commands[0]->cmd))
+		return (1);
+	else if (!ft_strcmp("pwd", vars->commands[0]->cmd))
+		return (1);
+	else if (!ft_strcmp("echo", vars->commands[0]->cmd))
+		return (1);
+	else if (!ft_strcmp("export", vars->commands[0]->cmd))
+		return (1);
+	else if (!ft_strcmp("env", vars->commands[0]->cmd))
+		return (1);
+	else if (!ft_strcmp("unset", vars->commands[0]->cmd))
+		return (1);
+	return (0);
+}
+
+void exec_builtin(t_vars *vars)
+{
+	if (!ft_strcmp("exit", vars->commands[0]->cmd))
+		build_exit(vars->commands[0]->cmd_args);
+	else if (!ft_strcmp("cd", vars->commands[0]->cmd))
+		build_cd(vars->commands[0]->cmd_args, vars->env);
+	else if (!ft_strcmp("pwd", vars->commands[0]->cmd))
+		build_pwd();
+	else if (!ft_strcmp("echo", vars->commands[0]->cmd))
+		build_echo(vars->commands[0]->cmd_args);
+	else if (!ft_strcmp("export", vars->commands[0]->cmd))
+		build_export(vars->commands[0]->cmd_args, vars->env);
+	else if (!ft_strcmp("env", vars->commands[0]->cmd))
+		build_env(vars->env);
+	else if (!ft_strcmp("unset", vars->commands[0]->cmd))
+		build_unset(vars->commands[0]->cmd_args, &vars->env);
+}
+
 void exec(t_vars *vars)
 {
-
-	// int i = 0;
-	// int fd[2];
-	// int child_status;
-	// int flag_exit = 0;
+	int i;
+	int fd[2];
+	int child_status;
+	// int old_fd;
 	int nbr_cmd = cmd_count(vars->commands);
-	// int pid;
-	if (nbr_cmd == 1 && !open_files(vars->commands))
+	int pid	;
+	if (nbr_cmd == 1 && is_built_in(vars) && !open_files(vars->commands, NULL))
+		exec_builtin(vars);
+	else
 	{
-		if (!ft_strcmp("exit", vars->commands[0]->cmd))
-			build_exit(vars->commands[0]->cmd_args);
-		else if (!ft_strcmp("cd", vars->commands[0]->cmd))
-			build_cd(vars->commands[0]->cmd_args, vars->env);
-		else if (!ft_strcmp("pwd", vars->commands[0]->cmd))
-			build_pwd();
-		else if (!ft_strcmp("echo", vars->commands[0]->cmd))
-			build_echo(vars->commands[0]->cmd_args);
-		else if (!ft_strcmp("export", vars->commands[0]->cmd))
-			build_export(vars->commands[0]->cmd_args, vars->env);
-		else if (!ft_strcmp("env", vars->commands[0]->cmd))
-			build_env(vars->env);
-		else if (!ft_strcmp("unset", vars->commands[0]->cmd))
-			build_unset(vars->commands[0]->cmd_args, &vars->env);
+		i = 0;
+		int *failed_cmd = malloc(sizeof(int) * nbr_cmd);
+		int fd_in = -1;
+		open_files(vars->commands, failed_cmd);
+		while (vars->commands[i])
+		{
+			if (nbr_cmd > 1)
+				pipe(fd);
+			pid = fork();
+			if (pid == -1)
+				error_cmd("fork failed \n", 1);
+			else if (pid == 0)
+				child_process(vars->commands[i], fd, vars->env, nbr_cmd, fd_in, i, failed_cmd[i]);
+			else
+			{
+				if (nbr_cmd > 1)
+				{
+					close(fd[1]);
+					(fd_in != -1) && close(fd_in);
+					fd_in = fd[0];
+				}
+				files *node = vars->commands[i]->files;
+				while (node)
+				{
+					if (node->fd != -1)
+						close(node->fd);
+					node = node->next;
+				}
+				i++;
+			}
+		}
+		i = 0;
+		while (i < nbr_cmd)
+		{
+			if (i == nbr_cmd - 1)
+				waitpid(pid, &child_status, 0);
+			else
+				waitpid(-1, NULL, 0);
+			i++;
+		}
+		if (WIFEXITED(child_status))
+			exit_status = WEXITSTATUS(child_status);
+		close(fd_in);
 	}
-	// else
-	// {
-	// 	int i = 0;
-	// 	open_files(vars->commands);
-	// 	while (vars->commands[i])
-	// 	{
-	// 		if (nbr_cmd > 1)
-	// 			pipe(fd);
-	// 		pid = fork();
-	// 		if (pid == 0)
-	// 			child_process(vars->commands[i], fd, vars->env);
-	// 		else
-	// 		{
-	// 			waitpid(pid, &child_status, 0);
-	// 			if (WIFEXITED(child_status))
-	// 				exit_status = WEXITSTATUS(child_status);
-	// 			i++;
-	// 		}
-	// 	}
-	// }
 	/*
 		free local pointers please
 	*/

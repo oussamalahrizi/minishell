@@ -16,12 +16,13 @@ char **allocate_strings(Token **tokens, int *index, char *cmd)
 	}
 	res = malloc(sizeof(char *) * (c + 2));
 	c = 0;
-	if (cmd)
+	i = *index;
+	// (void) cmd;
+	if (cmd && i - 2 >= 0 && tokens[i - 2]->type != 's')
 	{
 		res[c] = ft_strdup(cmd);
 		c++;
 	}
-	i = *index;
 	while(tokens[i] && tokens[i]->type == 's')
 	{
 		res[c] = clean_command(tokens[i]->value);
@@ -145,10 +146,10 @@ Command **extract(Token **tokens)
 				char *temp = clean_command(tokens[i]->value);
 				commands[k]->cmd = ft_strdup(temp);
 				free(temp);
-				i++;
+				// i++;
 			}
 			else
-				commands[k]->cmd_args = allocate_strings(tokens, &i, commands[k]->cmd);
+				commands[k]->cmd_args = allocate_strings(tokens, &i ,commands[k]->cmd);
 		}
 		else{
 			if (tokens[i]->type == '|' || !tokens[i])
