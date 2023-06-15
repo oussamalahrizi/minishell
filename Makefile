@@ -5,7 +5,18 @@ SRCS = 	minishell.c \
 		lib/string_utils.c \
 		lib/extract.c \
 		lib/env_var_utils.c \
-		lib/utils.c
+		lib/utils.c \
+		exec/exec.c \
+		exec/builtins/error.c \
+		exec/builtins/build_exit.c \
+		exec/builtins/build_pwd.c \
+		exec/builtins/build_echo.c \
+		exec/builtins/build_cd.c \
+		exec/builtins/export.c \
+		exec/builtins/build_env.c \
+		exec/builtins/build_unset.c \
+		exec/builtins/utils.c \
+		exec/childprocess.c
 
 OBJS = ${SRCS:.c=.o}
 

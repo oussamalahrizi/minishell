@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-extern int	exit_status;
+int	exit_status;
 
 void free_tokens(Token **tokens)
 {
@@ -75,15 +75,17 @@ int	main(int ac, char **av, char **env)
 
 	//printf("getting env var into linked list\n");
 	t_env *node;
-	// t_env *tmp;
 	node = copy_env(env);
 	increase_shell_lvl(node);
 	vars.env = node;
 	# if 0
+	t_env *tmp;
 	tmp = node;
 	while (tmp)
 	{
-		printf("%s=%s\n", tmp->name, tmp->value);
+		if (!ft_strcmp("PWD", tmp->name))
+			printf("found\n");
+		// printf("%s=%s\n", tmp->name, tmp->value);
 		tmp = tmp->next;
 	}
 	# endif
@@ -93,15 +95,21 @@ int	main(int ac, char **av, char **env)
 		tcgetattr(0, &original);
 		term.c_lflag &= ~(ECHOCTL);
 		tcsetattr(0, TCSANOW, &term);
-		input = readline("minishell> ");
+		input = readline("minishell$ ");
 		tcsetattr(0, TCSANOW, &original);
 		char *test;
 		test = ft_strtrim(input, " ");
-		if (!input || !ft_strncmp(test, "exit", ft_strlen("exit")))
+		if (!input)
 		{
 			free(test);
-			printf("exit\n");
+			write(2, "exit\n", 6);
 			exit(exit_status);
+		}
+		else if (!ft_strcmp("", input))
+		{
+			free(input);
+			free(test);
+			continue;
 		}
 		free(test);
 		// add to history
@@ -111,6 +119,7 @@ int	main(int ac, char **av, char **env)
 		{
 			write(2, "syntax error\n", 14);
 			free(input);
+			exit_status = 258;
 			continue;
 		}
 		tokens = (Token **)malloc(sizeof(Token *) * (size + 1));
@@ -120,25 +129,25 @@ int	main(int ac, char **av, char **env)
 			return (1);
 		}
 		tokenize(input, tokens);
-		if (expander(tokens, env) == -1)
+		if (expander(&tokens, vars.env) == -1)
 		{
 			write(2, "abiguous redirection\n", 22);
 			free(input);
 			free_tokens(tokens);
+			exit_status = 1;
 			continue;
 		}
-  #if 0
-      
-		  int i = 0;
-		  while (tokens[i] != NULL)
-		  {
-			  printf("token with type : %c and value of :%s|EOF|\n", tokens[i]->type, tokens[i]->value);
-			  i++;
-		  }
-    #endif
+		#if 0
+				int i = 0;
+				while (tokens[i] != NULL)
+				{
+					printf("token value : %s$\n",tokens[i]->value);
+					i++;
+				}
+		#endif
 		commands = extract(tokens); // look extract file to print cmds
 		vars.commands = commands;
-		(void)vars;
+		exec(&vars);
 		free(input);
 		free_tokens(tokens);
 		free_cmds(commands);

@@ -26,16 +26,14 @@ int	word_count(char *input)
 			quote = input[i];
 			i++;
 			while (input[i] && input[i] != quote)
-			{
 				i++;
-			}
 			if (!input[i])
 			{
 				free(delimiters);
 				return (-1);
 			}
 			i++;
-			while(input[i] && !ft_strchr(delimiters, input[i]))
+			while(input[i] && !ft_strchr(delimiters, input[i]) && !is_space(input[i]))
 			{
 				if (ft_strchr("'\"", input[i]))
 				{
@@ -182,7 +180,7 @@ void	tokenize(char *input, Token **tokens)
 			}
 			append_character(&string, input[i]);
 			i++;
-			while(input[i] && !ft_strchr(delimiters, input[i]))
+			while(input[i] && !ft_strchr(delimiters, input[i]) && !is_space(input[i]))
 			{
 				if (ft_strchr("'\"", input[i]))
 				{
@@ -201,7 +199,6 @@ void	tokenize(char *input, Token **tokens)
 				append_character(&string, input[i]);
 				i++;
 			}
-			printf("%s\n", string);
 			// ha wahd
 			tokens[k++] = new_token('s', string);
 			free(string);

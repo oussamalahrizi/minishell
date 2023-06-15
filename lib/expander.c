@@ -1,25 +1,32 @@
 #include "../minishell.h"
 
-int		exit_status;
+extern int		exit_status;
 
-char	*get_env(char *string, char **env)
+typedef struct {
+	t_env *env;
+	Token **tokens;
+}	t_exp;
+
+char	*get_env(char *string, t_env *env)
 {
 	char	*variable;
 	char	*temp;
+	t_env *node;
 
 	if (string[0] == '?')
 		return (ft_itoa(exit_status));
 	if (!ft_strlen(string))
 		return(ft_strdup(""));
 	temp = string;
-	while (*env)
+	node = env;
+	while (node)
 	{
-		if (!ft_strncmp(temp, *env, ft_strlen(temp)))
+		if (!ft_strcmp(temp, node->name))
 		{
-			variable = ft_strdup(*env + ft_strlen(temp) + 1);
+			variable = ft_strdup(node->value);
 			return (variable);
 		}
-		env++;
+		node = node->next;
 	}
 	variable = ft_strdup("");
 	return (variable);
@@ -59,26 +66,28 @@ int	is_quote(char c)
 	return (0);
 }
 
-char *get_ifs(char **env)
+char *get_ifs(t_env *env)
 {
 	char	*variable;
 	char	*temp;
+	t_env *node;
 
 	temp = "IFS";
-	while (*env)
+	node = env;
+	while (node)
 	{
-		if (!ft_strncmp(temp, *env, ft_strlen(temp)))
+		if (!ft_strncmp(temp, node->name, ft_strlen(temp)))
 		{
-			variable = ft_strdup(*env + ft_strlen(temp) + 1);
+			variable = ft_strdup(node->value);
 			return (variable);
 		}
-		env++;
+		node = node->next;
 	}
 	variable = NULL;
 	return (variable);
 }
 
-int check_ifs(char *string, int index, char **env)
+int check_ifs(char *string, int index, t_env *env)
 {
 	char	*skip;
 	char	*temp;
@@ -122,36 +131,120 @@ int check_ifs(char *string, int index, char **env)
 	return (0);
 }
 
-int	handle_dollar(char **new_token, char *string, int index, char **env)
+int	handle_dollar_alone(char *string, int index, int token_index, t_exp *exp, int *new_index, char **new_token_value)
 {
 	char	*skip;
 	char	*temp;
-
+	char **split;
+	Token **new_tokens = NULL;
 	int i, len;
 	i = index;
 	len = 0;
 	while (string[i] && !is_space(string[i]) && !is_quote(string[i])
-		&& (ft_isalnum(string[i]) || string[i] == '?' || ft_strchr("(){}", string[i])))
+		&& (ft_isalnum(string[i]) || string[i] == '?'))
 	{
 		i++;
 		len++;
 	}
 	skip = ft_substr(string, index, len);
 	temp = skip;
-	skip = get_env(skip, env);
+	skip = get_env(skip, exp->env);
+	int token_size = 0;
+	while (exp->tokens[token_size])
+		token_size++;
+	int j = 0;
+	split = ft_split(skip, ' ');
+	while (split[j])
+		j++;
+	if (!*skip)
+		j = 1;
+	new_tokens = malloc(sizeof(Token *) * (token_size + j));
+	int size = token_size + j - 1;
+	j = 0;
+	while (j < token_index + *new_index)
+	{
+		new_tokens[j] = new_token(exp->tokens[j]->type, exp->tokens[j]->value);
+		j++;
+	}
+	int k = 0;
+	if (!*skip)
+	{
+		new_tokens[j] = new_token('s', *new_token_value);
+		j++;
+	}
+	else
+	{
+		// printf("j before : %d\n", j);
+		*new_token_value = ft_strjoin(*new_token_value, split[0]);
+		new_tokens[j] = new_token('s', *new_token_value);
+		k = 1;
+		j++;
+		while (split[k])
+		{
+			new_tokens[j] = new_token('s', split[k]);
+			k++;
+			j++;
+		}
+	}
+	token_index += *new_index + 1;
+	while (j < size)
+	{
+		new_tokens[j] = new_token(exp->tokens[token_index]->type, exp->tokens[token_index]->value);
+		j++;
+		token_index++;
+	}
+	new_tokens[j] = 0;
+	if (*skip)
+		*new_index += k - 1;
+	j = 0;
+	free(temp);
+	free_double_char(split);
+	free(skip);
+	free_double(exp->tokens);
+	exp->tokens = duplicate_tokens(new_tokens);
+	free_double(new_tokens);
+	return (i);
+}
+
+
+int	handle_dollar(char **new_token, char *string, int index, int token_index,int *new_index, t_exp *exp)
+{
+	char	*skip;
+	char	*temp;
+	char *old;
+
+	int i, len;
+	i = index;
+	len = 0;
+	while (string[i] && !is_space(string[i]) && !is_quote(string[i])
+		&& (ft_isalnum(string[i]) || string[i] == '?'))
+	{
+		i++;
+		len++;
+	}
+	skip = ft_substr(string, index, len);
+	temp = skip;
+	skip = get_env(skip, exp->env);
 	free(temp);
 	*new_token = ft_strjoin(*new_token, skip);
+	old = exp->tokens[token_index + *new_index]->value;
+	exp->tokens[token_index + *new_index]->value = ft_strdup(*new_token);
+	free(old);
 	free(skip);
 	return (i);
 }
 
-int	expander(Token **tokens, char **env)
+int	expander(Token ***tokens_i, t_env *env)
 {
 	int i;
-	char *temp;
 	int j = 0;
 	char *string;
 	char *new_token;
+	t_exp vars;
+	vars.env = env;
+	Token **tokens = *tokens_i;
+	vars.tokens = duplicate_tokens(tokens);
+	int new_index = 0;
 	while (tokens[j])
 	{
 		if (tokens[j]->type != 's')
@@ -159,14 +252,13 @@ int	expander(Token **tokens, char **env)
 			j++;
 			continue;
 		}
-		else if (j - 1 >= 0 && tokens[j - 1]->type == 'h' && tokens[j]->type	 == 's')
+		else if (j - 1 >= 0 && tokens[j - 1]->type == 'h' && tokens[j]->type == 's')
 		{
 			j++;
 			continue;
 		}
-		new_token = ft_strdup("");
 		string = tokens[j]->value;
-		//loop thru each string and find dollar sign before single or double quotes
+		new_token = ft_strdup("");
 		while (*string)
 		{
 			i = 0;
@@ -188,7 +280,7 @@ int	expander(Token **tokens, char **env)
 					free(new_token);
 					return (-1);
 				}
-				i = handle_dollar(&new_token, string, i + 1, env);
+				i = handle_dollar_alone(string , i + 1, j, &vars, &new_index, &new_token);
 			}
 			else if (string[i] == '\"')
 			{
@@ -203,7 +295,7 @@ int	expander(Token **tokens, char **env)
 							i++;
 						}
 						else
-							i = handle_dollar(&new_token, string, i + 1, env);
+							i = handle_dollar(&new_token, string, i + 1, j,&new_index, &vars);
 					}
 					else
 					{
@@ -225,10 +317,11 @@ int	expander(Token **tokens, char **env)
 			}
 			string += i;
 		}
-		temp = tokens[j]->value;
-		tokens[j]->value = new_token;
-		free(temp);
+		free(new_token);
 		j++;
 	}
+	free_double(*tokens_i);
+	*tokens_i = duplicate_tokens(vars.tokens);
+	free_double(vars.tokens);
 	return (0);
 }

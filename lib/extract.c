@@ -1,5 +1,6 @@
 #include "../minishell.h"
 
+char *clean_command(char *string);
 
 char **allocate_strings(Token **tokens, int *index)
 {
@@ -18,7 +19,7 @@ char **allocate_strings(Token **tokens, int *index)
 	c = 0;
 	while(tokens[i] && tokens[i]->type == 's')
 	{
-		res[c] = ft_strdup(tokens[i]->value);
+		res[c] = clean_command(tokens[i]->value);
 		c++;
 		i++;
 	}
@@ -43,7 +44,7 @@ files *allocate_files(Token **tokens, int *index, files *file_list)
 	new->del = NULL;
 	if (tokens[i]->type != 's')
 	{
-		write(2, "token after redirection is not a string\n", 41);
+		write(2, "token after redirection is not a string\n", 41);		
 		free(new);
 		return (NULL);
 	}
@@ -51,12 +52,14 @@ files *allocate_files(Token **tokens, int *index, files *file_list)
 	{
 		new->del = ft_strdup(tokens[i]->value);
 		new->type = 'h';
+		new->fd = -1;
 		i++;
 	}
 	else if (tokens[i - 1]->type == '>' || tokens[i - 1]->type == '<' || tokens[i - 1]->type == 'a')
 	{
 		new->filename = ft_strdup(tokens[i]->value);
 		new->type = tokens[i - 1]->type;
+		new->fd = -1;
 		i++;
 	}
 	if (!current_files)
@@ -76,12 +79,40 @@ files *allocate_files(Token **tokens, int *index, files *file_list)
 	return (file_list);
 }
 
+char *clean_command(char *string)
+{
+	int i = 0;
+	char *res = ft_strdup("");
+	char quote;
+	while (string[i])
+	{
+		if (ft_strchr("'\"", string[i]))
+		{
+			quote = string[i];
+			i++;
+			while (string[i] && string[i] != quote)
+			{
+				append_character(&res, string[i]);
+				i++;
+			}
+			i++;
+		}
+		else
+		{
+			append_character(&res, string[i]);
+			i++;
+		}
+	}
+	return (res);
+}
+
 Command **extract(Token **tokens)
 {
 	int i = 0;
 	Command **commands;
 	int num = 1;
 	int k = 0;
+
 	while(tokens[i])
 	{
 		if (tokens[i]->type == '|')
@@ -106,9 +137,10 @@ Command **extract(Token **tokens)
 		{
 			if (commands[k]->cmd == NULL)
 			{
-				commands[k]->cmd = ft_strdup(tokens[i]->value);
-				// i++;
-			}	
+				char *temp = clean_command(tokens[i]->value);
+				commands[k]->cmd = ft_strdup(temp);
+				free(temp);
+			}
 			else
 				commands[k]->cmd_args = allocate_strings(tokens, &i);
 		}
@@ -134,11 +166,11 @@ Command **extract(Token **tokens)
 		}
 	}
 	commands[num] = 0;
-#if 1
+#if 0
 	int j = 0;
 	while(commands[j])
 	{
-		printf("command : %s\n", commands[j]->cmd);
+		printf("command : %s$\n", commands[j]->cmd);
 		int h = 0;
 		if (commands[j]->cmd_args)
 		{

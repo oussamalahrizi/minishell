@@ -21,7 +21,7 @@ int check_del(char *del, char c)
 	return (0);
 }
 
-size_t	get_total_words(const char *str, char *del)
+static size_t	get_total_words(const char *str, char *del)
 {
 	size_t	_string_count;
 
@@ -38,7 +38,7 @@ size_t	get_total_words(const char *str, char *del)
 	return (_string_count);
 }
 
-char	**free_stuff(char **strings)
+static char	**free_stuff(char **strings)
 {
 	size_t	i;
 
@@ -54,7 +54,7 @@ char	**free_stuff(char **strings)
 	return (strings);
 }
 
-size_t	get_len(char const *s, char *del)
+static size_t	get_len(char const *s, char *del)
 {
 	size_t	i;
 
@@ -95,4 +95,27 @@ char **split_by_str(char *s, char *del)
 	strings[index] = 0;
 	j = 0;
 	return (strings);
+}
+
+int get_tokens_size(Token **tokens)
+{
+	int len = 0;
+	while (tokens[len])
+		len++;
+	return (len);
+}
+
+Token **duplicate_tokens(Token **tokens)
+{
+	int i = 0;
+	Token **new_tokens;
+
+	new_tokens = malloc(sizeof(Token *) * (get_tokens_size(tokens) + 1));
+	while (tokens[i])
+	{
+		new_tokens[i] = new_token(tokens[i]->type, tokens[i]->value);
+		i++;
+	}
+	new_tokens[i] = 0;
+	return (new_tokens); 
 }

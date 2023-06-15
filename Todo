@@ -21,3 +21,26 @@
 {
 	signals should be passed to the current process running
 }
+
+
+{
+	exit --> exit status : 1
+
+	exit  5 2 3 --> print exit , too many arguments, exit status  : 1
+
+	exit abc || exit a 2  --> print exit, numeric argument required  : 		exit status  : 255
+	exit 5 a 2 --> too many arguments , don't exit, exit status  : 1
+
+
+}
+
+{
+	if it's only one command and it's a built in no need to fork,
+	else it's a must to fork
+}
+
+{
+	l''s : working
+	l""s : working	
+	
+}
