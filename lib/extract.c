@@ -17,7 +17,6 @@ char **allocate_strings(Token **tokens, int *index, char *cmd)
 	res = malloc(sizeof(char *) * (c + 2));
 	c = 0;
 	i = *index;
-	// (void) cmd;
 	if (cmd && i - 2 >= 0 && tokens[i - 2]->type != 's')
 	{
 		res[c] = ft_strdup(cmd);

@@ -6,110 +6,88 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 18:55:27 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/06 23:53:35 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/16 00:25:26 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
-
+# include "../../minishell.h"
 
 extern int exit_status;
 
-void skip_space(char *str, int *index)
+int check_valid(char **str)
 {
-	int i = 0;
-	while (str[i] && is_space(str[i]))
-		i++;
-	if (str[i] == '-' || str[i] == '+')
-		i++;
-	*index = i;
+    int i;
+    
+    i = 0;
+    while (str[1][i] && str[1][i] == 32 && str[1][i] == '\t')
+        i++;
+    if (str[1][i] == '-' || str[1][i] == '+')
+        i++;
+    while (str[1][i])
+    {
+        if (!ft_isdigit(str[1][i]))
+           return(0);
+        i++;
+    }
+    return(1);
 }
 
-int calculate_exit_value(int nbr, int *status)
+int check_args(char **str)
 {
-	if (nbr < 0)
-	{
-		if (nbr < -255)
-		{
-			while (nbr < 255)
-				nbr += 256;
-		}
-		else
-			nbr += 256;
-	}
-	else if (nbr > 255)
-	{
-		while(nbr > 255)
-			nbr -= 256;
-	}
-	nbr = status[nbr];
-	return (nbr);
+    if (count_args(str) > 2)
+    {
+        ft_putstr_fd("exit: too many arguments\n", 2);
+        return(0);
+    }
+    return(1);
 }
 
-void numeric_argument()
-{
-	write(2, "exit\n", 6);
-	error_cmd("exit : numeric argument required\n", 255);
-	exit_status = 255;
-	exit(255);
+int get_exitstatus(int nbr)
+{   
+    if (nbr > 255)
+    {
+        while(nbr > 255)
+            nbr -= 256;
+        ft_putstr_fd("exit\n", 1);
+        return(nbr);
+    }
+    if (nbr < 0)
+    {
+        if (nbr < -255)
+        {
+            while(nbr < -255)
+                nbr += 256;
+        }
+        nbr += 256;
+        ft_putstr_fd("exit\n", 2);
+        return(nbr);
+    }
+    ft_putstr_fd("exit\n", 2);
+    return(nbr);
 }
 
-void too_many_arguments()
+void build_exit(char **str)
 {
-	write(2, "exit\n", 6);
-	write(2, "exit : too many arguments\n", 26);
-	exit_status = 1;
-}
+    int nbr;
 
-void	build_exit(char **cmd_args)
-{
-	int *status;
-	int nbr;
-
-	status = malloc(sizeof(int) * 256);
-	int i = 0;
-	while (i < 256)
-	{
-		status[i] = i;
-		i++;
-	}
-	int len = count_args(cmd_args);
-	if (len == 1)
-	{
-		write(2, "exit\n", 6);
-		exit_status = 0;
-		exit(0);
-	}
-	else if (len == 2)
-	{
-		i = 0;
-		skip_space(cmd_args[1], &i);
-		if (!cmd_args[1][i])
-			numeric_argument();
-		while (cmd_args[1][i] && ft_isdigit(cmd_args[1][i]))
-			i++;
-		if (cmd_args[1][i])
-			numeric_argument();
-		else
-		{
-			nbr = ft_atoi(cmd_args[1]);
-			nbr = calculate_exit_value(nbr, status);
-				write(2, "exit\n", 6);
-			exit_status = nbr;
-			exit(nbr);
-		}
-	}
-	else
-	{
-		i = 0;
-		skip_space(cmd_args[1], &i);
-		if (!cmd_args[1][i])
-			numeric_argument();
-		while (cmd_args[1][i] && ft_isdigit(cmd_args[1][i]))
-			i++;
-		if (cmd_args[1][i])
-			numeric_argument();
-		else
-			too_many_arguments();
-	}
+    if (count_args(str) == 1)
+    {
+        ft_putstr_fd("exit\n", 1);
+        exit_status = 0;
+        return ;
+    }
+    nbr = ft_atoi(str[1]);
+    if (!check_valid(str))
+    {
+        ft_putstr_fd("exit\n", 1);
+        ft_putstr_fd("exit: now: numeric argument required\n", 2);
+        exit_status = 255;
+        return ;
+    }
+    if (!check_args(str))
+    {
+        exit_status = 1;
+        return ;
+    }
+    exit_status = get_exitstatus(nbr);
 }

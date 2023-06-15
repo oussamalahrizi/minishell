@@ -61,7 +61,6 @@ void append_character(char **string, char c);
 void signal_handler();
 int error(char *str);
 Command **extract(Token **tokens);
-Token ** retokinize(Token **tokens);
 char **split_by_str(char *s, char *del);
 void free_double_char(char **str);
 t_env *copy_env(char **env);
@@ -75,7 +74,7 @@ void	build_exit(char **cmd_args);
 void build_cd(char **cmd, t_env *env);
 void build_pwd();
 void build_echo(char **cmd_args);
-void child_process(Command *command, int *fd, t_env *env, int nbr_cmd, int fd_in, int iterator, int is_failed);
+void child_process(t_vars *vars, Command *command, int *fd, t_env *env, int nbr_cmd, int fd_in, int iterator, int is_failed);
 Token* new_token(char type, char* value);
 Token **duplicate_tokens(Token **tokens);
 int get_tokens_size(Token **tokens);
@@ -87,6 +86,8 @@ files *get_last_infile(files *cmd_files);
 files *get_last_outfile(files *cmd_files);
 char	*get_env(char *string, t_env *env);
 char **convert_env(t_env *env);
+void exec_builtin(t_vars *vars, int i);
+int is_built_in(char *cmd);
 #endif // !MINISHELL_H
 
 

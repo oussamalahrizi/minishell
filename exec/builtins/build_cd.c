@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 20:05:40 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/12 11:16:07 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/15 22:32:14 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -216,6 +216,7 @@ void build_cd(char **cmd_args, t_env *env)
 			write(2, str, ft_strlen(str));
 			write(2, ": ", 2);
 			perror("");
+			free(str);
 			exit_status = 1;
 			return ;
 		}

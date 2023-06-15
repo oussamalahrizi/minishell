@@ -180,13 +180,10 @@ int evaluate(Node *node)
 	}
 	return -1;
 }
-
+#pragma pack (1)
 int main(void)
 {
-	text = "5555*(1+2)";
-	build_tokens();
-	tk_pos = 0;
-	int res = 0;
-	res = evaluate(expr());
-	printf("res %d\n", res);
+	char *test = malloc(0);
+	test = malloc(0);
+	system("leaks a.out");
 }
