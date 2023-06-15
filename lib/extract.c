@@ -138,7 +138,7 @@ Command **extract(Token **tokens)
 			if (commands[k]->cmd == NULL)
 			{
 				char *temp = clean_command(tokens[i]->value);
-				commands[k]->cmd = ft_strdup(tokens[i]->value);
+				commands[k]->cmd = ft_strdup(temp);
 				free(temp);
 			}
 			else
