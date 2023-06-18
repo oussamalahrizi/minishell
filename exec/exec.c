@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 21:34:53 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/16 00:39:12 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/18 04:20:14 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,7 +209,7 @@ void exec_builtin(t_vars *vars, int i)
 	else if (!ft_strcmp("cd", vars->commands[i]->cmd))
 		build_cd(vars->commands[i]->cmd_args, vars->env);
 	else if (!ft_strcmp("pwd", vars->commands[i]->cmd))
-		build_pwd();
+		build_pwd(get_pwd_env(vars->env)->value, vars->env);
 	else if (!ft_strcmp("echo", vars->commands[i]->cmd))
 		build_echo(vars->commands[i]->cmd_args);
 	else if (!ft_strcmp("export", vars->commands[i]->cmd))
@@ -275,7 +275,7 @@ void exec(t_vars *vars)
 			exit_status = WEXITSTATUS(child_status);
 		close(fd_in);
 		free(failed_cmd);
-		// free(pids);
+		free(pids);
 	}
 	/*
 		free local pointers please

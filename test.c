@@ -180,10 +180,18 @@ int evaluate(Node *node)
 	}
 	return -1;
 }
-#pragma pack (1)
-int main(void)
+#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
+
+#include <fcntl.h>
+
+int main()
 {
-	char *test = malloc(0);
-	test = malloc(0);
-	system("leaks a.out");
+	while (1)
+	{
+		open("/dev/null", O_RDONLY);
+	}
+	int pid = fork();
+	return(0);
 }

@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 00:05:08 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/16 00:28:55 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/18 11:07:15 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,21 +34,34 @@ char    **get_path(t_env *env)
 	if (!str)
 		return (0);
 	paths = ft_split(str, ':');
+	free(str);
 	return (paths);
 }
 
-char    *get_command(char **paths, char *cmd)
+char    *get_command(char **paths, char *cmd, int *is_dir)
 {
         char    *command;
         int             i;
+		struct stat pathInfo;
 
         i = 0;
-        while (paths && paths[i])
+		if (!paths)
+			return(NULL);
+		if (!*cmd)
+			return (ft_strdup(""));
+		if (ft_strrchr(cmd, '/') && !access(cmd, F_OK))
+		{
+			stat(cmd, &pathInfo);
+			if (S_ISDIR(pathInfo.st_mode))
+				*is_dir = -1;
+			return (ft_strdup(cmd));
+		}
+        while (paths[i])
         {
 			command = ft_strdup(paths[i]);
 			command = ft_strjoin(command, "/");
 			command = ft_strjoin(command, cmd);
-			if (!access(command, X_OK))
+			if (!access(command, F_OK))
 				return (command);
 			free(command);
 			i++;
@@ -60,6 +73,7 @@ void child_process(t_vars *vars, Command *command, int *fd, t_env *env, int nbr_
 {
 	char **paths;
 	char **env_list = convert_env(env);
+	int is_dir;
 
 	files *infile = get_last_infile(command->files);
 	files *outfile = get_last_outfile(command->files);
@@ -74,7 +88,8 @@ void child_process(t_vars *vars, Command *command, int *fd, t_env *env, int nbr_
 	}
 	else if (iterator > 0)
 		dup2(fd_in, STDIN_FILENO);
-	close(fd[0]);
+	if (fd[0] != -1)
+		close(fd[0]);
 	if(outfile && outfile->fd != -1)
 	{
 		dup2(outfile->fd, STDOUT_FILENO);
@@ -89,17 +104,32 @@ void child_process(t_vars *vars, Command *command, int *fd, t_env *env, int nbr_
 	}
 	else
 	{
+		if (!ft_strcmp(command->cmd, "."))
+		{
+			write(2, "filename argument required.\n", 28);
+			exit(2);
+		}
 		paths = get_path(env);
-		char *cmd_path = get_command(paths, command->cmd);
+		char *cmd_path = get_command(paths, command->cmd, &is_dir);
 		if (!cmd_path)
 		{
-			error_cmd("command not found: ", 127);
-			perror("");
+			// error_cmd("command not found: ", 127);
+			write(2, "command not found: ", 19);
+			write(2, command->cmd, ft_strlen(command->cmd));
+			write(2, "\n", 1);
 			if (paths)
 				free_double_char(paths);
 			exit(127);
 		}
+		if (!*cmd_path)
+			exit(0);
 		execve(cmd_path, command->cmd_args, env_list);
-		error_cmd("failed to execute command\n", 1);
+		write(2, command->cmd, ft_strlen(command->cmd));
+		write(2, " : ", 3);
+		if (is_dir == -1)
+			write(2, "is a directory\n", 16);
+		else
+			perror("");
+		exit(126);
 	}
 }

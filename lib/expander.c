@@ -13,8 +13,10 @@ char	*get_env(char *string, t_env *env)
 	char	*temp;
 	t_env *node;
 
-	if (string[0] == '?')
+	if (*string == '?')
 		return (ft_itoa(exit_status));
+	if (*string == '$')
+		return (ft_strdup("$"));
 	if (!ft_strlen(string))
 		return(ft_strdup(""));
 	temp = string;
@@ -99,7 +101,7 @@ int check_ifs(char *string, int index, t_env *env)
 	i = index;
 	len = 0;
 	while (string[i] && !is_space(string[i]) && !is_quote(string[i])
-		&& (ft_isalnum(string[i]) || string[i] == '?'))
+		&& ft_isalnum(string[i]))
 	{
 		i++;
 		len++;
@@ -131,24 +133,40 @@ int check_ifs(char *string, int index, t_env *env)
 	return (0);
 }
 
-int	handle_dollar_alone(char *string, int index, int token_index, t_exp *exp, int *new_index, char **new_token_value)
+void handle_dollar_alone(char *string, int *index, int token_index, t_exp *exp, int *new_index, char **new_token_value)
 {
-	char	*skip;
-	char	*temp;
+	char	*skip = NULL;
 	char **split;
 	Token **new_tokens = NULL;
 	int i, len;
-	i = index;
+	i = *index + 1;
+	int start_index = i;
 	len = 0;
-	while (string[i] && !is_space(string[i]) && !is_quote(string[i])
-		&& (ft_isalnum(string[i]) || string[i] == '?'))
+	if (string[i] == '$' || !string[i])
 	{
-		i++;
-		len++;
+		skip = get_env("$", exp->env);
+		*index = i + 1;
 	}
-	skip = ft_substr(string, index, len);
-	temp = skip;
-	skip = get_env(skip, exp->env);
+	else
+	{
+		while (string[i] && !is_space(string[i]) && !is_quote(string[i]) && string[i] != '$'
+			&& (ft_isalnum(string[i]) || string[i] == '?' || string[i] == '_'))
+		{
+			len++;
+			if (string[i] == '?')
+			{
+				i++;
+				break;
+			}
+			i++;
+		}
+		skip = ft_substr(string, start_index, len);
+		*index = i;
+		char *temp;
+		temp = skip;
+		skip = get_env(skip, exp->env);
+		free(temp);
+	}
 	int token_size = 0;
 	while (exp->tokens[token_size])
 		token_size++;
@@ -156,6 +174,7 @@ int	handle_dollar_alone(char *string, int index, int token_index, t_exp *exp, in
 	split = ft_split(skip, ' ');
 	while (split[j])
 		j++;
+	int split_size = j;
 	if (!*skip)
 		j = 1;
 	new_tokens = malloc(sizeof(Token *) * (token_size + j));
@@ -169,21 +188,35 @@ int	handle_dollar_alone(char *string, int index, int token_index, t_exp *exp, in
 	int k = 0;
 	if (!*skip)
 	{
+		*new_token_value = ft_strjoin(*new_token_value, skip);
 		new_tokens[j] = new_token('s', *new_token_value);
 		j++;
 	}
 	else
 	{
-		// printf("j before : %d\n", j);
-		*new_token_value = ft_strjoin(*new_token_value, split[0]);
-		new_tokens[j] = new_token('s', *new_token_value);
-		k = 1;
-		j++;
-		while (split[k])
+		if (split_size == 1)
 		{
-			new_tokens[j] = new_token('s', split[k]);
+			k = 0;
+			*new_token_value = ft_strjoin(*new_token_value, split[k]);
+			new_tokens[j] = new_token('s', *new_token_value);
 			k++;
 			j++;
+		}
+		else if (split_size > 1)
+		{
+			k = 0;
+			*new_token_value = ft_strjoin(*new_token_value, split[k]);
+			new_tokens[j] = new_token('s', *new_token_value);
+			j++;
+			k = 1;
+			while (k < split_size)
+			{
+				new_tokens[j] = new_token('s', split[k]);
+				k++;
+				j++;
+			}
+			free(*new_token_value);
+			*new_token_value = ft_strdup(split[k - 1]);	
 		}
 	}
 	token_index += *new_index + 1;
@@ -197,41 +230,54 @@ int	handle_dollar_alone(char *string, int index, int token_index, t_exp *exp, in
 	if (*skip)
 		*new_index += k - 1;
 	j = 0;
-	free(temp);
 	free_double_char(split);
 	free(skip);
 	free_double(exp->tokens);
 	exp->tokens = duplicate_tokens(new_tokens);
 	free_double(new_tokens);
-	return (i);
 }
 
 
-int	handle_dollar(char **new_token, char *string, int index, int token_index,int *new_index, t_exp *exp)
+void	handle_dollar(char **new_token, char *string, int *index, int token_index,int *new_index, t_exp *exp)
 {
-	char	*skip;
-	char	*temp;
+	char	*skip = NULL;
 	char *old;
-
 	int i, len;
-	i = index;
+	i = *index + 1;
+	int start_index = i;
 	len = 0;
-	while (string[i] && !is_space(string[i]) && !is_quote(string[i])
-		&& (ft_isalnum(string[i]) || string[i] == '?'))
+	if (string[i] == '$')
 	{
-		i++;
-		len++;
+		skip = get_env("$", exp->env);
+		*index = i + 1;
 	}
-	skip = ft_substr(string, index, len);
-	temp = skip;
-	skip = get_env(skip, exp->env);
-	free(temp);
+	else if (ft_isdigit(string[i]))
+		*index = i + 1;
+	else
+	{
+		while (string[i] && !is_space(string[i]) && !is_quote(string[i])
+			&& string[i] != '$' && (ft_isalnum(string[i]) || string[i] == '?' || string[i] == '_'))
+		{
+			len++;
+			if (string[i] == '?')
+			{
+				i++;
+				break;
+			}
+			i++;
+		}
+		skip = ft_substr(string, start_index, len);
+		*index = i;
+		char *temp;
+		temp = skip;
+		skip = get_env(skip, exp->env);
+		free(temp);
+	}
 	*new_token = ft_strjoin(*new_token, skip);
+	free(skip);
 	old = exp->tokens[token_index + *new_index]->value;
 	exp->tokens[token_index + *new_index]->value = ft_strdup(*new_token);
 	free(old);
-	free(skip);
-	return (i);
 }
 
 int	expander(Token ***tokens_i, t_env *env)
@@ -269,21 +315,18 @@ int	expander(Token ***tokens_i, t_env *env)
 			}
 			if (string[i] == '$')
 			{
-				if (string[i + 1] == 0)
-				{
-					append_character(&new_token, '$');
-					break;
-				}
+				
 				if (j - 1 >= 0 && (tokens[j - 1]->type == '>' || tokens[j - 1]->type == '<' 
 					|| tokens[j - 1]->type == 'a') && check_ifs(string, i + 1, env) == -1)
 				{
 					free(new_token);
 					return (-1);
 				}
-				i = handle_dollar_alone(string , i + 1, j, &vars, &new_index, &new_token);
+				handle_dollar_alone(string , &i , j, &vars, &new_index, &new_token);
 			}
 			else if (string[i] == '\"')
 			{
+				append_character(&new_token, string[i]);
 				i += 1;
 				while (string[i] && string[i] != '\"')
 				{
@@ -295,7 +338,9 @@ int	expander(Token ***tokens_i, t_env *env)
 							i++;
 						}
 						else
-							i = handle_dollar(&new_token, string, i + 1, j,&new_index, &vars);
+						{
+							handle_dollar(&new_token, string, &i, j,&new_index, &vars);
+						}
 					}
 					else
 					{
@@ -303,17 +348,27 @@ int	expander(Token ***tokens_i, t_env *env)
 						i++;
 					}
 				}
+				append_character(&new_token, string[i]);
 				i++;
 			}
 			else if (string[i] == '\'')
 			{
+				append_character(&new_token, string[i]);
 				i++;
 				while (string[i] && string[i] != '\'')
-				{
+				{	
 					append_character(&new_token, string[i]);
 					i++;
 				}
+				append_character(&new_token, string[i]);
 				i++;
+			}
+			if (!string[i] && ft_strcmp(vars.tokens[j + new_index]->value, new_token))
+			{
+				char *temp = vars.tokens[j + new_index]->value;
+				vars.tokens[j + new_index]->value = ft_strdup(new_token);
+				free(temp);
+				break;
 			}
 			string += i;
 		}

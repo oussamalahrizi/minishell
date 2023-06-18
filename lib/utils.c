@@ -70,7 +70,6 @@ char **split_by_str(char *s, char *del)
 {
 	char	**strings;
 	size_t	index;
-	int j;
 
 	if (!s)
 		return (NULL);
@@ -78,22 +77,19 @@ char **split_by_str(char *s, char *del)
 	if (!strings)
 		return (NULL);
 	index = 0;
-	j = 0;
 	while (*s)
 	{
-		j = 0;
-		while (*s && del[j] && del[j] == *s)
-		{
+		if (check_del(del, *s))
 			s++;
-			j++;
+		else
+		{
+			strings[index++] = ft_substr(s, 0, get_len(s, del));
+			if (!strings[index - 1])
+				return (free_stuff(strings));
+			s += get_len(s, del);
 		}
-		strings[index++] = ft_substr(s, 0, get_len(s, del));
-		if (!strings[index - 1])
-			return (free_stuff(strings));
-		s += get_len(s, del);
 	}
 	strings[index] = 0;
-	j = 0;
 	return (strings);
 }
 

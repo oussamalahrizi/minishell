@@ -13,6 +13,9 @@
 #include <fcntl.h>
 #include <errno.h>
 #include "libft/libft.h"
+#include <sys/types.h>
+#include <dirent.h>
+#include <sys/stat.h>
 
 
 typedef struct s_token{
@@ -27,6 +30,7 @@ typedef struct s_files
 	char *del;
 	int fd;
 	struct s_files *next;
+	int open;
 } files;
 
 typedef struct
@@ -60,7 +64,7 @@ void print_split(char **str);
 void append_character(char **string, char c);
 void signal_handler();
 int error(char *str);
-Command **extract(Token **tokens);
+Command **extract(Token **tokens, t_env *env);
 char **split_by_str(char *s, char *del);
 void free_double_char(char **str);
 t_env *copy_env(char **env);
@@ -72,7 +76,7 @@ int count_args(char **cmd_args);
 void exec(t_vars *vars);
 void	build_exit(char **cmd_args);
 void build_cd(char **cmd, t_env *env);
-void build_pwd();
+void build_pwd(char *pwd_fail, t_env *env);
 void build_echo(char **cmd_args);
 void child_process(t_vars *vars, Command *command, int *fd, t_env *env, int nbr_cmd, int fd_in, int iterator, int is_failed);
 Token* new_token(char type, char* value);
@@ -88,6 +92,7 @@ char	*get_env(char *string, t_env *env);
 char **convert_env(t_env *env);
 void exec_builtin(t_vars *vars, int i);
 int is_built_in(char *cmd);
+t_env *get_pwd_env(t_env *env);
 #endif // !MINISHELL_H
 
 
