@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 18:55:27 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/16 00:25:26 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/18 11:17:38 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ int check_args(char **str)
 {
     if (count_args(str) > 2)
     {
+        ft_putstr_fd("exit\n", 1);
         ft_putstr_fd("exit: too many arguments\n", 2);
         return(0);
     }
@@ -74,15 +75,15 @@ void build_exit(char **str)
     {
         ft_putstr_fd("exit\n", 1);
         exit_status = 0;
-        return ;
+        exit(0);
     }
     nbr = ft_atoi(str[1]);
     if (!check_valid(str))
     {
         ft_putstr_fd("exit\n", 1);
-        ft_putstr_fd("exit: now: numeric argument required\n", 2);
+        ft_putstr_fd("exit: numeric argument required\n", 2);
         exit_status = 255;
-        return ;
+        exit(255);
     }
     if (!check_args(str))
     {
@@ -90,4 +91,5 @@ void build_exit(char **str)
         return ;
     }
     exit_status = get_exitstatus(nbr);
+    exit(exit_status);
 }

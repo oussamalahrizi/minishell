@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 21:34:53 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/18 04:20:14 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/18 12:40:27 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,16 +44,6 @@ files *get_last_outfile(files *cmd_files)
 	return (res);
 }
 
-void close_files(int *files, int size)
-{
-	int i = 0;
-	while (i < size - 1)
-	{
-		close(files[size]);
-		i++;
-	}
-}
-
 int cmd_count(Command **cmds)
 {
 	int i = 0;
@@ -62,129 +52,10 @@ int cmd_count(Command **cmds)
 	return (i);
 }
 
-int open_files(Command **commands,int *index)
-{
-	int i = 0;
-	files *node;
-	int count = 0;
-	int *new_fds;
-	int try;
-	int failure = 0;
-	while (commands[i])
-	{
-		node = commands[i]->files;
-		while (node)
-		{
-			count++;
-			node = node->next;
-		}
-		i++;
-	}
-	new_fds = malloc(sizeof(int) * count);
-	i = 0;
-	count = 0;
-	while (commands[i])
-	{
-		node = commands[i]->files;
-		while (node)
-		{
-			if (node->type == '<')
-			{
-				try = open(node->filename, O_RDONLY);
-				if (try == -1)
-				{
-					close_files(new_fds, count);
-					write(2, "minishell: ", 12);
-					ft_putstr_fd(node->filename, 2);
-					write(2, ": ", 3);
-					perror("");
-					exit_status = 1;
-					failure = -1;
-					if (index)
-						index[i] = -1;
-				}
-				else
-				{
-					new_fds[count++] = try;
-					node->fd = try;
-				}
-			}
-			else if (node->type == '>')
-			{
-				try = open(node->filename, O_TRUNC | O_CREAT | O_RDWR, 0644);
-				if (try == -1)
-				{
-					close_files(new_fds, count);
-					write(2, "minishell: ", 12);
-					ft_putstr_fd(node->filename, 2);
-					write(2, ": ", 3);
-					perror("");
-					exit_status = 1;
-					failure = -1;
-					if (index)
-						index[i] = -1;
-				}
-				else
-				{
-					new_fds[count++] = try;
-					node->fd = try;
-				}
-			}
-			else if (node->type == 'a')
-			{
-				try = open(node->filename, O_CREAT | O_APPEND | O_RDWR, 0644);
-				if (try == -1)
-				{
-					close_files(new_fds, count);
-					write(2, "minishell: ", 12);
-					ft_putstr_fd(node->filename, 2);
-					write(2, ": ", 3);
-					perror("");
-					exit_status = 1;
-					failure = -1;
-					if (index)
-						index[i] = -1;
-				}
-				else
-				{
-					new_fds[count++] = try;
-					node->fd = try;
-				}
-			}
-			else if (node->type == 'h')
-			{
-				/*
-					open pipes instead of hidden file
-				*/
-				try = open(".hidden", O_CREAT | O_TRUNC | O_RDWR, 0644);
-				if (try == -1)
-				{
-					close_files(new_fds, count);
-					write(2, "minishell: ", 12);
-					ft_putstr_fd(node->filename, 2);
-					write(2, ": ", 3);
-					perror("");
-					exit_status = 1;
-					failure = -1;
-					if (index)
-						index[i] = -1;
-				}
-				else
-				{
-					new_fds[count++] = try;
-					node->fd = try;
-				}
-			}
-			node = node->next;
-		}
-		i++;
-	}
-	free(new_fds);
-	return (failure);
-}
-
 int is_built_in(char *cmd)
 {
+	if (!cmd)
+		return (0);
 	if (!ft_strcmp("exit", cmd))
 		return (1);
 	else if (!ft_strcmp("cd", cmd))
@@ -228,7 +99,7 @@ void exec(t_vars *vars)
 	// int old_fd;
 	int nbr_cmd = cmd_count(vars->commands);
 	int pid	;
-	if (nbr_cmd == 1 && is_built_in(vars->commands[0]->cmd) && !open_files(vars->commands, NULL))
+	if (nbr_cmd == 1 && is_built_in(vars->commands[0]->cmd) && !open_files(vars->commands, NULL, vars->env))
 		exec_builtin(vars, 0);
 	else
 	{
@@ -236,7 +107,7 @@ void exec(t_vars *vars)
 		int *failed_cmd = malloc(sizeof(int) * nbr_cmd);
 		int *pids = malloc(sizeof(int) * nbr_cmd);
 		int fd_in = -1;
-		open_files(vars->commands, failed_cmd);
+		open_files(vars->commands, failed_cmd, vars->env);
 		while (vars->commands[i])
 		{
 			if (nbr_cmd > 1)

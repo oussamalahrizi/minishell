@@ -93,6 +93,8 @@ char **convert_env(t_env *env);
 void exec_builtin(t_vars *vars, int i);
 int is_built_in(char *cmd);
 t_env *get_pwd_env(t_env *env);
+int open_files(Command **commands,int *index, t_env *env);
+int check_ifs(char *string, t_env *env);
 #endif // !MINISHELL_H
 
 

@@ -38,8 +38,13 @@ void build_echo(char **cmd_args)
 
     flag = 1;
     i = 1;
-     if (!ft_strncmp(cmd_args[i], "-n", 2))
-         i = check_n_syntax(cmd_args, &flag);
+    if (count_args(cmd_args) == 1)
+    {
+        write(1,"\n",1);
+        return ;
+    }
+    if (!ft_strncmp(cmd_args[i], "-n", 2))
+        i = check_n_syntax(cmd_args, &flag);
     while(cmd_args[i])
     {
         str = ft_strtrim(cmd_args[i], "'\"");

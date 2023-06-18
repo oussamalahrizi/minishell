@@ -68,71 +68,6 @@ int	is_quote(char c)
 	return (0);
 }
 
-char *get_ifs(t_env *env)
-{
-	char	*variable;
-	char	*temp;
-	t_env *node;
-
-	temp = "IFS";
-	node = env;
-	while (node)
-	{
-		if (!ft_strncmp(temp, node->name, ft_strlen(temp)))
-		{
-			variable = ft_strdup(node->value);
-			return (variable);
-		}
-		node = node->next;
-	}
-	variable = NULL;
-	return (variable);
-}
-
-int check_ifs(char *string, int index, t_env *env)
-{
-	char	*skip;
-	char	*temp;
-	int count;
-	char **splited;
-	char *ifs;
-
-	int i, len;
-	i = index;
-	len = 0;
-	while (string[i] && !is_space(string[i]) && !is_quote(string[i])
-		&& ft_isalnum(string[i]))
-	{
-		i++;
-		len++;
-	}
-	skip = ft_substr(string, index, len);
-	temp = skip;
-	skip = get_env(skip, env);
-	count = 0;
-	ifs = get_ifs(env);
-	if (!ifs)
-		splited = split_by_str(skip, " \t\n");
-	else
-		splited = split_by_str(skip, ifs);
-	while (splited[count])
-		count++;
-	free(temp);
-	free(skip);
-	if (ifs)
-		free(ifs);
-	i = 0;
-	while (splited[i])
-	{
-		free(splited[i]);
-		i++;
-	}
-	free(splited);
-	if (count > 1)
-		return (-1);
-	return (0);
-}
-
 void handle_dollar_alone(char *string, int *index, int token_index, t_exp *exp, int *new_index, char **new_token_value)
 {
 	char	*skip = NULL;
@@ -145,7 +80,10 @@ void handle_dollar_alone(char *string, int *index, int token_index, t_exp *exp, 
 	if (string[i] == '$' || !string[i])
 	{
 		skip = get_env("$", exp->env);
-		*index = i + 1;
+		if (string[i] == '$')
+			*index = i + 1;
+		else
+			*index = i;
 	}
 	else
 	{
@@ -249,7 +187,10 @@ void	handle_dollar(char **new_token, char *string, int *index, int token_index,i
 	if (string[i] == '$')
 	{
 		skip = get_env("$", exp->env);
-		*index = i + 1;
+		// if (string[i] == '$')
+		// 	*index = i + 1;
+		// else
+		// 	*index = i;
 	}
 	else if (ft_isdigit(string[i]))
 		*index = i + 1;
@@ -315,13 +256,9 @@ int	expander(Token ***tokens_i, t_env *env)
 			}
 			if (string[i] == '$')
 			{
-				
 				if (j - 1 >= 0 && (tokens[j - 1]->type == '>' || tokens[j - 1]->type == '<' 
-					|| tokens[j - 1]->type == 'a') && check_ifs(string, i + 1, env) == -1)
-				{
-					free(new_token);
-					return (-1);
-				}
+					|| tokens[j - 1]->type == 'a'))
+						break;
 				handle_dollar_alone(string , &i , j, &vars, &new_index, &new_token);
 			}
 			else if (string[i] == '\"')
