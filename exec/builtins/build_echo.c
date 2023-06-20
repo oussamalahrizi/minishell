@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/13 11:07:45 by idelfag           #+#    #+#             */
-/*   Updated: 2023/06/13 11:07:48 by idelfag          ###   ########.fr       */
+/*   Created: 2023/06/20 01:45:39 by idelfag           #+#    #+#             */
+/*   Updated: 2023/06/20 02:13:36 by idelfag          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,14 @@ void build_echo(char **cmd_args)
     int flag;
 
     flag = 1;
-    i = check_n_syntax(cmd_args, &flag);
+    i = 1;
+    if (count_args(cmd_args) == 1)
+    {
+        write(1,"\n",1);
+        return ;
+    }
+    if (!ft_strncmp(cmd_args[i], "-n", 2))
+        i = check_n_syntax(cmd_args, &flag);
     while(cmd_args[i])
     {
         str = ft_strtrim(cmd_args[i], "'\"");

@@ -2,18 +2,20 @@
 
 # define MINISHELL_H
 
-# include <stdio.h>
-# include <stdlib.h>
-# include <signal.h>
-# include <unistd.h>
-# include <termios.h>
-# include <sys/ioctl.h>
-# include <readline/readline.h>
-# include <readline/history.h>
-# include <fcntl.h>
-# include <errno.h>
-# include <sys/wait.h>
-# include "libft/libft.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <signal.h>
+#include <unistd.h>
+#include <termios.h>
+#include <sys/ioctl.h>
+#include <readline/readline.h>
+#include <readline/history.h>
+#include <fcntl.h>
+#include <errno.h>
+#include "libft/libft.h"
+#include <sys/types.h>
+#include <dirent.h>
+#include <sys/stat.h>
 
 
 typedef struct s_token{
@@ -27,7 +29,9 @@ typedef struct s_files
 	char type;
 	char *del;
 	int fd;
+	char **h_content;
 	struct s_files *next;
+	int open;
 } files;
 
 typedef struct
@@ -61,7 +65,7 @@ void print_split(char **str);
 void append_character(char **string, char c);
 void signal_handler();
 int error(char *str);
-Command **extract(Token **tokens);
+Command **extract(Token **tokens, t_env *env);
 char **split_by_str(char *s, char *del);
 void free_double_char(char **str);
 t_env *copy_env(char **env);
@@ -73,9 +77,9 @@ int count_args(char **cmd_args);
 void exec(t_vars *vars);
 void	build_exit(char **cmd_args);
 void build_cd(char **cmd, t_env *env);
-void build_pwd();
+void build_pwd(char *pwd_fail, t_env *env);
 void build_echo(char **cmd_args);
-void child_process(Command *command, int *fd, t_env *env, int nbr_cmds);
+void child_process(t_vars *vars, Command *command, int *fd, t_env *env, int nbr_cmd, int fd_in, int iterator, int is_failed);
 Token* new_token(char type, char* value);
 Token **duplicate_tokens(Token **tokens);
 int get_tokens_size(Token **tokens);
@@ -86,7 +90,14 @@ void	build_unset(char **cmd, t_env **env);
 files *get_last_infile(files *cmd_files);
 files *get_last_outfile(files *cmd_files);
 char	*get_env(char *string, t_env *env);
-
+char **convert_env(t_env *env);
+void exec_builtin(t_vars *vars, int i);
+int is_built_in(char *cmd);
+t_env *get_pwd_env(t_env *env);
+char **here_doc(char *del);
+void open_heredocs(Command **cmd);
+int open_files(Command **commands,int *index, t_env *env);
+int check_ifs(char *string, t_env *env);
 #endif // !MINISHELL_H
 
 

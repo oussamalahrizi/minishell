@@ -44,3 +44,18 @@
 	l""s : working	
 	
 }
+
+
+{
+	export a="file   "																	FIXED
+	ls > $a == working																	FIXED
+	expand only first number after $ 													FIXED
+	add _ to the list of acceptable charactes											FIXED
+	echo $USER"11''''''$PATH'"$PWD''													FIXED
+	still has to work on ambigious redirection and other files and pipes				NOT YET
+}
+
+{
+	control c in child process : ^C and exit status to 130
+	control \ in child process : ^\Quit and exit status to 131
+}

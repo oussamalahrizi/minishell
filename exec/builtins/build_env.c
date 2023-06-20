@@ -6,16 +6,28 @@
 /*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 00:56:19 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/13 13:50:50 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/06/20 02:13:35 by idelfag          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "../../minishell.h"
 
-extern int exit_status;
-
 void build_env(t_env *env)
 {
+    t_env *node;
+
+    node = env;
+    while(node)
+    {
+        if (!ft_strcmp("PATH", node->name))
+            break;
+        node = node->next;
+    }
+    if (!node)
+    {
+        error_cmd("env: No such file or directory\n", 127);
+        return;
+    }
     while(env)
     {
         if (env->flag)
@@ -27,5 +39,4 @@ void build_env(t_env *env)
         }
         env = env->next;
     }
-    exit_status = 0;
 }

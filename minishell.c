@@ -42,7 +42,9 @@ void free_cmds(Command **commands)
 		{
 			node = commands[i]->files;
 			while (node)
-			{
+			{	
+				if (node->h_content)
+					free_double_char(node->h_content);
 				temp = node;
 				if (node->del)
 					free(node->del);
@@ -132,20 +134,17 @@ int	main(int ac, char **av, char **env)
 		if (expander(&tokens, vars.env) == -1)
 		{
 			write(2, "abiguous redirection\n", 22);
-			free(input);
-			free_tokens(tokens);
 			exit_status = 1;
-			continue;
 		}
 		#if 0
 				int i = 0;
 				while (tokens[i] != NULL)
 				{
-					printf("token value : %s$\n",tokens[i]->value);
+					printf("token value : %s|\n",tokens[i]->value);
 					i++;
 				}
 		#endif
-		commands = extract(tokens); // look extract file to print cmds
+		commands = extract(tokens, vars.env); // look extract file to print cmds
 		vars.commands = commands;
 		exec(&vars);
 		free(input);

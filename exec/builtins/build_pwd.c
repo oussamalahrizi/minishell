@@ -5,23 +5,32 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/07 05:15:31 by idelfag           #+#    #+#             */
-/*   Updated: 2023/06/13 17:30:45 by idelfag          ###   ########.fr       */
+/*   Created: 2023/06/04 19:54:46 by olahrizi          #+#    #+#             */
+/*   Updated: 2023/06/20 02:13:33 by idelfag          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../../minishell.h"
+#include "../../minishell.h"
 
-void build_pwd(void)
+extern int exit_status;
+
+void build_pwd(char *pwd_fail, t_env *env)
 {
 	char *pwd;
+	char *pwd_env;
 
 	pwd = getcwd(NULL, 0);
-	if (!pwd)
-		ft_putendl_fd("failed to get pwd", 2);
-	else
+	if (!pwd && pwd_fail)
+		pwd = ft_strdup(pwd_fail);
+	if (pwd)
 	{
-		ft_putendl_fd(pwd, 1);
+		ft_putstr_fd(pwd, 1);
+		write(1, "\n", 1);
+		pwd_env = get_pwd_env(env)->value;
+		get_pwd_env(env)->value = ft_strdup(pwd);
 		free(pwd);
+		exit_status = 0;
 	}
+	else
+		error_cmd("getcwd : failed to get current directory .\n", 1);
 }

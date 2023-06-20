@@ -6,7 +6,7 @@
 /*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 23:26:19 by idelfag           #+#    #+#             */
-/*   Updated: 2023/06/13 18:06:10 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/06/20 02:13:40 by idelfag          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,6 @@ int check_for_sign(char *cmd)
     }
     return(0);
 }
-
-// char *remove_quotes(cha)
 
 int get_flag(char *cmd)
 {

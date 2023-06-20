@@ -180,13 +180,18 @@ int evaluate(Node *node)
 	}
 	return -1;
 }
+#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
 
-int main(void)
+#include <fcntl.h>
+
+int main()
 {
-	text = "5555*(1+2)";
-	build_tokens();
-	tk_pos = 0;
-	int res = 0;
-	res = evaluate(expr());
-	printf("res %d\n", res);
+	while (1)
+	{
+		open("/dev/null", O_RDONLY);
+	}
+	int pid = fork();
+	return(0);
 }
