@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 00:05:08 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/18 12:38:12 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/20 23:31:17 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ char    *get_command(char **paths, char *cmd, int *is_dir)
         return (NULL);
 }
 
-void child_process(t_vars *vars, Command *command, int *fd, t_env *env, int nbr_cmds, int fd_in, int iterator, int is_failed)
+void child_process(t_vars *vars, Command *command, int *fd, t_env *env, int nbr_cmds, int fd_in, int iterator)
 {
 	char **paths;
 	char **env_list = convert_env(env);
@@ -77,13 +77,12 @@ void child_process(t_vars *vars, Command *command, int *fd, t_env *env, int nbr_
 	files *infile = get_last_infile(command->files);
 	files *outfile = get_last_outfile(command->files);
 
-	if (is_failed == -1)
-		exit(1);
 	if (!command->cmd)
 		exit(0);
 	if(infile && infile->fd != -1)
 	{
 		dup2(infile->fd, STDIN_FILENO);
+		close(infile->here_doc_fd[1]);
 		close(fd_in);
 		close(fd[0]);
 	}

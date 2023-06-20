@@ -43,21 +43,61 @@ char **allocate_strings(Token **tokens, int *index, char *cmd, t_env *env)
 	return (res);
 }
 
-files *allocate_files(Token **tokens, int *index, files *file_list)
+void set_last_infile(files *file_list)
+{
+	files *node;
+	files *res;
+	res = NULL;
+	node = file_list;
+	while (node)
+	{
+		if (node->type == '<')
+		{
+			if (res)
+				res->open = -1;
+			res = node;
+		}
+		node = node->next;
+	}
+}
+
+void set_last_outfile(files *file_list)
+{
+	files *node;
+	files *res;
+	res = NULL;
+	node = file_list;
+	while (node)
+	{
+		if (node->type == 'a' || node->type == '>')
+		{
+			if (res)
+				res->open = -1;
+			res = node;
+		}
+		node = node->next;
+	}
+}
+
+
+files *allocate_files(Token **tokens, int *index, files *file_list, t_env *env)
 {
 	// guaranteed this token type is an 's'
 	int i;
 	files *current_files;
 	files *start;
 	files *new;
+	char *temp;
 
 	i = *index;
 	current_files = file_list;
 	new = malloc(sizeof(files));
 	new->next = NULL;
 	new->filename = NULL;
+	new->h_content = NULL;
 	new->del = NULL;
 	new->open = 1;
+	new->expand = 1;
 	if (tokens[i]->type != 's')
 	{
 		write(2, "token after redirection is not a string\n", 41);		
@@ -66,6 +106,11 @@ files *allocate_files(Token **tokens, int *index, files *file_list)
 	}
 	if(tokens[i - 1]->type == 'h')
 	{
+		temp = tokens[i]->value;
+		if (temp[0] == temp[ft_strlen(temp) - 1] && ft_strchr("\"'", temp[0]))
+			new->expand = 0;
+		tokens[i]->value = clean_command(temp, env);
+		free(temp);
 		new->del = ft_strdup(tokens[i]->value);
 		new->type = 'h';
 		new->fd = -1;
@@ -73,7 +118,9 @@ files *allocate_files(Token **tokens, int *index, files *file_list)
 	}
 	else if (tokens[i - 1]->type == '>' || tokens[i - 1]->type == '<' || tokens[i - 1]->type == 'a')
 	{
-		if (tokens[i - 1]->type == '>')
+		temp = tokens[i]->value;
+		tokens[i]->value = clean_command(temp, env);
+		free(temp);
 		new->filename = ft_strdup(tokens[i]->value);
 		new->type = tokens[i - 1]->type;
 		new->fd = -1;
@@ -93,6 +140,8 @@ files *allocate_files(Token **tokens, int *index, files *file_list)
 		file_list = start;
 	}
 	*index = i;
+	set_last_infile(file_list);
+	set_last_outfile(file_list);
 	return (file_list);
 }
 
@@ -241,7 +290,6 @@ Command **extract(Token **tokens, t_env *env)
 				char *temp = clean_command(tokens[i]->value, env);
 				commands[k]->cmd = ft_strdup(temp);
 				free(temp);
-				// i++;
 			}
 			else
 				commands[k]->cmd_args = allocate_strings(tokens, &i ,commands[k]->cmd, env);
@@ -263,7 +311,7 @@ Command **extract(Token **tokens, t_env *env)
 					break;
 				}
 				if (tokens[i]->type == 's')
-					commands[k]->files = allocate_files(tokens, &i, commands[k]->files);
+					commands[k]->files = allocate_files(tokens, &i, commands[k]->files, env);
 			}
 		}
 	}
@@ -292,6 +340,7 @@ Command **extract(Token **tokens, t_env *env)
 			printf("type : %c\n", node->type);
 			printf("del if exists : %s\n", node->del);
 			printf("filename if exists : %s\n", node->filename);
+			printf("open ? : %d\n", node->open);
 			node = node->next;
 			h++;
 		}

@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 11:27:00 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/18 14:37:56 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/20 21:52:22 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void close_files(int *files, int size)
 	}
 }
 
-int open_files(Command **commands,int *index, t_env *env)
+int open_files(files *file_list, t_env *env)
 {
 	int i = 0;
 	files *node;
@@ -58,167 +58,144 @@ int open_files(Command **commands,int *index, t_env *env)
 	int try;
 	int failure = 0;
 	char *expanded;
-	while (commands[i])
+	node = file_list;
+	while (node)
 	{
-		node = commands[i]->files;
-		while (node)
-		{
-			count++;
-			node = node->next;
-		}
-		i++;
+		count++;
+		node = node->next;
 	}
 	new_fds = malloc(sizeof(int) * count);
 	i = 0;
 	count = 0;
-	while (commands[i])
+	node = file_list;
+	while (node)
 	{
-		node = commands[i]->files;
-		while (node)
+		if (node->type == '<')
 		{
-			if (node->type == '<')
+			if (node->filename[0] == '$')
 			{
-				if (node->filename[0] == '$')
+				expanded = expand_file(node->filename, env);
+				if (check_ifs(expanded) == -1 || *expanded == 0)
 				{
-					expanded = expand_file(node->filename, env);
-					if (check_ifs(expanded, env) == -1 || *expanded == 0)
-					{
-						error_cmd("ambiguous redirect\n", 1);
-						free(expanded);
-						failure = -1;
-						if (index)
-							index[i] = -1;
-						break;
-					}
-					else
-					{
-						free(node->filename);
-						node->filename = expanded;
-					}
-				}
-				try = open(node->filename, O_RDONLY);
-				if (try == -1)
-				{
-					close_files(new_fds, count);
-					write(2, "minishell: ", 12);
-					ft_putstr_fd(node->filename, 2);
-					write(2, ": ", 3);
-					perror("");
-					exit_status = 1;
+					error_cmd("ambiguous redirect\n", 1);
+					free(expanded);
 					failure = -1;
-					if (index)
-						index[i] = -1;
+					break;
 				}
 				else
 				{
-					new_fds[count++] = try;
-					node->fd = try;
+					free(node->filename);
+					node->filename = expanded;
 				}
 			}
-			else if (node->type == '>')
+			try = open(node->filename, O_RDONLY);
+			if (try == -1)
 			{
-				if (node->filename[0] == '$')
+				close_files(new_fds, count);
+				write(2, "minishell: ", 12);
+				ft_putstr_fd(node->filename, 2);
+				write(2, ": ", 3);
+				perror("");
+				exit_status = 1;
+				failure = -1;
+				break;
+			}
+			else
+			{
+				new_fds[count++] = try;
+				if (node->open == -1)
 				{
-					expanded = expand_file(node->filename, env);
-					if (check_ifs(expanded, env) == -1 || *expanded == 0)
-					{
-						error_cmd("ambiguous redirect\n", 1);
-						free(expanded);
-						failure = -1;
-						if (index)
-							index[i] = -1;
-						break;
-					}
-					else
-					{
-						free(node->filename);
-						node->filename = expanded;
-					}
-				}
-				try = open(node->filename, O_TRUNC | O_CREAT | O_RDWR, 0644);
-				if (try == -1)
-				{
-					close_files(new_fds, count);
-					write(2, "minishell: ", 12);
-					ft_putstr_fd(node->filename, 2);
-					write(2, ": ", 3);
-					perror("");
-					exit_status = 1;
-					failure = -1;
-					if (index)
-						index[i] = -1;
+					if (close(try))
+						error_cmd("close failed\n", 1);
 				}
 				else
-				{
-					new_fds[count++] = try;
 					node->fd = try;
-				}
 			}
-			else if (node->type == 'a')
-			{
-				if (node->filename[0] == '$')
-				{
-					expanded = expand_file(node->filename, env);
-					if (check_ifs(expanded, env) == -1 || *expanded == 0)
-					{
-						free(expanded);
-						failure = -1;
-						if (index)
-							index[i] = -1;
-						break;
-					}
-					else
-					{
-						free(node->filename);
-						node->filename = expanded;
-					}
-				}
-				try = open(node->filename, O_CREAT | O_APPEND | O_RDWR, 0644);
-				if (try == -1)
-				{
-					close_files(new_fds, count);
-					write(2, "minishell: ", 12);
-					ft_putstr_fd(node->filename, 2);
-					write(2, ": ", 3);
-					perror("");
-					exit_status = 1;
-					failure = -1;
-					if (index)
-						index[i] = -1;
-				}
-				else
-				{
-					new_fds[count++] = try;
-					node->fd = try;
-				}
-			}
-			// else if (node->type == 'h')
-			// {
-			// 	/*
-			// 		open pipes instead of hidden file
-			// 	*/
-			// 	try = open(".hidden", O_CREAT | O_TRUNC | O_RDWR, 0644);
-			// 	if (try == -1)
-			// 	{
-			// 		close_files(new_fds, count);
-			// 		write(2, "minishell: ", 12);
-			// 		ft_putstr_fd(node->filename, 2);
-			// 		write(2, ": ", 3);
-			// 		perror("");
-			// 		exit_status = 1;
-			// 		failure = -1;
-			// 		if (index)
-			// 			index[i] = -1;
-			// 	}
-			// 	else
-			// 	{
-			// 		new_fds[count++] = try;
-			// 		node->fd = try;
-			// 	}
-			// }
-			node = node->next;
 		}
-		i++;
+		else if (node->type == '>')
+		{
+			if (node->filename[0] == '$')
+			{
+				expanded = expand_file(node->filename, env);
+				if (check_ifs(expanded) == -1 || *expanded == 0)
+				{
+					error_cmd("ambiguous redirect\n", 1);
+					free(expanded);
+					failure = -1;
+					break;
+				}
+				else
+				{
+					free(node->filename);
+					node->filename = expanded;
+				}
+			}
+			try = open(node->filename, O_TRUNC | O_CREAT | O_RDWR, 0644);
+			if (try == -1)
+			{
+				close_files(new_fds, count);
+				write(2, "minishell: ", 12);
+				ft_putstr_fd(node->filename, 2);
+				write(2, ": ", 3);
+				perror("");
+				exit_status = 1;
+				failure = -1;
+				break;
+			}
+			else
+			{
+				new_fds[count++] = try;
+				if (node->open == -1)
+				{
+					if (close(try))
+						error_cmd("close failed\n", 1);
+				}
+				else
+					node->fd = try;
+			}
+		}
+		else if (node->type == 'a')
+		{
+			if (node->filename[0] == '$')
+			{
+				expanded = expand_file(node->filename, env);
+				if (check_ifs(expanded) == -1 || *expanded == 0)
+				{
+					free(expanded);
+					failure = -1;
+					break;
+				}
+				else
+				{
+					free(node->filename);
+					node->filename = expanded;
+				}
+			}
+			try = open(node->filename, O_CREAT | O_APPEND | O_RDWR, 0644);
+			if (try == -1)
+			{
+				close_files(new_fds, count);
+				write(2, "minishell: ", 12);
+				ft_putstr_fd(node->filename, 2);
+				write(2, ": ", 3);
+				perror("");
+				exit_status = 1;
+				failure = -1;
+				break;
+			}
+			else
+			{
+				new_fds[count++] = try;
+				if (node->open == -1)
+				{
+					if (close(try))
+						error_cmd("close failed\n", 1);
+				}
+				else
+					node->fd = try;
+			}
+		}
+		node = node->next;
 	}
 	free(new_fds);
 	return (failure);

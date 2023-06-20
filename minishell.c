@@ -2,6 +2,8 @@
 
 int	exit_status;
 
+extern int in_cmd;
+
 void free_tokens(Token **tokens)
 {
 	int i;
@@ -41,6 +43,8 @@ void free_cmds(Command **commands)
 		if (commands[i]->files)
 		{
 			node = commands[i]->files;
+			if (node->h_content)
+				free_double_char(node->h_content);
 			while (node)
 			{
 				temp = node;
@@ -70,7 +74,7 @@ int	main(int ac, char **av, char **env)
 
 
 	((void)ac, (void)av);
-	signal_handler();
+	
 
 
 	//printf("getting env var into linked list\n");
@@ -89,6 +93,8 @@ int	main(int ac, char **av, char **env)
 		tmp = tmp->next;
 	}
 	# endif
+	signal_handler();
+
 	while (1)
 	{
 		tcgetattr(0, &term);
@@ -96,6 +102,7 @@ int	main(int ac, char **av, char **env)
 		term.c_lflag &= ~(ECHOCTL);
 		tcsetattr(0, TCSANOW, &term);
 		input = readline("minishell$ ");
+		in_cmd = 0;
 		tcsetattr(0, TCSANOW, &original);
 		char *test;
 		test = ft_strtrim(input, " ");

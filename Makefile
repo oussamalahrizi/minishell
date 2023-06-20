@@ -18,6 +18,7 @@ SRCS = 	minishell.c \
 		exec/builtins/build_unset.c \
 		exec/builtins/utils.c \
 		exec/utils.c \
+		exec/here_doc.c \
 		exec/childprocess.c
 
 OBJS = ${SRCS:.c=.o}
@@ -26,11 +27,11 @@ NAME = minishell
 
 LIBFT = libft/libft.a
 
-LIBS = -L./libft -lft -lreadline -L./readline/8.2.1/lib
+LIBS = -L./libft -lft -lreadline -L/Users/olahrizi/goinfre/homebrew/Cellar/readline/8.2.1/lib
 
 CC = cc
 
-CFLAGS = -Wall -Wextra -Werror ${sanitize} -g3 -Ireadline/8.2.1/include
+CFLAGS = -Wall -Wextra -Werror -g3 ${sanitize} -I/Users/olahrizi/goinfre/homebrew/Cellar/readline/8.2.1/include
 
 # sanitize= -fsanitize=address
 

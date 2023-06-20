@@ -181,17 +181,85 @@ int evaluate(Node *node)
 	return -1;
 }
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <readline/readline.h>
 #include <string.h>
 
-#include <fcntl.h>
+// int main() {
 
-int main()
-{
-	while (1)
-	{
-		open("/dev/null", O_RDONLY);
-	}
-	int pid = fork();
-	return(0);
+// 	char *input;
+// 	char **doc = malloc(sizeof(char *) * 1000);
+// 	int i = 0;
+// 	while (1)
+// 	{
+// 		input = readline("< ");
+// 		if (!strcmp(input, "del"))
+// 		{
+// 			doc[i] = 0;
+// 			break;
+// 		}
+// 		doc[i] = strdup(input);
+// 		i++;
+// 	}
+//     pid_t child = fork();
+//     if (child == 0) {
+//         // Child process
+//         char* args[] = {"cat", NULL};
+//         execvp("cat", args);
+//     } else {
+//         // Parent process
+//         // Close the write end of the pipe
+//         close(STDIN_FILENO);
+// 		dup2(STDIN_FILENO, child);
+
+// 		i = 0;
+// 		while (doc[i])
+// 		{
+// 			write(child, doc[i], strlen(doc[i]));
+// 			i++;
+// 		}
+//         // Wait for the child process to finish
+//         wait(NULL);
+//     }
+
+//     return 0;
+// }
+
+
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+
+int main() {
+    pid_t child = fork();
+    if (child == 0) {
+        // Child process
+
+        // Close unnecessary file descriptors
+        close(STDOUT_FILENO);
+        close(STDERR_FILENO);
+
+        // Duplicate stdin to fd 3
+        dup2(STDIN_FILENO, 3);
+
+        // Execute the cat command
+        char* args[] = {"cat", NULL};
+        execve("/bin/cat", args, NULL);
+    } else {
+        // Parent process
+
+        // Write the heredoc content to the child's stdin
+        const char* heredocContent = "This is the heredoc content\n";
+        size_t contentSize = strlen(heredocContent);
+        write(3, heredocContent, contentSize);
+
+        // Wait for the child process to finish
+        wait(NULL);
+    }
+
+    return 0;
 }

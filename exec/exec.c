@@ -6,13 +6,14 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 21:34:53 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/18 12:40:27 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/21 00:19:31 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
 extern int exit_status;
+int in_cmd;
 
 files *get_last_infile(files *cmd_files)
 {
@@ -94,32 +95,45 @@ void exec_builtin(t_vars *vars, int i)
 void exec(t_vars *vars)
 {
 	int i;
-	int fd[2];
+	int fd[2] = {-1, -1};
 	int child_status;
-	// int old_fd;
 	int nbr_cmd = cmd_count(vars->commands);
 	int pid	;
-	if (nbr_cmd == 1 && is_built_in(vars->commands[0]->cmd) && !open_files(vars->commands, NULL, vars->env))
+	open_heredocs(vars->commands);
+	in_cmd = 0;
+	if (nbr_cmd == 1 && is_built_in(vars->commands[0]->cmd) && !open_files(vars->commands[0]->files, vars->env))
 		exec_builtin(vars, 0);
 	else
 	{
 		i = 0;
-		int *failed_cmd = malloc(sizeof(int) * nbr_cmd);
 		int *pids = malloc(sizeof(int) * nbr_cmd);
 		int fd_in = -1;
-		open_files(vars->commands, failed_cmd, vars->env);
 		while (vars->commands[i])
 		{
-			if (nbr_cmd > 1)
-				pipe(fd);
+			if (nbr_cmd > 1 && pipe(fd) == -1)
+			{
+				error_cmd("pipe failed.\n", 1);
+				perror("");
+				break;
+			}
 			pid = fork();
 			pids[i] = pid;
 			if (pid == -1)
+			{
 				error_cmd("fork failed \n", 1);
+				break;
+			}
 			else if (pid == 0)
-				child_process(vars, vars->commands[i], fd, vars->env, nbr_cmd, fd_in, i, failed_cmd[i]);
+			{
+				signal(SIGINT, SIG_DFL);
+				signal(SIGQUIT, SIG_DFL);
+				if (open_files(vars->commands[i]->files, vars->env))
+					exit(1);
+				child_process(vars, vars->commands[i], fd, vars->env, nbr_cmd, fd_in, i);
+			}
 			else
 			{
+				in_cmd = 1;
 				if (nbr_cmd > 1)
 				{
 					close(fd[1]);
@@ -129,6 +143,11 @@ void exec(t_vars *vars)
 				files *node = vars->commands[i]->files;
 				while (node)
 				{
+					if (node->type == 'h')
+					{
+						close(node->here_doc_fd[1]);
+						close(node->here_doc_fd[0]);
+					}
 					if (node->fd != -1)
 						close(node->fd);
 					node = node->next;
@@ -144,32 +163,11 @@ void exec(t_vars *vars)
 		}
 		if (WIFEXITED(child_status))
 			exit_status = WEXITSTATUS(child_status);
+		in_cmd = 0;
 		close(fd_in);
-		free(failed_cmd);
 		free(pids);
 	}
 	/*
 		free local pointers please
 	*/
-	return ;
-	// // if (cmd_count(vars->commands) == 1)
-	// // 	exec_one_command(vars->commands, t_env *env)
-	// while (vars->commands[i])
-	// {
-	// 	if (pipe(fd) == -1)
-	// 	{
-	// 		error_cmd("failed to create a pipe\n", 1);
-	// 		exit(1);
-	// 	}
-	// 	pid = fork();
-	// 	if (pid == -1)
-	// 	{
-	// 		error_cmd("failed to fork\n", 1);
-	// 		exit(1);
-	// 	}
-	// 	if (pid == 0)
-	// 		child_exec(vars->commands[i], vars->env, fd, i);
-	// 	else
-	// 		i++;
-	// }
 }
