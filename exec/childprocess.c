@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   childprocess.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
+/*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 00:05:08 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/19 13:30:18 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/06/20 23:31:17 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,19 +69,25 @@ char    *get_command(char **paths, char *cmd, int *is_dir)
         return (NULL);
 }
 
-void child_process(t_vars *vars, Command *command, int *fd, t_env *env, int nbr_cmds, int fd_in, int iterator, int is_failed)
+void child_process(t_vars *vars, Command *command, int *fd, t_env *env, int nbr_cmds, int fd_in, int iterator)
 {
 	char **paths;
 	char **env_list = convert_env(env);
 	int is_dir;
 	files *infile = get_last_infile(command->files);
 	files *outfile = get_last_outfile(command->files);
-	int here_doc_fd = -1;
-	int i = 0;
-	if (is_failed == -1)
-		exit(1);
+
 	if (!command->cmd)
 		exit(0);
+	if(infile && infile->fd != -1)
+	{
+		dup2(infile->fd, STDIN_FILENO);
+		close(infile->here_doc_fd[1]);
+		close(fd_in);
+		close(fd[0]);
+	}
+	else if (iterator > 0)
+		dup2(fd_in, STDIN_FILENO);
 	if (fd[0] != -1)
 		close(fd[0]);
 	if(outfile && outfile->fd != -1)
@@ -90,30 +96,7 @@ void child_process(t_vars *vars, Command *command, int *fd, t_env *env, int nbr_
 		close(fd[1]);
 	}
 	else if (nbr_cmds > 1 && iterator != nbr_cmds - 1)
-	{
 		dup2(fd[1], STDOUT_FILENO);
-	}
-	if (infile && infile->type == 'h')
-	{
-		here_doc_fd = open(".tmp", O_CREAT | O_RDWR | O_TRUNC, 0644);
-		while(infile->h_content[i])
-		{
-			write(here_doc_fd, infile->h_content[i], ft_strlen(infile->h_content[i]));
-			i++;
-		}
-		close(here_doc_fd);
-		here_doc_fd = open(".tmp", O_RDONLY);
-		infile->fd = here_doc_fd;
-	}
-	if(infile && infile->fd != -1)
-	{
-		dup2(infile->fd, STDIN_FILENO);
-		close(fd_in);
-		close(fd[0]);
-	}
-	else if (iterator > 0)
-		dup2(fd_in, STDIN_FILENO);
-	
 	if (is_built_in(command->cmd))
 	{
 		exec_builtin(vars, iterator);

@@ -6,13 +6,26 @@
 /*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 21:34:53 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/19 14:12:16 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/06/21 06:17:35 by idelfag          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
 extern int exit_status;
+int in_cmd;
+
+void control_c2()
+{
+	printf("\n");
+	exit_status = 130;
+}
+
+void control_c3()
+{
+	printf("Quit: 3\n");
+	exit_status = 131;
+}
 
 files *get_last_infile(files *cmd_files)
 {
@@ -97,28 +110,42 @@ void exec(t_vars *vars)
 	int fd[2] = {-1, -1};
 	int child_status;
 	int nbr_cmd = cmd_count(vars->commands);
-	int pid;
-	if (nbr_cmd == 1 && is_built_in(vars->commands[0]->cmd) && !open_files(vars->commands, NULL, vars->env))
+	int pid	;
+	open_heredocs(vars->commands);
+	in_cmd = 0;
+	if (nbr_cmd == 1 && is_built_in(vars->commands[0]->cmd) && !open_files(vars->commands[0]->files, vars->env))
 		exec_builtin(vars, 0);
 	else
 	{
 		i = 0;
-		int *failed_cmd = malloc(sizeof(int) * nbr_cmd);
 		int *pids = malloc(sizeof(int) * nbr_cmd);
 		int fd_in = -1;
-		open_files(vars->commands, failed_cmd, vars->env);
+		signal(SIGINT, control_c2);
+		signal(SIGQUIT, control_c3);
 		while (vars->commands[i])
 		{
-			if (nbr_cmd > 1)
-				pipe(fd);
+			if (nbr_cmd > 1 && pipe(fd) == -1)
+			{
+				error_cmd("pipe failed.\n", 1);
+				perror("");
+				break;
+			}
 			pid = fork();
 			pids[i] = pid;
 			if (pid == -1)
+			{
 				error_cmd("fork failed \n", 1);
+				break;
+			}
 			else if (pid == 0)
-				child_process(vars, vars->commands[i], fd, vars->env, nbr_cmd, fd_in, i, failed_cmd[i]);
+			{
+				if (open_files(vars->commands[i]->files, vars->env))
+					exit(1);
+				child_process(vars, vars->commands[i], fd, vars->env, nbr_cmd, fd_in, i);
+			}
 			else
 			{
+				in_cmd = 1;
 				if (nbr_cmd > 1)
 				{
 					close(fd[1]);
@@ -128,11 +155,15 @@ void exec(t_vars *vars)
 				files *node = vars->commands[i]->files;
 				while (node)
 				{
+					if (node->type == 'h')
+					{
+						close(node->here_doc_fd[1]);
+						close(node->here_doc_fd[0]);
+					}
 					if (node->fd != -1)
 						close(node->fd);
 					node = node->next;
 				}
-				unlink(".tmp");
 				i++;
 			}
 		}
@@ -144,9 +175,11 @@ void exec(t_vars *vars)
 		}
 		if (WIFEXITED(child_status))
 			exit_status = WEXITSTATUS(child_status);
+		in_cmd = 0;
 		close(fd_in);
-		free(failed_cmd);
 		free(pids);
 	}
-	return ;
+	/*
+		free local pointers please
+	*/
 }

@@ -34,19 +34,6 @@ char	*get_env(char *string, t_env *env)
 	return (variable);
 }
 
-void	print_split(char **str)
-{
-	int	i;
-
-	i = 0;
-	printf("-------------------\n");
-	while (str[i])
-	{
-		printf("%s\n", str[i]);
-		i++;
-	}
-}
-
 void	free_double(Token **str)
 {
 	int	i;

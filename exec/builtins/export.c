@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
+/*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 23:26:19 by idelfag           #+#    #+#             */
-/*   Updated: 2023/06/20 02:13:40 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/06/16 18:32:35 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ int check_for_sign(char *cmd)
     }
     return(0);
 }
+
+// char *remove_quotes(cha)
 
 int get_flag(char *cmd)
 {

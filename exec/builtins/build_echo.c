@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build_echo.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
+/*   By: idelfag <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/20 01:45:39 by idelfag           #+#    #+#             */
-/*   Updated: 2023/06/20 02:13:36 by idelfag          ###   ########.fr       */
+/*   Created: 2023/06/21 05:25:10 by idelfag           #+#    #+#             */
+/*   Updated: 2023/06/21 05:25:15 by idelfag          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 extern int exit_status;
 
-int check_n_syntax(char **cmd_args, int *flag)
+int	check_n_syntax(char **cmd_args, int *flag)
 {
-    int i;
-    int j;
+    int	i;
+    int	j;
 
     j = 0;
     i = 1;
@@ -29,16 +29,16 @@ int check_n_syntax(char **cmd_args, int *flag)
         if (ft_strcmp(cmd_args[i], "-n"))
         {
             j++;
-            while(cmd_args[i][j] == 'n' && cmd_args[i])
+            while (cmd_args[i][j] == 'n' && cmd_args[i])
                 j++;
             if (!cmd_args[i][j])
                 *flag = 0;
             else
-                return(i);
+                return (i);
         }
         i++;
     }
-    return(i);
+    return (i);
 }
 
 void build_echo(char **cmd_args)
@@ -58,7 +58,7 @@ void build_echo(char **cmd_args)
         i = check_n_syntax(cmd_args, &flag);
     while(cmd_args[i])
     {
-        str = ft_strtrim(cmd_args[i], "'\"");
+        str = ft_strdup(cmd_args[i]);
         ft_putstr_fd(str, 1);
         i++;
         if (cmd_args[i])

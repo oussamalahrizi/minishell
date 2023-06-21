@@ -28,10 +28,12 @@ typedef struct s_files
 	char * filename;
 	char type;
 	char *del;
-	int fd;
 	char **h_content;
+	int fd;
 	struct s_files *next;
 	int open;
+	int expand;
+	int here_doc_fd[2];
 } files;
 
 typedef struct
@@ -79,7 +81,7 @@ void	build_exit(char **cmd_args);
 void build_cd(char **cmd, t_env *env);
 void build_pwd(char *pwd_fail, t_env *env);
 void build_echo(char **cmd_args);
-void child_process(t_vars *vars, Command *command, int *fd, t_env *env, int nbr_cmd, int fd_in, int iterator, int is_failed);
+void child_process(t_vars *vars, Command *command, int *fd, t_env *env, int nbr_cmd, int fd_in, int iterator);
 Token* new_token(char type, char* value);
 Token **duplicate_tokens(Token **tokens);
 int get_tokens_size(Token **tokens);
@@ -94,10 +96,9 @@ char **convert_env(t_env *env);
 void exec_builtin(t_vars *vars, int i);
 int is_built_in(char *cmd);
 t_env *get_pwd_env(t_env *env);
-char **here_doc(char *del);
+int open_files(files* file_list, t_env *env);
+int check_ifs(char *string);
 void open_heredocs(Command **cmd);
-int open_files(Command **commands,int *index, t_env *env);
-int check_ifs(char *string, t_env *env);
 #endif // !MINISHELL_H
 
 
