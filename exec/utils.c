@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 11:27:00 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/20 21:52:22 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/22 09:42:30 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ int open_files(files *file_list, t_env *env)
 				ft_putstr_fd(node->filename, 2);
 				write(2, ": ", 3);
 				perror("");
-				exit_status = 1;
+				global.exit_status = 1;
 				failure = -1;
 				break;
 			}
@@ -138,7 +138,7 @@ int open_files(files *file_list, t_env *env)
 				ft_putstr_fd(node->filename, 2);
 				write(2, ": ", 3);
 				perror("");
-				exit_status = 1;
+				global.exit_status = 1;
 				failure = -1;
 				break;
 			}
@@ -179,7 +179,7 @@ int open_files(files *file_list, t_env *env)
 				ft_putstr_fd(node->filename, 2);
 				write(2, ": ", 3);
 				perror("");
-				exit_status = 1;
+				global.exit_status = 1;
 				failure = -1;
 				break;
 			}

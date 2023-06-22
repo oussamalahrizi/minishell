@@ -6,13 +6,12 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 18:55:27 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/18 11:17:38 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/22 11:46:24 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "../../minishell.h"
 
-extern int exit_status;
 
 int check_valid(char **str)
 {
@@ -74,7 +73,8 @@ void build_exit(char **str)
     if (count_args(str) == 1)
     {
         ft_putstr_fd("exit\n", 1);
-        exit_status = 0;
+        global.exit_status = 0;
+
         exit(0);
     }
     nbr = ft_atoi(str[1]);
@@ -82,14 +82,15 @@ void build_exit(char **str)
     {
         ft_putstr_fd("exit\n", 1);
         ft_putstr_fd("exit: numeric argument required\n", 2);
-        exit_status = 255;
+        global.exit_status = 255;
+
         exit(255);
     }
     if (!check_args(str))
     {
-        exit_status = 1;
+        global.exit_status = 1;
         return ;
     }
-    exit_status = get_exitstatus(nbr);
-    exit(exit_status);
+    global.exit_status = get_exitstatus(nbr);
+    exit(global.exit_status);
 }

@@ -1,8 +1,6 @@
 #include "minishell.h"
 
-int	exit_status;
-
-extern int in_cmd;
+t_global global;
 
 void free_tokens(Token **tokens)
 {
@@ -43,8 +41,6 @@ void free_cmds(Command **commands)
 		if (commands[i]->files)
 		{
 			node = commands[i]->files;
-			if (node->h_content)
-				free_double_char(node->h_content);
 			while (node)
 			{
 				temp = node;
@@ -61,6 +57,8 @@ void free_cmds(Command **commands)
 	}
 	free(commands);
 }
+
+int readl;
 
 int	main(int ac, char **av, char **env)
 {
@@ -94,15 +92,15 @@ int	main(int ac, char **av, char **env)
 	}
 	# endif
 	signal_handler();
-
 	while (1)
 	{
 		tcgetattr(0, &term);
 		tcgetattr(0, &original);
 		term.c_lflag &= ~(ECHOCTL);
 		tcsetattr(0, TCSANOW, &term);
+		global.readline = 1;
 		input = readline("minishell$ ");
-		in_cmd = 0;
+		global.readline = 0;
 		tcsetattr(0, TCSANOW, &original);
 		char *test;
 		test = ft_strtrim(input, " ");
@@ -110,7 +108,7 @@ int	main(int ac, char **av, char **env)
 		{
 			free(test);
 			write(2, "exit\n", 6);
-			exit(exit_status);
+			exit(global.exit_status);
 		}
 		else if (!ft_strcmp("", input))
 		{
@@ -121,12 +119,13 @@ int	main(int ac, char **av, char **env)
 		free(test);
 		// add to history
 		add_history(input);
+	
 		size = word_count(input);
 		if (size == -1)
 		{
 			write(2, "syntax error\n", 14);
 			free(input);
-			exit_status = 258;
+			global.exit_status = 258;
 			continue;
 		}
 		tokens = (Token **)malloc(sizeof(Token *) * (size + 1));
@@ -139,7 +138,7 @@ int	main(int ac, char **av, char **env)
 		if (expander(&tokens, vars.env) == -1)
 		{
 			write(2, "abiguous redirection\n", 22);
-			exit_status = 1;
+			global.exit_status = 1;
 		}
 		#if 0
 				int i = 0;

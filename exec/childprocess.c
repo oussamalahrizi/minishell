@@ -6,13 +6,12 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 00:05:08 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/20 23:31:17 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/22 06:14:00 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-extern int exit_status;
 
 char    **get_path(t_env *env)
 {
@@ -82,7 +81,8 @@ void child_process(t_vars *vars, Command *command, int *fd, t_env *env, int nbr_
 	if(infile && infile->fd != -1)
 	{
 		dup2(infile->fd, STDIN_FILENO);
-		close(infile->here_doc_fd[1]);
+		if (infile->type == 'h')
+			close(infile->here_doc_fd[1]);
 		close(fd_in);
 		close(fd[0]);
 	}
@@ -100,7 +100,7 @@ void child_process(t_vars *vars, Command *command, int *fd, t_env *env, int nbr_
 	if (is_built_in(command->cmd))
 	{
 		exec_builtin(vars, iterator);
-		exit(exit_status);
+		exit(global.exit_status);
 	}
 	else
 	{

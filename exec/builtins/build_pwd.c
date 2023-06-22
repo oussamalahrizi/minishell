@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 19:54:46 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/18 04:26:56 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/22 02:01:38 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void build_pwd(char *pwd_fail, t_env *env)
 		pwd_env = get_pwd_env(env)->value;
 		get_pwd_env(env)->value = ft_strdup(pwd);
 		free(pwd);
-		exit_status = 0;
+		global.exit_status = 0;
 	}
 	else
 		error_cmd("getcwd : failed to get current directory .\n", 1);

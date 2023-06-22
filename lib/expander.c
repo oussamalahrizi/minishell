@@ -14,7 +14,7 @@ char	*get_env(char *string, t_env *env)
 	t_env *node;
 
 	if (*string == '?')
-		return (ft_itoa(exit_status));
+		return (ft_itoa(global.exit_status));
 	if (*string == '$')
 		return (ft_strdup("$"));
 	if (!ft_strlen(string))
@@ -78,6 +78,11 @@ void handle_dollar_alone(char *string, int *index, int token_index, t_exp *exp, 
 			&& (ft_isalnum(string[i]) || string[i] == '?' || string[i] == '_'))
 		{
 			len++;
+			if (i == *index + 1 && ft_isdigit(string[i]))
+			{
+				i++;
+				break;
+			}
 			if (string[i] == '?')
 			{
 				i++;
@@ -174,19 +179,22 @@ void	handle_dollar(char **new_token, char *string, int *index, int token_index,i
 	if (string[i] == '$')
 	{
 		skip = get_env("$", exp->env);
-		// if (string[i] == '$')
-		// 	*index = i + 1;
-		// else
-		// 	*index = i;
+		if (string[i] == '$')
+			*index = i + 1;
+		else
+			*index = i;
 	}
-	else if (ft_isdigit(string[i]))
-		*index = i + 1;
 	else
 	{
 		while (string[i] && !is_space(string[i]) && !is_quote(string[i])
 			&& string[i] != '$' && (ft_isalnum(string[i]) || string[i] == '?' || string[i] == '_'))
 		{
 			len++;
+			if (i == *index + 1 && ft_isdigit(string[i]))
+			{
+				i++;
+				break;
+			}
 			if (string[i] == '?')
 			{
 				i++;

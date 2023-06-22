@@ -18,6 +18,15 @@
 #include <sys/stat.h>
 
 
+typedef struct global {
+	int exit_status;
+	int readline;
+	int child;
+	int heredoc;
+}	t_global;
+
+extern t_global global;
+
 typedef struct s_token{
 	char type;
 	char *value;
@@ -28,7 +37,6 @@ typedef struct s_files
 	char * filename;
 	char type;
 	char *del;
-	char **h_content;
 	int fd;
 	struct s_files *next;
 	int open;
@@ -63,7 +71,6 @@ void tokenize(char *input, Token **tokens);
 int is_space(char c);
 void free_double(Token **str);
 int word_count(char *input);
-void print_split(char **str);
 void append_character(char **string, char c);
 void signal_handler();
 int error(char *str);
@@ -98,7 +105,9 @@ int is_built_in(char *cmd);
 t_env *get_pwd_env(t_env *env);
 int open_files(files* file_list, t_env *env);
 int check_ifs(char *string);
-void open_heredocs(Command **cmd);
+int open_heredocs(Command **cmd, t_env *env);
+char *expand_file(char *string, t_env *env);
+int	is_quote(char c);
 #endif // !MINISHELL_H
 
 

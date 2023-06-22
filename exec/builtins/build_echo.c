@@ -56,5 +56,5 @@ void build_echo(char **cmd_args)
     }
     if (flag)
         write(1,"\n",1);
-    exit_status = 0;
+    global.exit_status = 0;
 }

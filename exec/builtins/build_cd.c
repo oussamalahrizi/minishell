@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 20:05:40 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/18 04:25:52 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/22 02:01:12 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,7 +158,7 @@ void build_cd(char **cmd_args, t_env *env)
 				}
 				change_oldpwd(env);
 				change_pwd(env);
-				exit_status = 0;
+				global.exit_status = 0;
 				return;
 			}
 			node = node->next;
@@ -186,7 +186,7 @@ void build_cd(char **cmd_args, t_env *env)
 			temp = ft_strjoin(temp, "/.");
 			change_oldpwd(env);
 			change_pwd_failed(env, temp);
-			exit_status = 1;
+			global.exit_status = 1;
 			free(temp);
 			return ;
 		}
@@ -198,7 +198,7 @@ void build_cd(char **cmd_args, t_env *env)
 				write(2, temp, ft_strlen(temp));
 				write(2, ": ", 2);
 				perror("");
-				exit_status = 1;
+				global.exit_status = 1;
 				free(temp);
 				return ;
 			}
@@ -206,6 +206,6 @@ void build_cd(char **cmd_args, t_env *env)
 		change_oldpwd(env);
 		change_pwd(env);
 		free(temp);
-		exit_status = 0;
+		global.exit_status = 0;
 	}
 }

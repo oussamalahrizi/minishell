@@ -228,38 +228,28 @@ int evaluate(Node *node)
 //     return 0;
 // }
 
-
 #include <stdio.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
+#include <stdlib.h>
+#include <string.h>
+#include <readline/readline.h>
+#include <readline/history.h>
+#include <signal.h>
+
+int interrupted;
+
+void sigint_handler(int signum) {
+    interrupted = 1;
+	printf("\n");
+	rl_replace_line("", 0);
+	rl_on_new_line();
+	rl_redisplay();
+}
 
 int main() {
-    pid_t child = fork();
-    if (child == 0) {
-        // Child process
+    char *input;
 
-        // Close unnecessary file descriptors
-        close(STDOUT_FILENO);
-        close(STDERR_FILENO);
-
-        // Duplicate stdin to fd 3
-        dup2(STDIN_FILENO, 3);
-
-        // Execute the cat command
-        char* args[] = {"cat", NULL};
-        execve("/bin/cat", args, NULL);
-    } else {
-        // Parent process
-
-        // Write the heredoc content to the child's stdin
-        const char* heredocContent = "This is the heredoc content\n";
-        size_t contentSize = strlen(heredocContent);
-        write(3, heredocContent, contentSize);
-
-        // Wait for the child process to finish
-        wait(NULL);
-    }
+	input = readline(">");
+	printf("%s", input);
 
     return 0;
 }

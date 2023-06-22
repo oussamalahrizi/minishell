@@ -94,7 +94,6 @@ files *allocate_files(Token **tokens, int *index, files *file_list, t_env *env)
 	new = malloc(sizeof(files));
 	new->next = NULL;
 	new->filename = NULL;
-	new->h_content = NULL;
 	new->del = NULL;
 	new->open = 1;
 	new->expand = 1;

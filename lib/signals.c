@@ -1,27 +1,37 @@
 #include "../minishell.h"
 
-extern int exit_status;
-extern int in_cmd;
+extern int readl;
 
-void control_c()
+static void control_c(int sig)
 {
-	printf("\n");
-	printf("in cmd : %d\n", in_cmd);
-	if (in_cmd)
-		return ;
-	exit_status = 1;
-	rl_replace_line("", 0);
-	rl_on_new_line();
+	if (sig == SIGINT)
+	{
+		if (global.readline == 1)
+		{
+			global.exit_status = 1;
+			printf("\n");
+			rl_replace_line("", 0);
+			rl_on_new_line();
+			rl_redisplay();
+		}
+		else if (global.child)
+			printf("\n");
+	}
+}
+
+void sig_quit()
+{
+	if (global.heredoc)
+		return;
+	if (global.child)
+	{
+		printf("Quit: 3\n");
+	}
 	rl_redisplay();
 }
 
 void signal_handler()
 {
-	// struct sigaction sa;
-    // sa.sa_handler = control_c;
-    // sigemptyset(&sa.sa_mask);
-    // sa.sa_flags = SA_RESTART;
-    // sigaction(SIGINT, &sa, NULL);
     signal(SIGINT, control_c);
-    signal(SIGQUIT, SIG_IGN);
+    signal(SIGQUIT, sig_quit);
 }

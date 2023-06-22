@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 19:57:58 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/04 20:02:46 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/22 02:01:41 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,5 +17,5 @@ extern int exit_status;
 void error_cmd(char *str, int code)
 {
 	write(2, str, ft_strlen(str));
-	exit_status = code;
+	global.exit_status = code;
 }
