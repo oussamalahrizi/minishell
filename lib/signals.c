@@ -23,10 +23,8 @@ void sig_quit()
 {
 	if (global.heredoc)
 		return;
-	if (global.child)
-	{
+	else if (global.child)
 		printf("Quit: 3\n");
-	}
 	rl_redisplay();
 }
 

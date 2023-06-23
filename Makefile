@@ -1,6 +1,14 @@
 SRCS = 	minishell.c \
-		lib/expander.c \
-		lib/tokenizer.c \
+		lib/free_utils.c \
+		lib/expander/expander.c \
+		lib/expander/expander_helpers.c \
+		lib/expander/handle_dollar_alone.c \
+		lib/tokenizer/tokenizer.c \
+		lib/tokenizer/tokenize_helpers.c \
+		lib/tokenizer/tokenize_helpers2.c \
+		lib/tokenizer/word_count.c \
+		lib/tokenizer/wc_utils.c \
+		lib/tokenizer/delimiter_section.c \
 		lib/signals.c \
 		lib/string_utils.c \
 		lib/extract.c \
@@ -33,7 +41,7 @@ CC = cc
 
 CFLAGS = -Wall -Wextra -Werror -g3 ${sanitize} -I/Users/olahrizi/goinfre/homebrew/Cellar/readline/8.2.1/include
 
-# sanitize= -fsanitize=address
+sanitize= -fsanitize=address
 
 all : ${NAME}
 

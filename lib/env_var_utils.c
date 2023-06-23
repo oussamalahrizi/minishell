@@ -107,6 +107,7 @@ void increase_shell_lvl(t_env *env)
 			n = ft_atoi(node->value);
 			node->value = ft_itoa(n + 1);
 			free(temp);
+			return;
 		}
 		node = node->next;
 	}
@@ -141,4 +142,18 @@ char **convert_env(t_env *env)
 	}
 	list[i] = 0;
 	return (list);
+}
+
+t_env *get_env_node(t_env *env, char *name)
+{
+	t_env *node;
+
+	node = env;
+	while (node)
+	{
+		if (!ft_strcmp(node->name, name))
+			return (node);
+		node = node->next;
+	}
+	return (NULL);
 }

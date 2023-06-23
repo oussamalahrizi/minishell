@@ -23,3 +23,15 @@ void append_character(char **string, char c)
     free(*string);
     *string = new;
 }
+
+int is_space(char c)
+{
+    return ((c >= 9 && c <= 13) || c == 32);
+}
+
+int	is_quote(char c)
+{
+	if (c == '\'' || c == '\"')
+		return (1);
+	return (0);
+}

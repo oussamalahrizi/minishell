@@ -16,49 +16,26 @@ void free_tokens(Token **tokens)
 	free(tokens);
 }
 
-void free_double_char(char **str)
-{
-	int i = 0;
-	while (str[i])
-	{
-		free(str[i]);
-		i++;
-	}
-	free(str);
-}
+int get_last_pipe(char *input) {
+    int i;
 
-void free_cmds(Command **commands)
-{
-	int i = 0;
-	files *node;
-	files *temp;
-	while(commands[i])
-	{
-		if (commands[i]->cmd)
-			free(commands[i]->cmd);
-		if (commands[i]->cmd_args)
-			free_double_char(commands[i]->cmd_args);
-		if (commands[i]->files)
-		{
-			node = commands[i]->files;
-			while (node)
-			{
-				temp = node;
-				if (node->del)
-					free(node->del);
-				if (node->filename)
-					free(node->filename);
-				node = node->next;
-				free(temp);
-			}
-		}
-		free(commands[i]);
-		i++;
-	}
-	free(commands);
-}
+	i = ft_strlen(input) - 1;
 
-int readl;
+    while (is_space(input[i]))
+        i--;
+	if (i == 0)
+		return (0);
+    if (input[i] == '|')
+	{
+        i--;
+		while (i > 0 && is_space(input[i]))
+            i--;
+        if ((input[i] == '<' || input[i] == '>') || i == 0)
+            return 0;
+		return (1);
+    }
+    return 0;
+}
 
 int	main(int ac, char **av, char **env)
 {
@@ -92,6 +69,7 @@ int	main(int ac, char **av, char **env)
 	}
 	# endif
 	signal_handler();
+	char *new_input = NULL;
 	while (1)
 	{
 		tcgetattr(0, &term);
@@ -102,24 +80,34 @@ int	main(int ac, char **av, char **env)
 		input = readline("minishell$ ");
 		global.readline = 0;
 		tcsetattr(0, TCSANOW, &original);
-		char *test;
-		test = ft_strtrim(input, " ");
 		if (!input)
 		{
-			free(test);
 			write(2, "exit\n", 6);
 			exit(global.exit_status);
 		}
 		else if (!ft_strcmp("", input))
 		{
 			free(input);
-			free(test);
 			continue;
 		}
-		free(test);
-		// add to history
+		int go = 0;
+		while (get_last_pipe(input))
+		{
+			new_input = readline("> ");
+			if (!new_input)
+			{
+				(go = 1, error_cmd("syntax error : unexpected end of file\n", 258));
+				break;
+			}
+			(input = ft_strjoin(input, " "), input = ft_strjoin(input, new_input));
+			free(new_input);
+		}
 		add_history(input);
-	
+		if (go)
+		{
+			free(input);
+			continue;
+		}
 		size = word_count(input);
 		if (size == -1)
 		{

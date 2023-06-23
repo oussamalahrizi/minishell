@@ -17,6 +17,48 @@
 #include <dirent.h>
 #include <sys/stat.h>
 
+typedef struct s_tok
+{
+	int		i;
+	char	quote;
+	char	type;
+	char	*string;
+	char	*delimiters;
+	int		k;
+}			t_tok;
+
+typedef struct s_token{
+	char type;
+	char *value;
+}	Token;
+
+typedef struct s_dollar
+{
+	char	*skip;
+	char	**split;
+	Token	**new_tokens;
+	int		i;
+	int		len;
+	int		start_index;
+	int		token_size;
+	int		split_size;
+	int		j;
+	int		size;
+	int		k_split;
+}			t_dollar;
+
+typedef struct s_env
+{
+	char *name;
+	char *value;
+	int flag;
+	struct s_env *next;
+}	t_env;
+
+typedef struct {
+	t_env *env;
+	Token **tokens;
+}	t_exp;
 
 typedef struct global {
 	int exit_status;
@@ -27,10 +69,7 @@ typedef struct global {
 
 extern t_global global;
 
-typedef struct s_token{
-	char type;
-	char *value;
-}	Token;
+
 
 typedef struct s_files
 {
@@ -51,13 +90,7 @@ typedef struct
 	files *files;
 }	Command;
 
-typedef struct s_env
-{
-	char *name;
-	char *value;
-	int flag;
-	struct s_env *next;
-}	t_env;
+
 
 typedef struct s_vars
 {
@@ -108,6 +141,21 @@ int check_ifs(char *string);
 int open_heredocs(Command **cmd, t_env *env);
 char *expand_file(char *string, t_env *env);
 int	is_quote(char c);
+t_env *get_env_node(t_env *env, char *name);
+int	delimiter_section(char *input, int *index, int k);
+int	count_the_rest(char *input, char *delimiters, int *index);
+void append_and_increment(char **string, char c, int *index);
+char *third_part(char *input, int *index, char *delimiters);
+char token_redir_helper(char **string, char *input, int *index);
+char	*skip_quotes_tok(char *input, int *index, char *delimiters);
+void	skip_spaces_tok(char *input, int *index);
+void	output_pipe(t_tok *vars, char *input, Token **tokens);
+void free_cmds(Command **commands);
+void	handle_dollar_eof(t_dollar *vars, t_exp *exp, char *string, int *index);
+void	extract_skip(char *string, t_dollar *vars, int *index, t_exp *exp);
+void	handle_dollar_alone(char *string, int *index, int token_index,
+		t_exp *exp, int *new_index, char **new_token_value);
+void	preparation(t_exp *exp, t_dollar *vars, int token_index, int *new_index);
 #endif // !MINISHELL_H
 
 

@@ -106,7 +106,7 @@ files *allocate_files(Token **tokens, int *index, files *file_list, t_env *env)
 	if(tokens[i - 1]->type == 'h')
 	{
 		temp = tokens[i]->value;
-		if (temp[0] == temp[ft_strlen(temp) - 1] && ft_strchr("\"'", temp[0]))
+		if(ft_strchr(tokens[i]->value, '\"') || ft_strchr(tokens[i]->value, '\''))
 			new->expand = 0;
 		tokens[i]->value = clean_command(temp, env);
 		free(temp);

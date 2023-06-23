@@ -22,43 +22,63 @@ char **append_string(char **array, char *str)
 
 void write_file(char **array, int fd);
 
-static void str_copy(char *src, char *dest, int start, int end)
-{
-	int i = 0 ;
-	while (src[i] && start < end)
-		dest[start++] = src[i++];
-}
 
-static void expand_value(char *string, t_env *env)
+static void expand_value(char **string, t_env *env)
 {
 	int i = 0;
-	char *to_expand;
-	int c;
-	while (string[i])
+	char *new_value;
+	char *original = *string;
+	char *skip;
+	char *temp;
+	new_value = ft_strdup("");
+
+	while (*original)
 	{
-		while (string[i] && string[i] != '$')
-			i++;
-		c = 0;
-		if (!string[i])
-			break;
-		i++;
-		int start_index = i;
-		while (string[i] && string[i] != '$' && !is_space(string[i]
-			&& !is_quote(string[i]) && (ft_isalnum(string[i]) || string[i] == '_')))
+		i = 0;
+		while (original[i] && original[i] != '$')
 		{
-			c++;
+			append_character(&new_value, original[i]);
 			i++;
 		}
-		if (string[i])
-			c--;
-		to_expand = ft_substr(string, start_index, c);
-		char *temp = to_expand;
-		printf("value to expand : %s|\n", to_expand);
-		to_expand = get_env(to_expand, env);
-		free(temp);
-		printf("value after expand : %s|\n", to_expand);
-		str_copy(to_expand, string, start_index - 1, i);
+		if (!original[i])
+			break;
+		i++;
+		if(original[i] == '?' || original[i] == '$')
+		{
+			skip = ft_substr(original, i, 1);
+			temp = skip;
+			skip = get_env(skip, env);
+			free(temp);
+			new_value = ft_strjoin(new_value, skip);
+			free(skip);
+			i++;
+		}
+		else if (ft_isdigit(original[i]))
+		{
+			append_character(&new_value, original[i]);
+			i++;
+		}
+		else
+		{
+			int start_index = i;
+			int len = 0;
+			while (original[i] && original[i] != '$' && !is_space(original[i]) && !is_quote(original[i])
+				&& (ft_isalnum(original[i]) || original[i] == '_'))
+				{
+					i++;
+					len++;
+				}
+			skip = ft_substr(original, start_index, len);
+			temp = skip;
+			skip = get_env(skip, env);
+			free(temp);
+			new_value = ft_strjoin(new_value, skip);
+			free(skip);
+		}
+		original += i;
 	}
+	free(*string);
+	*string = new_value;
 }
 
 
@@ -68,7 +88,7 @@ void here_doc_signal(int sig)
 		exit(130);
 }
 
-int here_doc(char *del, int index, int fd, t_env *env)
+int here_doc(char *del, int index, int fd, t_env *env, int flag)
 {
 	int i;
 	char *str;
@@ -99,8 +119,8 @@ int here_doc(char *del, int index, int fd, t_env *env)
 				break ;
 			}
 			temp = array;
-			if (!ft_strchr(del, '\"') || !ft_strchr(del, '\''))
-				expand_value(str, env);
+			if (flag)
+				expand_value(&str, env);
 			array = append_string(array, str);
 			free_double_char(temp);
 			i++;
@@ -115,6 +135,8 @@ int here_doc(char *del, int index, int fd, t_env *env)
 	waitpid(pid, &status, 0);
 	if (WEXITSTATUS(status) == 130)
 	{
+		global.heredoc = 0;
+		global.child = 0;
 		global.exit_status = 128 + WTERMSIG(status);
 		return (-1);
 	}
@@ -160,7 +182,7 @@ int open_heredocs(Command **cmd, t_env *env)
         			return (-1);
 				}
 				node->fd = node->here_doc_fd[0];
-				if (here_doc(node->del, index, node->here_doc_fd[1], env) == -1)
+				if (here_doc(node->del, index, node->here_doc_fd[1], env,node->expand) == -1)
 				{
 					global.exit_status = 1;
 					return (-1);
