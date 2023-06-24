@@ -1,5 +1,5 @@
 SRCS = 	minishell.c \
-		lib/free_utils.c \
+		lib/signals.c \
 		lib/expander/expander.c \
 		lib/expander/expander_helpers.c \
 		lib/expander/expander_helpers2.c \
@@ -11,16 +11,18 @@ SRCS = 	minishell.c \
 		lib/tokenizer/word_count.c \
 		lib/tokenizer/wc_utils.c \
 		lib/tokenizer/delimiter_section.c \
-		lib/signals.c \
-		lib/string_utils.c \
 		lib/extract/extract.c \
 		lib/extract/extract_helpers.c \
 		lib/extract/extract_helpers2.c \
 		lib/extract/allocate_strings.c \
 		lib/extract/allocate_files.c \
-		lib/env_var_utils.c \
-		lib/utils.c \
-		lib/ifs.c \
+		lib/other_utils/utils.c \
+		lib/other_utils/utils2.c \
+		lib/other_utils/env_var_utils.c \
+		lib/other_utils/env_var_utils2.c \
+		lib/other_utils/ifs.c \
+		lib/other_utils/string_utils.c \
+		lib/other_utils/free_utils.c \
 		exec/exec.c \
 		exec/builtins/error.c \
 		exec/builtins/build_exit.c \

@@ -1,8 +1,6 @@
 
 # include "../../minishell.h"
 
-extern int exit_status;
-
 int check_n_syntax(char **cmd_args, int *flag)
 {
     int i;

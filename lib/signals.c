@@ -1,8 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   signals.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/06/24 22:20:14 by olahrizi          #+#    #+#             */
+/*   Updated: 2023/06/24 22:23:45 by olahrizi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
-extern int readl;
-
-static void control_c(int sig)
+static void	control_c(int sig)
 {
 	if (sig == SIGINT)
 	{
@@ -19,17 +29,18 @@ static void control_c(int sig)
 	}
 }
 
-void sig_quit()
+void	sig_quit(int sig)
 {
+	(void) sig;
 	if (global.heredoc)
-		return;
+		return ;
 	else if (global.child)
 		printf("Quit: 3\n");
 	rl_redisplay();
 }
 
-void signal_handler()
+void	signal_handler(void)
 {
-    signal(SIGINT, control_c);
-    signal(SIGQUIT, sig_quit);
+	signal(SIGINT, control_c);
+	signal(SIGQUIT, sig_quit);
 }

@@ -6,13 +6,11 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 20:05:40 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/22 02:01:12 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/24 21:49:01 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-extern int exit_status;
 
 
 t_env *get_pwd_env(t_env *env)

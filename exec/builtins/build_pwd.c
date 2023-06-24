@@ -6,13 +6,11 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 19:54:46 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/22 02:01:38 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/24 21:49:04 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-extern int exit_status;
 
 void build_pwd(char *pwd_fail, t_env *env)
 {

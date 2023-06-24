@@ -6,13 +6,12 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 11:27:00 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/22 09:42:30 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/24 21:48:56 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-extern int exit_status;
 
 char *expand_file(char *string, t_env *env)
 {

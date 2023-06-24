@@ -6,13 +6,11 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 01:30:44 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/22 02:06:03 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/24 21:49:16 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
-
-extern int exit_status;
 
 int check_syntax_unset(char *cmd)
 {
