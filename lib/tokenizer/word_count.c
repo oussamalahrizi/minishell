@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 10:23:26 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/23 13:54:24 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/24 12:36:09 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ int	delimiter_and_the_rest(char *input, int *index, int *k, char *delimiters)
 		++(*k);
 		i++;
 	}
-	if (count_the_rest(input, delimiters, &i) == -1)
+	else if (count_the_rest(input, delimiters, &i) == -1)
 	{
 		*index = i;
 		return (-1);
@@ -82,14 +82,7 @@ int	delimiter_and_the_rest(char *input, int *index, int *k, char *delimiters)
 	return (0);
 }
 
-typedef struct s_wc
-{
-	int		i;
-	int		k;
-	char	*delimiters;
-}			t_wc;
-
-static void	skip_spaces(char *input, int *index)
+static int	skip_spaces(char *input, int *index)
 {
 	int	i;
 
@@ -97,18 +90,20 @@ static void	skip_spaces(char *input, int *index)
 	while (input[i] && is_space(input[i]))
 		i++;
 	*index = i;
+	if (!input[i])
+		return (0);
+	return (1);
 }
 
 int	word_count(char *input)
 {
 	t_wc	vars;
 
-	vars.k = 0;
-	vars.i = 0;
-	vars.delimiters = ft_strdup("|><");
+	init_stuff_wc(&vars);
 	while (input[vars.i])
 	{
-		skip_spaces(input, &vars.i);
+		if (skip_spaces(input, &vars.i) == 0)
+			break ;
 		if (input[vars.i] == '\'' || input[vars.i] == '\"')
 		{
 			if (inside_quotes(input, &vars.i, vars.delimiters, &vars.k) == -1)

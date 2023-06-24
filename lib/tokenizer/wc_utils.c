@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 13:53:28 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/23 21:46:16 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/24 12:36:55 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,4 +48,11 @@ Token	*new_token(char type, char *value)
 	token->type = type;
 	token->value = ft_strdup(value);
 	return (token);
+}
+
+void	init_stuff_wc(t_wc *vars)
+{
+	vars->k = 0;
+	vars->i = 0;
+	vars->delimiters = ft_strdup("|><");
 }

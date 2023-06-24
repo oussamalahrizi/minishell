@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 22:06:05 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/23 23:04:04 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/24 14:32:02 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,25 +75,24 @@ void	cleanup_dollar_alone(t_dollar *vars, t_exp *exp, int token_index,
 	free_double(vars->new_tokens);
 }
 
-void	handle_dollar_alone(char *string, int *index, int token_index,
-		t_exp *exp, int *new_index, char **new_token_value)
+void	handle_dollar_alone(t_exp *exp)
 {
 	t_dollar	vars;
 
 	vars.skip = NULL;
 	vars.new_tokens = NULL;
-	vars.i = *index + 1;
+	vars.i = exp->i + 1;
 	vars.start_index = vars.i;
 	vars.len = 0;
-	if (string[vars.i] == '$' || !string[vars.i])
-		handle_dollar_eof(&vars, exp, string, index);
+	if (exp->string[vars.i] == '$' || !exp->string[vars.i])
+		handle_dollar_eof(&vars, exp, exp->string, &exp->i);
 	else
-		extract_skip(string, &vars, index, exp);
-	preparation(exp, &vars, token_index, new_index);
+		extract_skip(exp->string, &vars, &exp->i, exp);
+	preparation(exp, &vars, exp->j, &exp->new_index);
 	if (vars.skip[0] == 0)
-		skip_empty(new_token_value, &vars);
+		skip_empty(&exp->new_token, &vars);
 	else
-		skip_not_empty(&vars, new_token_value);
-	token_index += *new_index + 1;
-	cleanup_dollar_alone(&vars, exp, token_index, new_index);
+		skip_not_empty(&vars, &exp->new_token);
+	vars.token_index = exp->j + exp->new_index + 1;
+	cleanup_dollar_alone(&vars, exp, exp->j, &exp->new_index);
 }

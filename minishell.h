@@ -17,6 +17,16 @@
 #include <dirent.h>
 #include <sys/stat.h>
 
+
+
+
+typedef struct s_wc
+{
+	int		i;
+	int		k;
+	char	*delimiters;
+}			t_wc;
+
 typedef struct s_tok
 {
 	int		i;
@@ -45,6 +55,7 @@ typedef struct s_dollar
 	int		j;
 	int		size;
 	int		k_split;
+	int token_index;
 }			t_dollar;
 
 typedef struct s_env
@@ -58,6 +69,13 @@ typedef struct s_env
 typedef struct {
 	t_env *env;
 	Token **tokens;
+	int i;
+	int j;
+	char *new_token;
+	char *string;
+	int new_index;
+	Token **t_tokens;
+	char *temp;
 }	t_exp;
 
 typedef struct global {
@@ -98,8 +116,16 @@ typedef struct s_vars
 	Command **commands;
 }	t_vars;
 
+typedef struct s_ext
+{
+	int i;
+	Command **commands;
+	int num;
+	int k;
+}	t_ext;
 
-int	expander(Token ***tokens_i, t_env *env);
+
+void	expander(Token ***tokens_i, t_env *env);
 void tokenize(char *input, Token **tokens);
 int is_space(char c);
 void free_double(Token **str);
@@ -153,9 +179,19 @@ void	output_pipe(t_tok *vars, char *input, Token **tokens);
 void free_cmds(Command **commands);
 void	handle_dollar_eof(t_dollar *vars, t_exp *exp, char *string, int *index);
 void	extract_skip(char *string, t_dollar *vars, int *index, t_exp *exp);
-void	handle_dollar_alone(char *string, int *index, int token_index,
-		t_exp *exp, int *new_index, char **new_token_value);
+void	handle_dollar_alone(t_exp *exp);
 void	preparation(t_exp *exp, t_dollar *vars, int token_index, int *new_index);
+void init_stuff_wc(t_wc *vars);
+void	handle_dollar(int token_index ,t_exp *exp);
+void	append_before_dollar(t_exp *vars);
+void	general_loop(t_exp *vars);
+void set_last_infile(files *file_list);
+void set_last_outfile(files *file_list);
+char *get_userhome(t_env *env);
+char *expand_tilde(char *string, t_env *env);
+char *clean_command(char *string, t_env *env);
+char	**allocate_strings(Token **tokens, int *index, t_env *env);
+files *allocate_files(Token **tokens, int *index, files *file_list, t_env *env);
 #endif // !MINISHELL_H
 
 

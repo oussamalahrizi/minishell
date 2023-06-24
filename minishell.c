@@ -21,7 +21,7 @@ int get_last_pipe(char *input) {
 
 	i = ft_strlen(input) - 1;
 
-    while (is_space(input[i]))
+    while (i > 0 && is_space(input[i]))
         i--;
 	if (i == 0)
 		return (0);
@@ -123,11 +123,7 @@ int	main(int ac, char **av, char **env)
 			return (1);
 		}
 		tokenize(input, tokens);
-		if (expander(&tokens, vars.env) == -1)
-		{
-			write(2, "abiguous redirection\n", 22);
-			global.exit_status = 1;
-		}
+		expander(&tokens, vars.env);
 		#if 0
 				int i = 0;
 				while (tokens[i] != NULL)

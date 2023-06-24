@@ -1,18 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   handle_dollar_alone.c                              :+:      :+:    :+:   */
+/*   handle_dollar_quotes.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/23 22:36:02 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/24 11:10:36 by olahrizi         ###   ########.fr       */
+/*   Created: 2023/06/24 12:38:17 by olahrizi          #+#    #+#             */
+/*   Updated: 2023/06/24 14:55:10 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-void	handle_dollar_eof(t_dollar *vars, t_exp *exp, char *string, int *index)
+typedef struct s_quote
+{
+	char	*skip;
+	char	*old;
+	char	*temp;
+	int		i;
+	int		start_index;
+	int		len;
+}			t_quote;
+
+static void	first_case(char *string, t_exp *exp, int *index, t_quote *vars)
 {
 	vars->skip = get_env("$", exp->env);
 	if (string[vars->i] == '$')
@@ -21,10 +31,8 @@ void	handle_dollar_eof(t_dollar *vars, t_exp *exp, char *string, int *index)
 		*index = vars->i;
 }
 
-void	extract_skip(char *string, t_dollar *vars, int *index, t_exp *exp)
+static void	second_case(char *string, t_quote *vars, t_exp *exp, int *index)
 {
-	char	*temp;
-
 	while (string[vars->i] && !is_space(string[vars->i])
 		&& !is_quote(string[vars->i]) && string[vars->i] != '$'
 		&& (ft_isalnum(string[vars->i]) || string[vars->i] == '?'
@@ -45,30 +53,27 @@ void	extract_skip(char *string, t_dollar *vars, int *index, t_exp *exp)
 	}
 	vars->skip = ft_substr(string, vars->start_index, vars->len);
 	*index = vars->i;
-	temp = vars->skip;
+	vars->temp = vars->skip;
 	vars->skip = get_env(vars->skip, exp->env);
-	free(temp);
+	free(vars->temp);
 }
 
-void	preparation(t_exp *exp, t_dollar *vars, int token_index, int *new_index)
+void	handle_dollar(int token_index, t_exp *exp)
 {
-	vars->token_size = 0;
-	while (exp->tokens[vars->token_size])
-		vars->token_size++;
-	vars->j = 0;
-	vars->split = ft_split(vars->skip, ' ');
-	while (vars->split[vars->j])
-		vars->j++;
-	vars->split_size = vars->j;
-	if (vars->skip[0] == 0)
-		vars->j = 1;
-	vars->new_tokens = malloc(sizeof(Token *) * (vars->token_size + vars->j));
-	vars->size = vars->token_size + vars->j - 1;
-	vars->j = 0;
-	while (vars->j < token_index + *new_index)
-	{
-		vars->new_tokens[vars->j] = new_token(exp->tokens[vars->j]->type,
-				exp->tokens[vars->j]->value);
-		vars->j++;
-	}
+	t_quote	vars;
+
+	vars.skip = NULL;
+	vars.i = exp->i + 1;
+	vars.start_index = vars.i;
+	vars.len = 0;
+	if (exp->string[vars.i] == '$')
+		first_case(exp->string, exp, &exp->i, &vars);
+	else
+		second_case(exp->string, &vars, exp, &exp->i);
+	exp->new_token = ft_strjoin(exp->new_token, vars.skip);
+	free(vars.skip);
+	vars.old = exp->tokens[token_index + exp->new_index]->value;
+	exp->tokens[token_index
+		+ exp->new_index]->value = ft_strdup(exp->new_token);
+	free(vars.old);
 }

@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 00:05:08 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/23 09:02:33 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/24 14:57:24 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,10 +98,7 @@ void child_process(t_vars *vars, Command *command, int *fd, t_env *env, int nbr_
 	else if (nbr_cmds > 1 && iterator != nbr_cmds - 1)
 		dup2(fd[1], STDOUT_FILENO);
 	if (is_built_in(command->cmd))
-	{
-		exec_builtin(vars, iterator);
-		exit(global.exit_status);
-	}
+		(exec_builtin(vars, iterator), exit(global.exit_status));
 	else
 	{
 		if (!ft_strcmp(command->cmd, "."))

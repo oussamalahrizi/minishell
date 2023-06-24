@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 21:45:51 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/23 21:50:08 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/24 17:26:19 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,13 @@ void	quotes_helper(char *input, t_tok *vars, Token **tokens)
 	free(vars->string);
 }
 
-static void	general_loop(t_tok *vars, Token **tokens, char *input)
+static void	general_loop_tok(t_tok *vars, Token **tokens, char *input)
 {
 	while (input[vars->i])
 	{
 		skip_spaces_tok(input, &vars->i);
+		if (!input[vars->i])
+			break ;
 		if (ft_strchr("'\"", input[vars->i]))
 		{
 			quotes_helper(input, vars, tokens);
@@ -66,7 +68,7 @@ void	tokenize(char *input, Token **tokens)
 	vars.delimiters = ft_strdup("|><");
 	vars.i = 0;
 	vars.k = 0;
-	general_loop(&vars, tokens, input);
+	general_loop_tok(&vars, tokens, input);
 	free(vars.delimiters);
 	tokens[vars.k] = NULL;
 }
