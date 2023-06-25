@@ -64,6 +64,6 @@ void	build_echo(char **cmd_args, int fd)
 		free(str);
 	}
 	if (flag)
-		write(1, "\n", fd);
+		write(fd, "\n", 1);
 	g_global.exit_status = 0;
 }
