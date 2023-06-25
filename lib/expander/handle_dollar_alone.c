@@ -62,7 +62,7 @@ void	preparation(t_exp *exp, t_dollar *vars, int token_index, int *new_index)
 	vars->split_size = vars->j;
 	if (vars->skip[0] == 0)
 		vars->j = 1;
-	vars->new_tokens = malloc(sizeof(Token *) * (vars->token_size + vars->j));
+	vars->new_tokens = malloc(sizeof(t_token *) * (vars->token_size + vars->j));
 	vars->size = vars->token_size + vars->j - 1;
 	vars->j = 0;
 	while (vars->j < token_index + *new_index)

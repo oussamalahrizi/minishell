@@ -40,11 +40,11 @@ int	count_the_rest(char *input, char *delimiters, int *index)
 	return (0);
 }
 
-Token	*new_token(char type, char *value)
+t_token	*new_token(char type, char *value)
 {
-	Token	*token;
+	t_token	*token;
 
-	token = (Token *)malloc(sizeof(Token));
+	token = (t_token *)malloc(sizeof(t_token));
 	token->type = type;
 	token->value = ft_strdup(value);
 	return (token);

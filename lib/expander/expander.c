@@ -57,7 +57,7 @@ void	append_before_dollar(t_exp *vars)
 	}
 }
 
-void	expander(Token ***tokens_i, t_env *env)
+void	expander(t_token ***tokens_i, t_env *env)
 {
 	t_exp	vars;
 

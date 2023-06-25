@@ -12,7 +12,7 @@
 
 #include "../../minishell.h"
 
-static void	another_helper(t_tok *vars, char *input, Token **tokens)
+static void	another_helper(t_tok *vars, char *input, t_token **tokens)
 {
 	vars->type = token_redir_helper(&(vars->string), input, &vars->i);
 	tokens[vars->k++] = new_token(vars->type, vars->string);
@@ -20,21 +20,21 @@ static void	another_helper(t_tok *vars, char *input, Token **tokens)
 	free(vars->string);
 }
 
-static void	another_last_helper(char *input, t_tok *vars, Token **tokens)
+static void	another_last_helper(char *input, t_tok *vars, t_token **tokens)
 {
 	vars->string = third_part(input, &vars->i, vars->delimiters);
 	tokens[vars->k++] = new_token('s', vars->string);
 	free(vars->string);
 }
 
-void	quotes_helper(char *input, t_tok *vars, Token **tokens)
+void	quotes_helper(char *input, t_tok *vars, t_token **tokens)
 {
 	vars->string = skip_quotes_tok(input, &vars->i, vars->delimiters);
 	tokens[vars->k++] = new_token('s', vars->string);
 	free(vars->string);
 }
 
-static void	general_loop_tok(t_tok *vars, Token **tokens, char *input)
+static void	general_loop_tok(t_tok *vars, t_token **tokens, char *input)
 {
 	while (input[vars->i])
 	{
@@ -61,7 +61,7 @@ static void	general_loop_tok(t_tok *vars, Token **tokens, char *input)
 	}
 }
 
-void	tokenize(char *input, Token **tokens)
+void	tokenize(char *input, t_token **tokens)
 {
 	t_tok	vars;
 

@@ -92,7 +92,7 @@ static int	case_append(t_op_files *vars, t_env *env)
 	return (0);
 }
 
-static void	init_stuff(t_op_files *vars, files *file_list)
+static void	init_stuff(t_op_files *vars, t_files *file_list)
 {
 	vars->i = 0;
 	vars->count = 0;
@@ -104,7 +104,7 @@ static void	init_stuff(t_op_files *vars, files *file_list)
 	vars->node = file_list;
 }
 
-int	open_files(files *file_list, t_env *env)
+int	open_files(t_files *file_list, t_env *env)
 {
 	t_op_files	vars;
 

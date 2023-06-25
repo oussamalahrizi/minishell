@@ -22,7 +22,7 @@ void	skip_spaces_tok(char *input, int *index)
 	*index = i;
 }
 
-void	output_pipe(t_tok *vars, char *input, Token **tokens)
+void	output_pipe(t_tok *vars, char *input, t_token **tokens)
 {
 	free(vars->string);
 	vars->string = malloc(sizeof(char) * 2);

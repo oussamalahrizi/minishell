@@ -3,35 +3,31 @@
 /*                                                        :::      ::::::::   */
 /*   build_pwd.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 19:54:46 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/25 11:40:17 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/25 11:47:10 by idelfag          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "utils.h"
 
-extern t_global g_global;
-
-void build_pwd(char *pwd_fail, t_env *env, int fd_out)
+void	build_pwd(char *pwd_fail, t_env *env, int fd)
 {
-	char *pwd;
-	char *pwd_env;
+	char	*pwd;
 
 	pwd = getcwd(NULL, 0);
 	if (!pwd && pwd_fail)
 		pwd = ft_strdup(pwd_fail);
 	if (pwd)
 	{
-		ft_putstr_fd(pwd, fd_out);
-		write(fd_out, "\n", 1);
-		pwd_env = get_pwd_env(env)->value;
+		ft_putstr_fd(pwd, fd);
+		write(1, "\n", fd);
 		free(get_pwd_env(env)->value);
 		get_pwd_env(env)->value = ft_strdup(pwd);
 		free(pwd);
 		g_global.exit_status = 0;
 	}
 	else
-		error_cmd("getcwd : failed to get current directory .\n", 1);
+		error_cmd("getcwd : failed to get current directory .\n", 2);
 }

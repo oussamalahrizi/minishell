@@ -63,7 +63,7 @@ void	error_message_files(char *str)
 	g_global.exit_status = 1;
 }
 
-int	count_files(files *node)
+int	count_files(t_files *node)
 {
 	int	count;
 

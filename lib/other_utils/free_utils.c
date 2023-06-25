@@ -12,7 +12,7 @@
 
 #include "../../minishell.h"
 
-void	free_double(Token **str)
+void	free_double(t_token **str)
 {
 	int	i;
 
@@ -39,9 +39,9 @@ void	free_double_char(char **str)
 	free(str);
 }
 
-static void	free_files(files *node)
+static void	free_files(t_files *node)
 {
-	files	*temp;
+	t_files	*temp;
 
 	while (node)
 	{
@@ -55,7 +55,7 @@ static void	free_files(files *node)
 	}
 }
 
-void	free_cmds(Command **commands)
+void	free_cmds(t_command **commands)
 {
 	int		i;
 

@@ -6,13 +6,13 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 17:15:48 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/25 14:16:41 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/25 17:57:43 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-static int	calculate_cmds(Token **tokens)
+static int	calculate_cmds(t_token **tokens)
 {
 	int	i;
 	int	num;
@@ -35,7 +35,7 @@ static void	init_stuff(t_ext *vars)
 	i = 0;
 	while (i < vars->num)
 	{
-		vars->commands[i] = malloc(sizeof(Command));
+		vars->commands[i] = malloc(sizeof(t_command));
 		vars->commands[i]->cmd = NULL;
 		vars->commands[i]->cmd_args = malloc(sizeof(char *));
 		vars->commands[i]->cmd_args[0] = NULL;
@@ -44,7 +44,7 @@ static void	init_stuff(t_ext *vars)
 	}
 }
 
-static void	command_case(t_ext *vars, Token **tokens, t_env *env)
+static void	command_case(t_ext *vars, t_token **tokens, t_env *env)
 {
 	char	*temp;
 
@@ -61,7 +61,7 @@ static void	command_case(t_ext *vars, Token **tokens, t_env *env)
 	vars->i++;
 }
 
-static void	general_loop_ext(t_ext *vars, Token **tokens, t_env *env)
+static void	general_loop_ext(t_ext *vars, t_token **tokens, t_env *env)
 {
 	while (tokens[vars->i])
 	{
@@ -90,14 +90,14 @@ static void	general_loop_ext(t_ext *vars, Token **tokens, t_env *env)
 	}
 }
 
-Command	**extract(Token **tokens, t_env *env)
+t_command	**extract(t_token **tokens, t_env *env)
 {
 	t_ext	vars;
 
 	vars.i = 0;
 	vars.k = 0;
 	vars.num = calculate_cmds(tokens);
-	vars.commands = malloc(sizeof(Command *) * (vars.num + 1));
+	vars.commands = malloc(sizeof(t_command *) * (vars.num + 1));
 	init_stuff(&vars);
 	general_loop_ext(&vars, tokens, env);
 	vars.commands[vars.num] = 0;

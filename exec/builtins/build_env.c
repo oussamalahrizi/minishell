@@ -3,40 +3,40 @@
 /*                                                        :::      ::::::::   */
 /*   build_env.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 00:56:19 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/25 10:04:54 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/25 11:13:12 by idelfag          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../../minishell.h"
+#include "utils.h"
 
-void build_env(t_env *env, int fd_out)
+void	build_env(t_env *env, int fd)
 {
-    t_env *node;
+	t_env	*node;
 
-    node = env;
-    while(node)
-    {
-        if (!ft_strcmp("PATH", node->name))
-            break;
-        node = node->next;
-    }
-    if (!node)
-    {
-        error_cmd("env: No such file or directory\n", 127);
-        return;
-    }
-    while(env)
-    {
-        if (env->flag)
-        {
-            ft_putstr_fd(env->name, fd_out);
-            ft_putchar_fd('=', fd_out);
-            ft_putstr_fd(env->value, fd_out);
-            ft_putchar_fd('\n', fd_out);
-        }
-        env = env->next;
-    }
+	node = env;
+	while (node)
+	{
+		if (!ft_strcmp("PATH", node->name))
+			break ;
+		node = node->next;
+	}
+	if (!node)
+	{
+		error_cmd("env: No such file or directory\n", 127);
+		return ;
+	}
+	while (env)
+	{
+		if (env->flag)
+		{
+			ft_putstr_fd(env->name, fd);
+			ft_putchar_fd('=', fd);
+			ft_putstr_fd(env->value, fd);
+			ft_putchar_fd('\n', fd);
+		}
+		env = env->next;
+	}
 }

@@ -1,7 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   build_echo.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/06/24 02:22:21 by idelfag           #+#    #+#             */
+/*   Updated: 2023/06/25 11:23:21 by idelfag          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-#include "../../minishell.h"
-
-extern t_global g_global;
+#include "utils.h"
 
 int	check_n_syntax(char **cmd_args, int *flag)
 {
@@ -30,17 +39,17 @@ int	check_n_syntax(char **cmd_args, int *flag)
 	return (i);
 }
 
-void	build_echo(char **cmd_args, int fd_out)
+void	build_echo(char **cmd_args, int fd)
 {
-	int i;
-	char *str;
-	int flag;
+	int		i;
+	char	*str;
+	int		flag;
 
 	flag = 1;
 	i = 1;
 	if (count_args(cmd_args) == 1)
 	{
-		write(fd_out, "\n", 1);
+		write(1, "\n", fd);
 		return ;
 	}
 	if (!ft_strncmp(cmd_args[i], "-n", 2))
@@ -48,13 +57,13 @@ void	build_echo(char **cmd_args, int fd_out)
 	while (cmd_args[i])
 	{
 		str = ft_strdup(cmd_args[i]);
-		ft_putstr_fd(str, fd_out);
+		ft_putstr_fd(str, fd);
 		i++;
 		if (cmd_args[i])
-			write(fd_out, " ", 1);
+			write(1, " ", fd);
 		free(str);
 	}
 	if (flag)
-		write(fd_out, "\n", 1);
+		write(1, "\n", fd);
 	g_global.exit_status = 0;
 }

@@ -22,8 +22,8 @@ SRCS = 	minishell.c \
 		lib/other_utils/ifs.c \
 		lib/other_utils/string_utils.c \
 		lib/other_utils/free_utils.c \
-		exec/exec.c \
-		exec/builtins/error.c \
+		exec/exec/exec.c \
+		exec/exec/exec_utils.c \
 		exec/builtins/build_exit.c \
 		exec/builtins/build_pwd.c \
 		exec/builtins/build_echo.c \
@@ -35,9 +35,15 @@ SRCS = 	minishell.c \
 		exec/open_files/open_files.c \
 		exec/open_files/open_files_helpers.c \
 		exec/here_doc/here_doc.c \
-		exec/here_doc/here_doc_helpers.c \
-		exec/here_doc/here_doc_helpers2.c \
-		exec/childprocess.c
+		exec/here_doc/here_doc_helpers.c  \
+		exec/here_doc/here_doc_helpers2.c  \
+		exec/childprocess/childprocess.c \
+		exec/childprocess/child_utils.c \
+		exec/builtins/export_utils.c \
+		exec/builtins/export_utils_two.c \
+		exec/builtins/build_cd_utils.c \
+		exec/builtins/build_cd_utils_two.c \
+
 
 OBJS = ${SRCS:.c=.o}
 
@@ -45,11 +51,11 @@ NAME = minishell
 
 LIBFT = libft/libft.a
 
-LIBS = -L./libft -lft -lreadline -L/Users/olahrizi/goinfre/homebrew/Cellar/readline/8.2.1/lib
+LIBS = -L./libft -lft -lreadline -L/Users/olahrizi/goinfre/Homebrew/Cellar/readline/8.2.1/lib
 
-CC = cc
+CC = gcc
 
-CFLAGS = -Wall -Wextra -Werror -g3 ${sanitize} -I/Users/olahrizi/goinfre/homebrew/Cellar/readline/8.2.1/include
+CFLAGS = -Wall -Wextra -Werror -g3 ${sanitize} -I /Users/olahrizi/goinfre/Homebrew/Cellar/readline/8.2.1/include
 
 # sanitize= -fsanitize=address
 
