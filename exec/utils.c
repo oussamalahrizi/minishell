@@ -3,16 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 11:27:00 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/20 21:52:22 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/25 10:38:39 by idelfag          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-extern int exit_status;
 
 char *expand_file(char *string, t_env *env)
 {
@@ -96,7 +94,7 @@ int open_files(files *file_list, t_env *env)
 				ft_putstr_fd(node->filename, 2);
 				write(2, ": ", 3);
 				perror("");
-				exit_status = 1;
+				g_global.exit_status = 1;
 				failure = -1;
 				break;
 			}
@@ -138,7 +136,7 @@ int open_files(files *file_list, t_env *env)
 				ft_putstr_fd(node->filename, 2);
 				write(2, ": ", 3);
 				perror("");
-				exit_status = 1;
+				g_global.exit_status = 1;
 				failure = -1;
 				break;
 			}
@@ -179,7 +177,7 @@ int open_files(files *file_list, t_env *env)
 				ft_putstr_fd(node->filename, 2);
 				write(2, ": ", 3);
 				perror("");
-				exit_status = 1;
+				g_global.exit_status = 1;
 				failure = -1;
 				break;
 			}

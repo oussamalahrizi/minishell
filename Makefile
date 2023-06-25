@@ -1,14 +1,30 @@
 SRCS = 	minishell.c \
-		lib/expander.c \
-		lib/tokenizer.c \
 		lib/signals.c \
-		lib/string_utils.c \
-		lib/extract.c \
-		lib/env_var_utils.c \
-		lib/utils.c \
-		lib/ifs.c \
-		exec/exec.c \
-		exec/builtins/error.c \
+		lib/expander/expander.c \
+		lib/expander/expander_helpers.c \
+		lib/expander/expander_helpers2.c \
+		lib/expander/handle_dollar_alone.c \
+		lib/expander/handle_dollar_quotes.c \
+		lib/tokenizer/tokenizer.c \
+		lib/tokenizer/tokenize_helpers.c \
+		lib/tokenizer/tokenize_helpers2.c \
+		lib/tokenizer/word_count.c \
+		lib/tokenizer/wc_utils.c \
+		lib/tokenizer/delimiter_section.c \
+		lib/extract/extract.c \
+		lib/extract/extract_helpers.c \
+		lib/extract/extract_helpers2.c \
+		lib/extract/allocate_strings.c \
+		lib/extract/allocate_files.c \
+		lib/other_utils/utils.c \
+		lib/other_utils/utils2.c \
+		lib/other_utils/env_var_utils.c \
+		lib/other_utils/env_var_utils2.c \
+		lib/other_utils/ifs.c \
+		lib/other_utils/string_utils.c \
+		lib/other_utils/free_utils.c \
+		exec/exec/exec.c \
+		exec/exec/exec_utils.c \
 		exec/builtins/build_exit.c \
 		exec/builtins/build_pwd.c \
 		exec/builtins/build_echo.c \
@@ -18,8 +34,14 @@ SRCS = 	minishell.c \
 		exec/builtins/build_unset.c \
 		exec/builtins/utils.c \
 		exec/utils.c \
-		exec/childprocess.c \
 		exec/here_doc.c \
+		exec/childprocess/childprocess.c \
+		exec/childprocess/child_utils.c \
+		exec/builtins/export_utils.c \
+		exec/builtins/export_utils_two.c \
+		exec/builtins/build_cd_utils.c \
+		exec/builtins/build_cd_utils_two.c \
+
 
 OBJS = ${SRCS:.c=.o}
 
@@ -27,13 +49,13 @@ NAME = minishell
 
 LIBFT = libft/libft.a
 
-LIBS = -L./libft -lft -lreadline -L./readline/8.2.1/lib
+LIBS = -L./libft -lft -lreadline -L readline/8.2.1/lib
 
 CC = cc
 
-CFLAGS = -Wall -Wextra -Werror ${sanitize} -g3 -Ireadline/8.2.1/include
+CFLAGS = -Wall -Wextra -Werror -g3 ${sanitize} -I readline/8.2.1/include
 
-sanitize= -fsanitize=address
+# sanitize= -fsanitize=address
 
 all : ${NAME}
 

@@ -3,24 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   build_cd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
+/*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 20:05:40 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/18 04:25:52 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/25 10:38:39 by idelfag          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../minishell.h"
+#include "utils.h"
 
-extern int exit_status;
-
-
-t_env *get_pwd_env(t_env *env)
+t_env	*get_pwd_env(t_env *env)
 {
-	t_env *node;
+	t_env	*node;
 
 	node = env;
-	while(node)
+	while (node)
 	{
 		if (!ft_strcmp(node->name, "PWD"))
 			return (node);
@@ -29,12 +26,11 @@ t_env *get_pwd_env(t_env *env)
 	return (NULL);
 }
 
-void change_pwd_failed(t_env *env, char *string)
+void	change_pwd_failed(t_env *env, char *string)
 {
-	t_env *node;
-	t_env *new;
-	char *pwd;
-	char *tmp;
+	t_env	*node;
+	char	*pwd;
+	char	*tmp;
 
 	node = env;
 	while (node)
@@ -51,23 +47,14 @@ void change_pwd_failed(t_env *env, char *string)
 		node = node->next;
 	}
 	if (!node)
-	{
-		pwd = ft_strdup(string);
-		new = malloc(sizeof(t_env));
-		new->name = ft_strdup("PWD");
-		new->value = ft_strdup(pwd);
-		env_add_back(&env, new);
-		free(pwd);
-		return ;
-	}
+		pwd_failed(env, string);
 }
 
-void change_pwd(t_env *env)
+void	change_pwd(t_env *env)
 {
-	t_env *node;
-	t_env *new;
-	char *pwd;
-	char *tmp;
+	t_env	*node;
+	char	*pwd;
+	char	*tmp;
 
 	node = env;
 	while (node)
@@ -87,26 +74,14 @@ void change_pwd(t_env *env)
 		node = node->next;
 	}
 	if (!node)
-	{
-		pwd  = getcwd(NULL, 0);
-		if (pwd)
-		{
-			new = malloc(sizeof(t_env));
-			new->name = ft_strdup("PWD");
-			new->value = ft_strdup(pwd);
-			env_add_back(&env, new);
-			free(pwd);
-			return ;
-		}
-	}
+		pwd_supp(env);
 }
 
-void change_oldpwd(t_env *env)
+void	change_oldpwd(t_env *env)
 {
-	t_env *node;
-	t_env *new;
-	t_env *pwd;
-	char *tmp;
+	t_env	*node;
+	t_env	*pwd;
+	char	*tmp;
 
 	node = env;
 	while (node)
@@ -125,87 +100,27 @@ void change_oldpwd(t_env *env)
 		node = node->next;
 	}
 	if (!node)
-	{
-		pwd = get_pwd_env(env);
-		if (pwd)
-		{
-			new = malloc(sizeof(t_env));
-			new->name = ft_strdup("OLDPWD");
-			new->value = ft_strdup(pwd->value);
-			env_add_back(&env, new);
-			return ;
-		}
-	}
+		oldpwd_supp(env);
 }
 
-void build_cd(char **cmd_args, t_env *env)
+void	build_cd(char **cmd_args, t_env *env)
 {
-	t_env *node;
-	int len;
-	
-	len = count_args(cmd_args);
-	if (len == 1)
-	{
-		node = env;
-		while (node)
-		{
-			if (!ft_strcmp(node->name, "HOME"))
-			{
-				if(chdir(node->value))
-				{
-					error_cmd("failed to change dir\n", 1);
-					return ;
-				}
-				change_oldpwd(env);
-				change_pwd(env);
-				exit_status = 0;
-				return;
-			}
-			node = node->next;
-		}
-		if (!node)
-		{
-			error_cmd("cd: HOME not set\n", 1);
-			return ;
-		}
-	}
+	char	*temp;
+
+	if (if_cd_alone(cmd_args, env))
+		return ;
 	else
 	{
-		char *temp;
 		if ((cmd_args[1][0] == '.' && !cmd_args[1][1])
 			|| (!ft_strcmp("./", cmd_args[1])))
 				temp = ft_strdup(get_pwd_env(env)->value);
 		else
 			temp = ft_strdup(cmd_args[1]);
-		if (access(temp, F_OK))
-		{
-			write(2, "minishell: cd: ", 16);
-			write(2, temp, ft_strlen(temp));
-			write(2, ": ", 2);
-			perror("");
-			temp = ft_strjoin(temp, "/.");
-			change_oldpwd(env);
-			change_pwd_failed(env, temp);
-			exit_status = 1;
-			free(temp);
+		if (cd_supp(temp, env))
 			return ;
-		}
-		else
-		{
-			if (chdir(temp))
-			{
-				write(2, "minishell: cd: ", 16);
-				write(2, temp, ft_strlen(temp));
-				write(2, ": ", 2);
-				perror("");
-				exit_status = 1;
-				free(temp);
-				return ;
-			}
-		}
 		change_oldpwd(env);
 		change_pwd(env);
 		free(temp);
-		exit_status = 0;
+		g_global.exit_status = 0;
 	}
 }
