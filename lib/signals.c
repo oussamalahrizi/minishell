@@ -12,8 +12,6 @@
 
 #include "../minishell.h"
 
-extern t_global	g_global;
-
 static void	control_c(int sig)
 {
 	if (sig == SIGINT)

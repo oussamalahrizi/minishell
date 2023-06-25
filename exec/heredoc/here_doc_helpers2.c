@@ -12,8 +12,6 @@
 
 #include "../../minishell.h"
 
-extern t_global	g_global;
-
 void	write_file(char **array, int fd)
 {
 	int	i;

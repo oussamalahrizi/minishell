@@ -12,16 +12,6 @@
 
 #include "../../minishell.h"
 
-typedef struct s_quote
-{
-	char	*skip;
-	char	*old;
-	char	*temp;
-	int		i;
-	int		start_index;
-	int		len;
-}			t_quote;
-
 static void	first_case(char *string, t_exp *exp, int *index, t_quote *vars)
 {
 	vars->skip = get_env("$", exp->env);

@@ -12,8 +12,6 @@
 
 #include "../../minishell.h"
 
-extern t_global	g_global;
-
 char	*expand_file(char *string, t_env *env)
 {
 	int		c;

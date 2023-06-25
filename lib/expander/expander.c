@@ -12,8 +12,6 @@
 
 #include "../../minishell.h"
 
-extern t_global	g_global;
-
 char	*get_env(char *string, t_env *env)
 {
 	char	*variable;

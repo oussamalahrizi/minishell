@@ -151,6 +151,16 @@ typedef struct s_args
 	int	fd[2];
 }				t_args;
 
+typedef struct s_quote
+{
+	char	*skip;
+	char	*old;
+	char	*temp;
+	int		i;
+	int		start_index;
+	int		len;
+}			t_quote;
+
 typedef struct s_op_files
 {
 	int		i;

@@ -1,48 +1,48 @@
-SRCS = 	minishell.c \
-		lib/signals.c \
-		lib/expander/expander.c \
-		lib/expander/expander_helpers.c \
-		lib/expander/expander_helpers2.c \
-		lib/expander/handle_dollar_alone.c \
-		lib/expander/handle_dollar_quotes.c \
-		lib/tokenizer/tokenizer.c \
-		lib/tokenizer/tokenize_helpers.c \
-		lib/tokenizer/tokenize_helpers2.c \
-		lib/tokenizer/word_count.c \
-		lib/tokenizer/wc_utils.c \
-		lib/tokenizer/delimiter_section.c \
-		lib/extract/extract.c \
-		lib/extract/extract_helpers.c \
-		lib/extract/extract_helpers2.c \
-		lib/extract/allocate_files.c \
-		lib/other_utils/utils.c \
-		lib/other_utils/utils2.c \
-		lib/other_utils/env_var_utils.c \
-		lib/other_utils/env_var_utils2.c \
-		lib/other_utils/ifs.c \
-		lib/other_utils/string_utils.c \
-		lib/other_utils/free_utils.c \
-		exec/exec/exec.c \
-		exec/exec/exec_utils.c \
-		exec/builtins/build_exit.c \
-		exec/builtins/build_pwd.c \
-		exec/builtins/build_echo.c \
-		exec/builtins/build_cd.c \
-		exec/builtins/export.c \
-		exec/builtins/build_env.c \
-		exec/builtins/build_unset.c \
-		exec/builtins/utils.c \
-		exec/open_files/open_files.c \
-		exec/open_files/open_files_helpers.c \
-		exec/heredoc/here_doc.c \
-		exec/heredoc/here_doc_helpers.c  \
-		exec/heredoc/here_doc_helpers2.c  \
-		exec/childprocess/childprocess.c \
-		exec/childprocess/child_utils.c \
-		exec/builtins/export_utils.c \
-		exec/builtins/export_utils_two.c \
-		exec/builtins/build_cd_utils.c \
-		exec/builtins/build_cd_utils_two.c \
+SRCS = 	minishell.c								\
+		lib/signals.c							\
+		lib/expander/expander.c					\
+		lib/expander/expander_helpers.c			\
+		lib/expander/expander_helpers2.c		\
+		lib/expander/handle_dollar_alone.c		\
+		lib/expander/handle_dollar_quotes.c		\
+		lib/tokenizer/tokenizer.c				\
+		lib/tokenizer/tokenize_helpers.c		\
+		lib/tokenizer/tokenize_helpers2.c		\
+		lib/tokenizer/word_count.c				\
+		lib/tokenizer/wc_utils.c				\
+		lib/tokenizer/delimiter_section.c		\
+		lib/extract/extract.c					\
+		lib/extract/extract_helpers.c			\
+		lib/extract/extract_helpers2.c			\
+		lib/extract/allocate_files.c			\
+		lib/other_utils/utils.c					\
+		lib/other_utils/utils2.c				\
+		lib/other_utils/env_var_utils.c			\
+		lib/other_utils/env_var_utils2.c		\
+		lib/other_utils/ifs.c					\
+		lib/other_utils/string_utils.c			\
+		lib/other_utils/free_utils.c			\
+		exec/exec/exec.c						\
+		exec/exec/exec_utils.c					\
+		exec/builtins/build_exit.c				\
+		exec/builtins/build_pwd.c				\
+		exec/builtins/build_echo.c				\
+		exec/builtins/build_cd.c				\
+		exec/builtins/export.c					\
+		exec/builtins/build_env.c				\
+		exec/builtins/build_unset.c				\
+		exec/builtins/utils.c					\
+		exec/open_files/open_files.c			\
+		exec/open_files/open_files_helpers.c	\
+		exec/heredoc/here_doc.c					\
+		exec/heredoc/here_doc_helpers.c			\
+		exec/heredoc/here_doc_helpers2.c		\
+		exec/childprocess/childprocess.c		\
+		exec/childprocess/child_utils.c			\
+		exec/builtins/export_utils.c			\
+		exec/builtins/export_utils_two.c		\
+		exec/builtins/build_cd_utils.c			\
+		exec/builtins/build_cd_utils_two.c		\
 
 
 OBJS = ${SRCS:.c=.o}
@@ -56,8 +56,6 @@ LIBS = -L./libft -lft -lreadline -L readline/8.2.1/lib
 CC = gcc
 
 CFLAGS = -Wall -Wextra -Werror -g3 ${sanitize} -I readline/8.2.1/include
-
-# sanitize= -fsanitize=address
 
 all : ${NAME}
 

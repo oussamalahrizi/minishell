@@ -12,8 +12,6 @@
 
 #include "../../minishell.h"
 
-extern t_global	g_global;
-
 static int	case_input(t_op_files *vars, t_env *env)
 {
 	if (check_ambiguous(vars, env) == -1)
