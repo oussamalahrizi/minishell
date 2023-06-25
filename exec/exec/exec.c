@@ -14,7 +14,7 @@
 
 void	child_process_supp(t_args *args, t_vars *vars)
 {
-	files	*node;
+	t_files	*node;
 
 	g_global.child = 1;
 	if (args->nbr_cmds > 1)
@@ -62,7 +62,8 @@ void	wait_and_free(t_args *args, int *pids)
 		g_global.exit_status = WEXITSTATUS(child_status);
 	else if (WIFSIGNALED(child_status))
 		g_global.exit_status = 128 + WTERMSIG(child_status);
-	close(args->fd_in);
+	if (args->fd_in != -1)
+		close(args->fd_in);
 	free(pids);
 }
 

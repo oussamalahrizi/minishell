@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
+/*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 22:20:14 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/25 10:37:04 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/06/25 10:51:13 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+extern t_global	g_global;
 
 static void	control_c(int sig)
 {
@@ -31,7 +33,7 @@ static void	control_c(int sig)
 
 void	sig_quit(int sig)
 {
-	(void) sig;
+	(void)sig;
 	if (g_global.heredoc)
 		return ;
 	else if (g_global.child)

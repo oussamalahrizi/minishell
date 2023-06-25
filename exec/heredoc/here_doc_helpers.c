@@ -108,11 +108,9 @@ static void	here_doc_loop(char *original, char **new_value, t_env *env)
 
 void	expand_value(char **string, t_env *env)
 {
-	int		i;
 	char	*new_value;
 	char	*original;
 
-	i = 0;
 	new_value = ft_strdup("");
 	original = *string;
 	here_doc_loop(original, &new_value, env);

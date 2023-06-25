@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wc_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
+/*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 13:53:28 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/25 12:09:31 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/06/24 12:36:55 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,11 @@ int	count_the_rest(char *input, char *delimiters, int *index)
 	return (0);
 }
 
-Token	*new_token(char type, char *value)
+t_token	*new_token(char type, char *value)
 {
-	Token	*token;
+	t_token	*token;
 
-	token = (Token *)malloc(sizeof(Token));
+	token = (t_token *)malloc(sizeof(t_token));
 	token->type = type;
 	token->value = ft_strdup(value);
 	return (token);

@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
+/*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 14:37:04 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/25 12:11:56 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/06/25 10:51:29 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
+extern t_global	g_global;
 
 char	*get_env(char *string, t_env *env)
 {
@@ -55,7 +57,7 @@ void	append_before_dollar(t_exp *vars)
 	}
 }
 
-void	expander(Token ***tokens_i, t_env *env)
+void	expander(t_token ***tokens_i, t_env *env)
 {
 	t_exp	vars;
 

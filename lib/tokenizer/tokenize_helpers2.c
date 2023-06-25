@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize_helpers2.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
+/*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 21:46:58 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/25 12:09:24 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/06/25 16:03:23 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,12 @@ void	skip_spaces_tok(char *input, int *index)
 	*index = i;
 }
 
-void	output_pipe(t_tok *vars, char *input, Token **tokens)
+void	output_pipe(t_tok *vars, char *input, t_token **tokens)
 {
-	vars->string = ft_strdup("");
-	append_character(&(vars->string), input[vars->i]);
+	free(vars->string);
+	vars->string = malloc(sizeof(char) * 2);
+	vars->string[0] = input[vars->i];
+	vars->string[1] = 0;
 	tokens[vars->k++] = new_token(input[vars->i], vars->string);
 	vars->i += 2;
 	free(vars->string);

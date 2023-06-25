@@ -15,7 +15,6 @@
 void	build_pwd(char *pwd_fail, t_env *env, int fd)
 {
 	char	*pwd;
-	char	*pwd_env;
 
 	pwd = getcwd(NULL, 0);
 	if (!pwd && pwd_fail)
@@ -24,7 +23,6 @@ void	build_pwd(char *pwd_fail, t_env *env, int fd)
 	{
 		ft_putstr_fd(pwd, fd);
 		write(1, "\n", fd);
-		pwd_env = get_pwd_env(env)->value;
 		free(get_pwd_env(env)->value);
 		get_pwd_env(env)->value = ft_strdup(pwd);
 		free(pwd);

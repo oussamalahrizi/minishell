@@ -29,7 +29,7 @@ typedef struct s_here_doc
 	int			status;
 }				t_here_doc;
 
-static void	here_doc_readline(t_here_doc *vars, int index, files *node,
+static void	here_doc_readline(t_here_doc *vars, int index, t_files *node,
 		t_env *env)
 {
 	while (1)
@@ -72,7 +72,7 @@ static int	cleanup_here_doc(t_here_doc *vars)
 	return (0);
 }
 
-int	here_doc(files *node, int index, t_env *env)
+int	here_doc(t_files *node, int index, t_env *env)
 {
 	t_here_doc	vars;
 
@@ -94,9 +94,9 @@ int	here_doc(files *node, int index, t_env *env)
 	return (0);
 }
 
-int	open_heredocs(Command **cmd, t_env *env)
+int	open_heredocs(t_command **cmd, t_env *env)
 {
-	files	*node;
+	t_files	*node;
 	int		i;
 	int		index;
 

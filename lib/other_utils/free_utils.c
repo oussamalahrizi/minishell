@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   free_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
+/*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 21:57:24 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/25 12:12:44 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/06/24 22:19:27 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-void	free_double(Token **str)
+void	free_double(t_token **str)
 {
 	int	i;
 
@@ -39,9 +39,9 @@ void	free_double_char(char **str)
 	free(str);
 }
 
-static void	free_files(files *node)
+static void	free_files(t_files *node)
 {
-	files	*temp;
+	t_files	*temp;
 
 	while (node)
 	{
@@ -55,7 +55,7 @@ static void	free_files(files *node)
 	}
 }
 
-void	free_cmds(Command **commands)
+void	free_cmds(t_command **commands)
 {
 	int		i;
 

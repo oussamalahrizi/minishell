@@ -14,117 +14,99 @@
 
 t_global	g_global;
 
-void free_tokens(Token **tokens)
+void	init_main_one(t_mini *mini, t_env *node, char **env)
 {
-	int i;
-
-	i = 0;
-	while (tokens[i])
-	{
-		free(tokens[i]->value);
-		free(tokens[i]);
-		i++;
-	}
-	free(tokens);
+	mini->size = 0;
+	node = copy_env(env);
+	increase_shell_lvl(node);
+	mini->vars.env = node;
+	signal_handler();
+	mini->new_input = NULL;
 }
 
-int get_last_pipe(char *input) {
-    int i;
-
-	i = ft_strlen(input) - 1;
-
-    while (i > 0 && is_space(input[i]))
-        i--;
-	if (i == 0)
-		return (0);
-    if (input[i] == '|')
+void	init_main_two(t_mini *mini)
+{
+	tcgetattr(0, &mini->term);
+	tcgetattr(0, &mini->original);
+	mini->term.c_lflag &= ~(ECHOCTL);
+	tcsetattr(0, TCSANOW, &mini->term);
+	g_global.readline = 1;
+	mini->input = readline("minishell$ ");
+	g_global.readline = 0;
+	tcsetattr(0, TCSANOW, &mini->original);
+	if (!mini->input)
 	{
-        i--;
-		while (i > 0 && is_space(input[i]))
-            i--;
-        if ((input[i] == '<' || input[i] == '>') || i == 0)
-            return 0;
+		write(2, "exit\n", 6);
+		exit(g_global.exit_status);
+	}
+	if (!ft_strcmp("", mini->input))
+		free(mini->input);
+}
+
+void	init_main_three(t_mini *mini, int go)
+{
+	while (get_last_pipe(mini->input))
+	{
+		mini->new_input = readline("> ");
+		if (!mini->new_input)
+		{
+			error_cmd("syntax error : unexpected end of file\n", 258);
+			go = 1;
+			break ;
+		}
+		mini->input = ft_strjoin(mini->input, " ");
+		mini->input = ft_strjoin(mini->input, mini->new_input);
+		free(mini->new_input);
+	}
+	add_history(mini->input);
+	if (go)
+		free(mini->input);
+}
+
+int	init_main_four(t_mini *mini, t_command **commands)
+{
+	if (mini->size == -1)
+	{
+		write(2, "syntax error\n", 14);
+		free(mini->input);
+		g_global.exit_status = 258;
+	}
+	mini->tokens = (t_token **)malloc(sizeof(t_token *) * (mini->size + 1));
+	if (!mini->tokens)
+	{
+		perror("allocation failed : ");
 		return (1);
-    }
-    return 0;
+	}
+	tokenize(mini->input, mini->tokens);
+	expander(&mini->tokens, mini->vars.env);
+	commands = extract(mini->tokens, mini->vars.env);
+	mini->vars.commands = commands;
+	exec(&mini->vars);
+	free(mini->input);
+	free_tokens(mini->tokens);
+	free_cmds(commands);
+	return (0);
 }
 
 int	main(int ac, char **av, char **env)
 {
-	Token	**tokens;
-	Command **commands;
-	struct termios term;
-	struct termios original;
-	char	*input;
-	int size = 0;
-	t_vars vars;
+	t_mini			mini;
+	t_env			*node;
+	t_command		**commands;
+	int				go;
+
 	((void)ac, (void)av);
-	t_env *node;
-	node = copy_env(env);
-	increase_shell_lvl(node);
-	vars.env = node;
-	signal_handler();
-	char *new_input = NULL;
+	node = NULL;
+	commands = NULL;
+	init_main_one(&mini, node, env);
 	while (1)
 	{
-		tcgetattr(0, &term);
-		tcgetattr(0, &original);
-		term.c_lflag &= ~(ECHOCTL);
-		tcsetattr(0, TCSANOW, &term);
-		g_global.readline = 1;
-		input = readline("minishell$ ");
-		g_global.readline = 0;
-		tcsetattr(0, TCSANOW, &original);
-		if (!input)
-		{
-			write(2, "exit\n", 6);
-			exit(g_global.exit_status);
-		}
-		else if (!ft_strcmp("", input))
-		{
-			free(input);
-			continue;
-		}
-		int go = 0;
-		while (get_last_pipe(input))
-		{
-			new_input = readline("> ");
-			if (!new_input)
-			{
-				(go = 1, error_cmd("syntax error : unexpected end of file\n", 258));
-				break;
-			}
-			(input = ft_strjoin(input, " "), input = ft_strjoin(input, new_input));
-			free(new_input);
-		}
-		add_history(input);
-		if (go)
-		{
-			free(input);
-			continue;
-		}
-		size = word_count(input);
-		if (size == -1)
-		{
-			write(2, "syntax error\n", 14);
-			free(input);
-			g_global.exit_status = 258;
-			continue;
-		}
-		tokens = (Token **)malloc(sizeof(Token *) * (size + 1));
-		if (!tokens)
-		{
-			perror("allocation failed : ");
+		init_main_two(&mini);
+		go = 0;
+		init_main_three(&mini, go);
+		mini.size = word_count(mini.input);
+		if (init_main_four(&mini, commands))
 			return (1);
-		}
-		tokenize(input, tokens);
-		expander(&tokens, vars.env);
-		commands = extract(tokens, vars.env);
-		vars.commands = commands;
-		exec(&vars);
-		free(input);
-		free_tokens(tokens);
-		free_cmds(commands);
 	}
 	return (0);
 }

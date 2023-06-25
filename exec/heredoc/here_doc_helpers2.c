@@ -33,7 +33,7 @@ void	write_file(char **array, int fd)
 	}
 }
 
-int	open_doc_loop(int *index_readline, files *node, t_env *env)
+int	open_doc_loop(int *index_readline, t_files *node, t_env *env)
 {
 	int	i;
 

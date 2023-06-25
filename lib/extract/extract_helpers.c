@@ -12,10 +12,10 @@
 
 #include "../../minishell.h"
 
-void	set_last_infile(files *file_list)
+void	set_last_infile(t_files *file_list)
 {
-	files	*node;
-	files	*res;
+	t_files	*node;
+	t_files	*res;
 
 	res = NULL;
 	node = file_list;
@@ -31,10 +31,10 @@ void	set_last_infile(files *file_list)
 	}
 }
 
-void	set_last_outfile(files *file_list)
+void	set_last_outfile(t_files *file_list)
 {
-	files	*node;
-	files	*res;
+	t_files	*node;
+	t_files	*res;
 
 	res = NULL;
 	node = file_list;

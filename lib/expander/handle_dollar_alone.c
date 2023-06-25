@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_dollar_alone.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
+/*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 22:36:02 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/25 12:10:21 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/06/24 11:10:36 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	preparation(t_exp *exp, t_dollar *vars, int token_index, int *new_index)
 	vars->split_size = vars->j;
 	if (vars->skip[0] == 0)
 		vars->j = 1;
-	vars->new_tokens = malloc(sizeof(Token *) * (vars->token_size + vars->j));
+	vars->new_tokens = malloc(sizeof(t_token *) * (vars->token_size + vars->j));
 	vars->size = vars->token_size + vars->j - 1;
 	vars->j = 0;
 	while (vars->j < token_index + *new_index)

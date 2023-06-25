@@ -12,10 +12,10 @@
 
 #include "../../minishell.h"
 
-files	*get_last_infile(files *cmd_files)
+t_files	*get_last_infile(t_files *cmd_files)
 {
-	files	*node;
-	files	*res;
+	t_files	*node;
+	t_files	*res;
 
 	res = NULL;
 	node = cmd_files;
@@ -28,10 +28,10 @@ files	*get_last_infile(files *cmd_files)
 	return (res);
 }
 
-files	*get_last_outfile(files *cmd_files)
+t_files	*get_last_outfile(t_files *cmd_files)
 {
-	files	*node;
-	files	*res;
+	t_files	*node;
+	t_files	*res;
 
 	res = NULL;
 	node = cmd_files;
@@ -44,7 +44,7 @@ files	*get_last_outfile(files *cmd_files)
 	return (res);
 }
 
-int	cmd_count(Command **cmds)
+int	cmd_count(t_command **cmds)
 {
 	int	i;
 
@@ -77,7 +77,7 @@ int	is_built_in(char *cmd)
 
 void	exec_builtin(t_vars *vars, int i)
 {
-	files	*outfile;
+	t_files	*outfile;
 	int		fd_out;
 
 	outfile = get_last_outfile(vars->commands[i]->files);

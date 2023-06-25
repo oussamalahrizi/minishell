@@ -12,7 +12,7 @@
 
 #include "../../minishell.h"
 
-void	dup_util(t_child *child, t_args *args, Command *command, t_vars *vars)
+void	dup_util(t_child *child, t_args *args, t_command *command, t_vars *vars)
 {	
 	if (child->infile && child->infile->fd != -1)
 	{
@@ -40,7 +40,7 @@ void	dup_util(t_child *child, t_args *args, Command *command, t_vars *vars)
 	}
 }
 
-void	init(t_child *child, Command *command, t_args *args, t_vars *vars)
+void	init(t_child *child, t_command *command, t_args *args, t_vars *vars)
 {
 	child->env_list = convert_env(vars->env);
 	child->infile = get_last_infile(command->files);
@@ -57,7 +57,7 @@ void	init(t_child *child, Command *command, t_args *args, t_vars *vars)
 	child->cmd_path = get_command(child->paths, command->cmd, &child->is_dir);
 }
 
-void	child_process(t_vars *vars, Command *command, t_args *args)
+void	child_process(t_vars *vars, t_command *command, t_args *args)
 {
 	t_child	child;
 

@@ -59,10 +59,8 @@ char	*search_cmd(char **paths, char *cmd)
 
 char	*get_command(char **paths, char *cmd, int *is_dir)
 {
-	int			i;
 	struct stat	pathinfo;
 
-	i = 0;
 	if (!*cmd)
 		return (ft_strdup(""));
 	if (ft_strrchr(cmd, '/') && !access(cmd, F_OK))

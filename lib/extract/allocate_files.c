@@ -3,19 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   allocate_files.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
+/*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 17:58:20 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/25 12:09:18 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/06/24 20:18:31 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
-static void	init_stuff(files **current_files, files *file_list, files **new)
+static void	init_stuff(t_files **current_files, t_files *file_list,
+	t_files **new)
 {
 	*current_files = file_list;
-	(*new) = malloc(sizeof(files));
+	(*new) = malloc(sizeof(t_files));
 	(*new)->next = NULL;
 	(*new)->filename = NULL;
 	(*new)->del = NULL;
@@ -23,7 +24,8 @@ static void	init_stuff(files **current_files, files *file_list, files **new)
 	(*new)->expand = 1;
 }
 
-static void	here_doc_case(int *index, t_env *env, files *new, Token **tokens)
+static void	here_doc_case(int *index, t_env *env, t_files *new,
+	t_token **tokens)
 {
 	char	*temp;
 
@@ -39,7 +41,8 @@ static void	here_doc_case(int *index, t_env *env, files *new, Token **tokens)
 	++(*index);
 }
 
-static void	redirection_case(Token **tokens, t_env *env, int *index, files *new)
+static void	redirection_case(t_token **tokens, t_env *env, int *index,
+	t_files *new)
 {
 	char	*temp;
 	int		i;
@@ -54,9 +57,10 @@ static void	redirection_case(Token **tokens, t_env *env, int *index, files *new)
 	++(*index);
 }
 
-static void	last_part(files **current_files, files *new, files **file_list)
+static void	last_part(t_files **current_files, t_files *new,
+	t_files **file_list)
 {
-	files	*start;
+	t_files	*start;
 
 	if (!*current_files)
 	{
@@ -73,12 +77,12 @@ static void	last_part(files **current_files, files *new, files **file_list)
 	}
 }
 
-files	*allocate_files(Token **tokens, int *index, files *file_list,
+t_files	*allocate_files(t_token **tokens, int *index, t_files *file_list,
 		t_env *env)
 {
 	int		i;
-	files	*current_files;
-	files	*new;
+	t_files	*current_files;
+	t_files	*new;
 
 	i = *index;
 	init_stuff(&current_files, file_list, &new);

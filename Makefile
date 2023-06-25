@@ -14,7 +14,6 @@ SRCS = 	minishell.c \
 		lib/extract/extract.c \
 		lib/extract/extract_helpers.c \
 		lib/extract/extract_helpers2.c \
-		lib/extract/allocate_strings.c \
 		lib/extract/allocate_files.c \
 		lib/other_utils/utils.c \
 		lib/other_utils/utils2.c \
@@ -33,7 +32,8 @@ SRCS = 	minishell.c \
 		exec/builtins/build_env.c \
 		exec/builtins/build_unset.c \
 		exec/builtins/utils.c \
-		exec/utils.c \
+		exec/open_files/open_files.c \
+		exec/open_files/open_files_helpers.c \
 		exec/heredoc/here_doc.c \
 		exec/heredoc/here_doc_helpers.c  \
 		exec/heredoc/here_doc_helpers2.c  \
@@ -53,7 +53,7 @@ LIBFT = libft/libft.a
 
 LIBS = -L./libft -lft -lreadline -L readline/8.2.1/lib
 
-CC = cc
+CC = gcc
 
 CFLAGS = -Wall -Wextra -Werror -g3 ${sanitize} -I readline/8.2.1/include
 
