@@ -22,8 +22,7 @@ void	build_pwd(char *pwd_fail, t_env *env, int fd)
 	if (pwd)
 	{
 		ft_putstr_fd(pwd, fd);
-		write(1, "\n", fd);
-		free(get_pwd_env(env)->value);
+		write(1, "\n", 1);
 		get_pwd_env(env)->value = ft_strdup(pwd);
 		free(pwd);
 		g_global.exit_status = 0;

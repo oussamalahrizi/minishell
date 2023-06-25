@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/25 10:21:28 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/25 11:16:30 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/25 13:35:38 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ char	**append_string(char **array, char *str)
 	}
 	new[i++] = ft_strdup(str);
 	new[i] = 0;
+	free_double_char(array);
 	return (new);
 }
 

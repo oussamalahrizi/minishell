@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
+/*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/25 10:20:46 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/25 12:26:03 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/06/25 15:14:43 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ typedef struct s_here_doc
 	char		*str;
 	char		*doc_index;
 	char		**array;
-	char		**temp;
 	int			pid;
 	int			status;
 }				t_here_doc;
@@ -45,11 +44,9 @@ static void	here_doc_readline(t_here_doc *vars, int index, t_files *node,
 			free(vars->str);
 			break ;
 		}
-		vars->temp = vars->array;
 		if (node->expand)
 			expand_value(&vars->str, env);
 		vars->array = append_string(vars->array, vars->str);
-		free_double_char(vars->temp);
 		vars->i++;
 		free(vars->str);
 	}

@@ -14,8 +14,10 @@
 
 t_global	g_global;
 
-void	init_main_one(t_mini *mini, t_env *node, char **env)
+void	init_main_one(t_mini *mini, char **env)
 {
+	t_env	*node;
+
 	mini->size = 0;
 	node = copy_env(env);
 	increase_shell_lvl(node);
@@ -24,7 +26,7 @@ void	init_main_one(t_mini *mini, t_env *node, char **env)
 	mini->new_input = NULL;
 }
 
-void	init_main_two(t_mini *mini)
+int	init_main_two(t_mini *mini)
 {
 	tcgetattr(0, &mini->term);
 	tcgetattr(0, &mini->original);
@@ -40,11 +42,18 @@ void	init_main_two(t_mini *mini)
 		exit(g_global.exit_status);
 	}
 	if (!ft_strcmp("", mini->input))
+	{
 		free(mini->input);
+		return (1);
+	}
+	return (0);
 }
 
-void	init_main_three(t_mini *mini, int go)
+int	init_main_three(t_mini *mini)
 {
+	int	go;
+
+	go = 0;
 	while (get_last_pipe(mini->input))
 	{
 		mini->new_input = readline("> ");
@@ -60,17 +69,15 @@ void	init_main_three(t_mini *mini, int go)
 	}
 	add_history(mini->input);
 	if (go)
+	{
 		free(mini->input);
+		return (1);
+	}
+	return (0);
 }
 
 int	init_main_four(t_mini *mini, t_command **commands)
 {
-	if (mini->size == -1)
-	{
-		write(2, "syntax error\n", 14);
-		free(mini->input);
-		g_global.exit_status = 258;
-	}
 	mini->tokens = (t_token **)malloc(sizeof(t_token *) * (mini->size + 1));
 	if (!mini->tokens)
 	{
@@ -91,20 +98,25 @@ int	init_main_four(t_mini *mini, t_command **commands)
 int	main(int ac, char **av, char **env)
 {
 	t_mini			mini;
-	t_env			*node;
 	t_command		**commands;
-	int				go;
 
 	((void)ac, (void)av);
-	node = NULL;
 	commands = NULL;
-	init_main_one(&mini, node, env);
+	init_main_one(&mini, env);
 	while (1)
 	{
-		init_main_two(&mini);
-		go = 0;
-		init_main_three(&mini, go);
+		if (init_main_two(&mini))
+			continue ;
+		if (init_main_three(&mini))
+			continue ;
 		mini.size = word_count(mini.input);
+		if (mini.size == -1)
+		{
+			write(2, "syntax error\n", 14);
+			free(mini.input);
+			g_global.exit_status = 258;
+			continue ;
+		}
 		if (init_main_four(&mini, commands))
 			return (1);
 	}
