@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 20:05:40 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/25 20:19:13 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/25 22:51:11 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,20 +106,27 @@ void	change_oldpwd(t_env *env)
 void	build_cd(char **cmd_args, t_env *env)
 {
 	char	*temp;
+	int		flag;
 
+	flag = 0;
 	if (if_cd_alone(cmd_args, env))
 		return ;
 	else
 	{
-		if ((cmd_args[1][0] == '.' && !cmd_args[1][1])
-			|| (!ft_strcmp("./", cmd_args[1])))
+		temp = ft_strdup(cmd_args[1]);
+		if ((cmd_args[1][0] == '.' && !cmd_args[1][1]) || (!ft_strcmp("./",
+			cmd_args[1])))
+		{
+			if (get_pwd_env(env))
+			{
+				flag = 1;
+				free(temp);
 				temp = ft_strdup(get_pwd_env(env)->value);
-		else
-			temp = ft_strdup(cmd_args[1]);
-		if (cd_supp(temp, env))
+			}
+		}
+		if (cd_supp(temp, env, flag))
 			return ;
-		change_oldpwd(env);
-		change_pwd(env);
+		(change_oldpwd(env), change_pwd(env));
 		free(temp);
 		g_global.exit_status = 0;
 	}

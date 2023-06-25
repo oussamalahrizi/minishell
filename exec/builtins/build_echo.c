@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build_echo.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
+/*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 02:22:21 by idelfag           #+#    #+#             */
-/*   Updated: 2023/06/25 11:23:21 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/06/25 21:22:48 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	build_echo(char **cmd_args, int fd)
 	i = 1;
 	if (count_args(cmd_args) == 1)
 	{
-		write(1, "\n", fd);
+		write(fd, "\n", 1);
 		return ;
 	}
 	if (!ft_strncmp(cmd_args[i], "-n", 2))
@@ -60,10 +60,10 @@ void	build_echo(char **cmd_args, int fd)
 		ft_putstr_fd(str, fd);
 		i++;
 		if (cmd_args[i])
-			write(1, " ", fd);
+			write(fd, " ", 1);
 		free(str);
 	}
 	if (flag)
-		write(1, "\n", fd);
+		write(fd, "\n", 1);
 	g_global.exit_status = 0;
 }

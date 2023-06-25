@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/25 12:14:59 by idelfag           #+#    #+#             */
-/*   Updated: 2023/06/25 18:04:24 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/25 22:29:24 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,10 @@
 
 t_global	g_global;
 
-void	init_main_one(t_mini *mini, t_env *node, char **env)
+void	init_main_one(t_mini *mini, char **env)
 {
+	t_env	*node;
+
 	mini->size = 0;
 	node = copy_env(env);
 	increase_shell_lvl(node);
@@ -47,8 +49,11 @@ int	init_main_two(t_mini *mini)
 	return (0);
 }
 
-int	init_main_three(t_mini *mini, int go)
+int	init_main_three(t_mini *mini)
 {
+	int	go;
+
+	go = 0;
 	while (get_last_pipe(mini->input))
 	{
 		mini->new_input = readline("> ");
@@ -71,7 +76,7 @@ int	init_main_three(t_mini *mini, int go)
 	return (0);
 }
 
-int	init_main_four(t_mini *mini, t_command **commands)
+int	init_main_four(t_mini *mini)
 {
 	if (mini->size == -1)
 	{
@@ -83,8 +88,7 @@ int	init_main_four(t_mini *mini, t_command **commands)
 	mini->tokens = (t_token **)malloc(sizeof(t_token *) * (mini->size + 1));
 	tokenize(mini->input, mini->tokens);
 	expander(&mini->tokens, mini->vars.env);
-	commands = extract(mini->tokens, mini->vars.env);
-	mini->vars.commands = commands;
+	mini->vars.commands = extract(mini->tokens, mini->vars.env);
 	exec(&mini->vars);
 	free(mini->input);
 	free_tokens(mini->tokens);
@@ -95,23 +99,17 @@ int	init_main_four(t_mini *mini, t_command **commands)
 int	main(int ac, char **av, char **env)
 {
 	t_mini			mini;
-	t_env			*node;
-	t_command		**commands;
-	int				go;
 
 	((void)ac, (void)av);
-	node = NULL;
-	commands = NULL;
-	init_main_one(&mini, node, env);
+	init_main_one(&mini, env);
 	while (1)
 	{
 		if (init_main_two(&mini) == -1)
 			continue ;
-		go = 0;
-		if (init_main_three(&mini, go) == -1)
+		if (init_main_three(&mini) == -1)
 			continue ;
 		mini.size = word_count(mini.input);
-		if (init_main_four(&mini, commands) == -1)
+		if (init_main_four(&mini) == -1)
 			continue ;
 	}
 	return (0);

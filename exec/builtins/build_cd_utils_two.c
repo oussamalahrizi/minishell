@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/25 04:28:36 by idelfag           #+#    #+#             */
-/*   Updated: 2023/06/25 20:23:58 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/25 21:37:40 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,8 @@ void	pwd_failed(t_env *env, char *string)
 		new = malloc(sizeof(t_env));
 		new->name = ft_strdup("PWD");
 		new->value = ft_strdup(pwd);
+		new->next = NULL;
+		new->flag = 1;
 		env_add_back(&env, new);
 		free(pwd);
 		return ;

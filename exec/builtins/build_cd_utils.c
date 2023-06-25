@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/25 03:08:50 by idelfag           #+#    #+#             */
-/*   Updated: 2023/06/25 20:14:06 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/25 22:08:41 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,9 @@ int	cd_alone_supp(t_env *env)
 	return (0);
 }
 
-int	cd_supp(char *temp, t_env *env)
+int	cd_supp(char *temp, t_env *env, int flag)
 {
-	if (access(temp, F_OK))
+	if (flag && access(temp, F_OK))
 	{
 		cd_error_two(temp, env);
 		return (1);

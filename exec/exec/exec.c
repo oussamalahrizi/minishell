@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
+/*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 21:34:53 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/25 11:45:48 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/06/25 22:48:18 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,8 +106,7 @@ void	exec(t_vars *vars)
 	args->nbr_cmds = cmd_count(vars->commands);
 	if (open_heredocs(vars->commands, vars->env) == -1)
 		return ;
-	if (args->nbr_cmds == 1 && is_built_in(vars->commands[0]->cmd)
-		&& !open_files(vars->commands[0]->files, vars->env))
+	if (args->nbr_cmds == 1 && is_built_in(vars->commands[0]->cmd))
 		exec_builtin(vars, 0);
 	else
 	{

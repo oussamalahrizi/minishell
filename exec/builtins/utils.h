@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
+/*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 04:14:34 by idelfag           #+#    #+#             */
-/*   Updated: 2023/06/25 10:33:48 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/06/25 22:08:51 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	pwd_failed(t_env *env, char *string);
 void	change_pwd(t_env *env);
 void	change_oldpwd(t_env *env);
 void	change_pwd_failed(t_env *env, char *string);
-int		cd_supp(char *temp, t_env *env);
+int		cd_supp(char *temp, t_env *env, int flag);
 void	error_cmd(char *str, int code);
 void	cd_error(char *cmd);
 void	cd_error_two(char *temp, t_env *env);

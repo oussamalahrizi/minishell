@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
+/*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/25 09:12:55 by idelfag           #+#    #+#             */
-/*   Updated: 2023/06/25 12:13:13 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/06/25 22:48:33 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,8 @@ void	exec_builtin(t_vars *vars, int i)
 	t_files	*outfile;
 	int		fd_out;
 
+	if (open_files(vars->commands[0]->files, vars->env))
+		return ;
 	outfile = get_last_outfile(vars->commands[i]->files);
 	fd_out = STDOUT_FILENO;
 	if (outfile && outfile->fd != -1)
