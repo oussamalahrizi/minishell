@@ -6,7 +6,7 @@
 /*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 00:05:08 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/25 10:38:39 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/06/25 12:13:49 by idelfag          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,25 +59,24 @@ void	init(t_child *child, Command *command, t_args *args, t_vars *vars)
 
 void	child_process(t_vars *vars, Command *command, t_args *args)
 {
-	t_child	*child;
+	t_child	child;
 
-	child = malloc(sizeof(t_child));
-	init(child, command, args, vars);
-	if (!child->cmd_path)
+	init(&child, command, args, vars);
+	if (!child.cmd_path)
 	{
 		write(2, "command not found: ", 19);
 		write(2, command->cmd, ft_strlen(command->cmd));
 		write(2, "\n", 1);
-		if (child->paths)
-			free_double_char(child->paths);
+		if (child.paths)
+			free_double_char(child.paths);
 		exit(127);
 	}
-	if (!*child->cmd_path)
+	if (!*child.cmd_path)
 		exit(0);
-	execve(child->cmd_path, command->cmd_args, child->env_list);
+	execve(child.cmd_path, command->cmd_args, child.env_list);
 	write(2, command->cmd, ft_strlen(command->cmd));
 	write(2, " : ", 3);
-	if (child->is_dir == -1)
+	if (child.is_dir == -1)
 		write(2, "is a directory\n", 16);
 	else
 		perror("");

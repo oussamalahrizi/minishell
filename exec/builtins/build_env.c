@@ -6,13 +6,13 @@
 /*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 00:56:19 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/24 04:13:43 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/06/25 11:13:12 by idelfag          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.h"
 
-void	build_env(t_env *env)
+void	build_env(t_env *env, int fd)
 {
 	t_env	*node;
 
@@ -32,10 +32,10 @@ void	build_env(t_env *env)
 	{
 		if (env->flag)
 		{
-			ft_putstr_fd(env->name, 1);
-			ft_putchar_fd('=', 1);
-			ft_putstr_fd(env->value, 1);
-			ft_putchar_fd('\n', 1);
+			ft_putstr_fd(env->name, fd);
+			ft_putchar_fd('=', fd);
+			ft_putstr_fd(env->value, fd);
+			ft_putchar_fd('\n', fd);
 		}
 		env = env->next;
 	}

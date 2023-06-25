@@ -34,7 +34,9 @@ SRCS = 	minishell.c \
 		exec/builtins/build_unset.c \
 		exec/builtins/utils.c \
 		exec/utils.c \
-		exec/here_doc.c \
+		exec/heredoc/here_doc.c \
+		exec/heredoc/here_doc_helpers.c  \
+		exec/heredoc/here_doc_helpers2.c  \
 		exec/childprocess/childprocess.c \
 		exec/childprocess/child_utils.c \
 		exec/builtins/export_utils.c \

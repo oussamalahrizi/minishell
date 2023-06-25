@@ -6,7 +6,7 @@
 /*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 22:21:23 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/25 10:36:19 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/06/25 12:30:03 by idelfag          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,15 +169,15 @@ int					count_args(char **cmd_args);
 void				exec(t_vars *vars);
 void				build_exit(char **cmd_args);
 void				build_cd(char **cmd, t_env *env);
-void				build_pwd(char *pwd_fail, t_env *env);
-void				build_echo(char **cmd_args);
+void				build_pwd(char *pwd_fail, t_env *env, int fd);
+void				build_echo(char **cmd_args, int fd);
 void				child_process(t_vars *vars, Command *command, t_args *args);
 Token				*new_token(char type, char *value);
 Token				**duplicate_tokens(Token **tokens);
 int					get_tokens_size(Token **tokens);
 void				build_export(char **cmd, t_env *env, int fd);
 int					get_env_flag(char *cmd);
-void				build_env(t_env *env);
+void				build_env(t_env *env, int fd);
 void				build_unset(char **cmd, t_env **env);
 files				*get_last_infile(files *cmd_files);
 files				*get_last_outfile(files *cmd_files);
@@ -223,5 +223,10 @@ files				*allocate_files(Token **tokens, int *index,
 char				**get_path(t_env *env);
 int					cmd_count(Command **cmds);
 char				*get_command(char **paths, char *cmd, int *is_dir);
+void				expand_value(char **string, t_env *env);
+char				**append_string(char **array, char *str);
+void				write_file(char **array, int fd);
+int					open_doc_loop(int *index_readline, files *node, t_env *env);
+int					here_doc(files *node, int index, t_env *env);
 
 #endif // !MINISHELL_H

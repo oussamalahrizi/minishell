@@ -6,7 +6,7 @@
 /*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 21:34:53 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/25 10:38:39 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/06/25 11:45:48 by idelfag          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,6 @@ void	wait_and_free(t_args *args, int *pids)
 		g_global.exit_status = 128 + WTERMSIG(child_status);
 	close(args->fd_in);
 	free(pids);
-	free(args);
 }
 
 void	exec_supp(t_args *args, t_vars *vars)
@@ -115,4 +114,5 @@ void	exec(t_vars *vars)
 		args->fd_in = -1;
 		exec_supp(args, vars);
 	}
+	free(args);
 }

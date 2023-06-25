@@ -6,7 +6,7 @@
 /*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/25 09:12:55 by idelfag           #+#    #+#             */
-/*   Updated: 2023/06/25 10:41:09 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/06/25 12:13:13 by idelfag          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,11 @@ int	is_built_in(char *cmd)
 
 void	exec_builtin(t_vars *vars, int i)
 {
-	files *outfile = get_last_outfile(vars->commands[i]->files);
-	int fd_out = STDOUT_FILENO;
+	files	*outfile;
+	int		fd_out;
+
+	outfile = get_last_outfile(vars->commands[i]->files);
+	fd_out = STDOUT_FILENO;
 	if (outfile && outfile->fd != -1)
 		fd_out = outfile->fd;
 	if (!ft_strcmp("exit", vars->commands[i]->cmd))
@@ -86,13 +89,13 @@ void	exec_builtin(t_vars *vars, int i)
 	else if (!ft_strcmp("cd", vars->commands[i]->cmd))
 		build_cd(vars->commands[i]->cmd_args, vars->env);
 	else if (!ft_strcmp("pwd", vars->commands[i]->cmd))
-		build_pwd(get_pwd_env(vars->env)->value, vars->env);
+		build_pwd(get_pwd_env(vars->env)->value, vars->env, fd_out);
 	else if (!ft_strcmp("echo", vars->commands[i]->cmd))
-		build_echo(vars->commands[i]->cmd_args);
+		build_echo(vars->commands[i]->cmd_args, fd_out);
 	else if (!ft_strcmp("export", vars->commands[i]->cmd))
 		build_export(vars->commands[i]->cmd_args, vars->env, fd_out);
 	else if (!ft_strcmp("env", vars->commands[i]->cmd))
-		build_env(vars->env);
+		build_env(vars->env, fd_out);
 	else if (!ft_strcmp("unset", vars->commands[i]->cmd))
 		build_unset(vars->commands[i]->cmd_args, &vars->env);
 	if (outfile && outfile->fd != -1)

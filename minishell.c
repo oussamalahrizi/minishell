@@ -1,4 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/06/25 12:14:59 by idelfag           #+#    #+#             */
+/*   Updated: 2023/06/25 12:15:11 by idelfag          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
+
+t_global	g_global;
 
 void free_tokens(Token **tokens)
 {
@@ -44,28 +58,11 @@ int	main(int ac, char **av, char **env)
 	char	*input;
 	int size = 0;
 	t_vars vars;
-
-
 	((void)ac, (void)av);
-	
-
-
-	//printf("getting env var into linked list\n");
 	t_env *node;
 	node = copy_env(env);
 	increase_shell_lvl(node);
 	vars.env = node;
-	# if 0
-	t_env *tmp;
-	tmp = node;
-	while (tmp)
-	{
-		if (!ft_strcmp("PWD", tmp->name))
-			printf("found\n");
-		// printf("%s=%s\n", tmp->name, tmp->value);
-		tmp = tmp->next;
-	}
-	# endif
 	signal_handler();
 	char *new_input = NULL;
 	while (1)
@@ -122,15 +119,7 @@ int	main(int ac, char **av, char **env)
 		}
 		tokenize(input, tokens);
 		expander(&tokens, vars.env);
-		#if 0
-				int i = 0;
-				while (tokens[i] != NULL)
-				{
-					printf("token value : %s|\n",tokens[i]->value);
-					i++;
-				}
-		#endif
-		commands = extract(tokens, vars.env); // look extract file to print cmds
+		commands = extract(tokens, vars.env);
 		vars.commands = commands;
 		exec(&vars);
 		free(input);

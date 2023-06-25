@@ -6,7 +6,7 @@
 /*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 02:22:21 by idelfag           #+#    #+#             */
-/*   Updated: 2023/06/25 10:38:39 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/06/25 11:23:21 by idelfag          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int	check_n_syntax(char **cmd_args, int *flag)
 	return (i);
 }
 
-void	build_echo(char **cmd_args)
+void	build_echo(char **cmd_args, int fd)
 {
 	int		i;
 	char	*str;
@@ -49,7 +49,7 @@ void	build_echo(char **cmd_args)
 	i = 1;
 	if (count_args(cmd_args) == 1)
 	{
-		write(1, "\n", 1);
+		write(1, "\n", fd);
 		return ;
 	}
 	if (!ft_strncmp(cmd_args[i], "-n", 2))
@@ -57,13 +57,13 @@ void	build_echo(char **cmd_args)
 	while (cmd_args[i])
 	{
 		str = ft_strdup(cmd_args[i]);
-		ft_putstr_fd(str, 1);
+		ft_putstr_fd(str, fd);
 		i++;
 		if (cmd_args[i])
-			write(1, " ", 1);
+			write(1, " ", fd);
 		free(str);
 	}
 	if (flag)
-		write(1, "\n", 1);
+		write(1, "\n", fd);
 	g_global.exit_status = 0;
 }

@@ -6,13 +6,13 @@
 /*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 19:54:46 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/25 10:38:39 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/06/25 11:47:10 by idelfag          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.h"
 
-void	build_pwd(char *pwd_fail, t_env *env)
+void	build_pwd(char *pwd_fail, t_env *env, int fd)
 {
 	char	*pwd;
 	char	*pwd_env;
@@ -22,13 +22,14 @@ void	build_pwd(char *pwd_fail, t_env *env)
 		pwd = ft_strdup(pwd_fail);
 	if (pwd)
 	{
-		ft_putstr_fd(pwd, 1);
-		write(1, "\n", 1);
+		ft_putstr_fd(pwd, fd);
+		write(1, "\n", fd);
 		pwd_env = get_pwd_env(env)->value;
+		free(get_pwd_env(env)->value);
 		get_pwd_env(env)->value = ft_strdup(pwd);
 		free(pwd);
 		g_global.exit_status = 0;
 	}
 	else
-		error_cmd("getcwd : failed to get current directory .\n", 1);
+		error_cmd("getcwd : failed to get current directory .\n", 2);
 }
