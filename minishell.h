@@ -6,7 +6,7 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 22:21:23 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/24 22:22:44 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/25 15:54:48 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,6 @@ typedef struct global
 	int				heredoc;
 }					t_global;
 
-extern t_global		global;
 
 typedef struct s_files
 {
@@ -132,6 +131,17 @@ typedef struct s_ext
 	int				k;
 }					t_ext;
 
+typedef struct s_op_files
+{
+	int i ;
+	files *node;
+	int count;
+	int *new_fds;
+	int try;
+	int failure;
+	char *expanded;
+}	t_op_files;
+
 void				expander(Token ***tokens_i, t_env *env);
 void				tokenize(char *input, Token **tokens);
 int					is_space(char c);
@@ -151,8 +161,8 @@ int					count_args(char **cmd_args);
 void				exec(t_vars *vars);
 void				build_exit(char **cmd_args);
 void				build_cd(char **cmd, t_env *env);
-void				build_pwd(char *pwd_fail, t_env *env);
-void				build_echo(char **cmd_args);
+void				build_pwd(char *pwd_fail, t_env *env, int fd_out);
+void				build_echo(char **cmd_args, int fd_out);
 void				child_process(t_vars *vars, Command *command, int *fd,
 						t_env *env, int nbr_cmd, int fd_in, int iterator);
 Token				*new_token(char type, char *value);
@@ -160,7 +170,7 @@ Token				**duplicate_tokens(Token **tokens);
 int					get_tokens_size(Token **tokens);
 void				build_export(char **cmd, t_env *env);
 int					get_env_flag(char *cmd);
-void				build_env(t_env *env);
+void 				build_env(t_env *env, int fd_out);
 void				build_unset(char **cmd, t_env **env);
 files				*get_last_infile(files *cmd_files);
 files				*get_last_outfile(files *cmd_files);
@@ -200,7 +210,15 @@ void				set_last_outfile(files *file_list);
 char				*get_userhome(t_env *env);
 char				*expand_tilde(char *string, t_env *env);
 char				*clean_command(char *string, t_env *env);
-char				**allocate_strings(Token **tokens, int *index, t_env *env);
 files				*allocate_files(Token **tokens, int *index,
 						files *file_list, t_env *env);
+void expand_value(char **string, t_env *env);
+char **append_string(char **array, char *str);
+void	write_file(char **array, int fd);
+int	here_doc(files *node, int index, t_env *env);
+int	open_doc_loop(int *index_readline, files *node, t_env *env);
+void	close_files(int *files, int size);
+void error_message_files(char *str);
+int count_files(files *node);
+int check_ambiguous(t_op_files *vars, t_env *env);
 #endif // !MINISHELL_H

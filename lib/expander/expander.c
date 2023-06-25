@@ -6,11 +6,13 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 14:37:04 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/24 14:51:15 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/25 10:51:29 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
+extern t_global	g_global;
 
 char	*get_env(char *string, t_env *env)
 {
@@ -19,7 +21,7 @@ char	*get_env(char *string, t_env *env)
 	t_env	*node;
 
 	if (*string == '?')
-		return (ft_itoa(global.exit_status));
+		return (ft_itoa(g_global.exit_status));
 	if (*string == '$')
 		return (ft_strdup("$"));
 	if (!ft_strlen(string))

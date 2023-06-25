@@ -6,11 +6,13 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 01:30:44 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/24 21:49:16 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/25 10:49:52 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
+
+extern t_global g_global;
 
 int check_syntax_unset(char *cmd)
 {
@@ -37,7 +39,7 @@ void	build_unset(char **cmd, t_env **env)
 	t_env *tmp;
 
 	i = 1;
-	global.exit_status = 0;
+	g_global.exit_status = 0;
 	while (cmd[i])
 	{
 		node = *env;
@@ -48,7 +50,7 @@ void	build_unset(char **cmd, t_env **env)
                ft_putstr_fd(cmd[i], 2);
                ft_putchar_fd('\'', 2);
                ft_putendl_fd(" : not a valid identifier", 2);
-               global.exit_status = 1;
+               g_global.exit_status = 1;
 		}
 		if (!ft_strcmp(cmd[i], node->name))
 		{

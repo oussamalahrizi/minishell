@@ -6,11 +6,13 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/06 23:26:19 by idelfag           #+#    #+#             */
-/*   Updated: 2023/06/23 08:51:32 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/25 10:50:04 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "../../minishell.h"
+
+extern t_global g_global;
 
 
 int check_for_sign(char *cmd)
@@ -171,7 +173,7 @@ void print_err_syntax(char *name)
     ft_putstr_fd(name, 2);
     ft_putchar_fd('\'', 2);
     ft_putendl_fd(" : not a valid identifier", 2);
-    global.exit_status = 1;
+    g_global.exit_status = 1;
 }
 
 void build_export(char **cmd ,t_env *env)
@@ -188,7 +190,7 @@ void build_export(char **cmd ,t_env *env)
         return ;
     }
     i = 1;
-    global.exit_status = 0;
+    g_global.exit_status = 0;
     while(cmd[i])
     {
         new = get_name_value(cmd[i]);

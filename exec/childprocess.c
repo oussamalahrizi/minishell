@@ -6,12 +6,12 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/08 00:05:08 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/24 14:57:24 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/25 10:49:02 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
+extern t_global g_global;
 
 char    **get_path(t_env *env)
 {
@@ -39,33 +39,31 @@ char    **get_path(t_env *env)
 
 char    *get_command(char **paths, char *cmd, int *is_dir)
 {
-        char    *command;
-        int             i;
-		struct stat pathInfo;
+	char    *command;
+	int             i;
+	struct stat pathInfo;
 
-        i = 0;
-		if (!paths)
-			return(NULL);
-		if (!*cmd)
-			return (ft_strdup(""));
-		if (ft_strrchr(cmd, '/') && !access(cmd, F_OK))
-		{
-			stat(cmd, &pathInfo);
-			if (S_ISDIR(pathInfo.st_mode))
-				*is_dir = -1;
-			return (ft_strdup(cmd));
-		}
-        while (paths[i])
-        {
-			command = ft_strdup(paths[i]);
-			command = ft_strjoin(command, "/");
-			command = ft_strjoin(command, cmd);
-			if (!access(command, F_OK))
-				return (command);
-			free(command);
-			i++;
-        }
-        return (NULL);
+	i = 0;
+	if (!*cmd)
+		return (ft_strdup(""));
+	if (ft_strrchr(cmd, '/') && !access(cmd, F_OK))
+	{
+		stat(cmd, &pathInfo);
+		if (S_ISDIR(pathInfo.st_mode))
+			*is_dir = -1;
+		return (ft_strdup(cmd));
+	}
+	while (paths && paths[i])
+	{
+		command = ft_strdup(paths[i]);
+		command = ft_strjoin(command, "/");
+		command = ft_strjoin(command, cmd);
+		if (!access(command, F_OK))
+			return (command);
+		free(command);
+		i++;
+	}
+	return (NULL);
 }
 
 void child_process(t_vars *vars, Command *command, int *fd, t_env *env, int nbr_cmds, int fd_in, int iterator)
@@ -98,7 +96,7 @@ void child_process(t_vars *vars, Command *command, int *fd, t_env *env, int nbr_
 	else if (nbr_cmds > 1 && iterator != nbr_cmds - 1)
 		dup2(fd[1], STDOUT_FILENO);
 	if (is_built_in(command->cmd))
-		(exec_builtin(vars, iterator), exit(global.exit_status));
+		(exec_builtin(vars, iterator), exit(g_global.exit_status));
 	else
 	{
 		if (!ft_strcmp(command->cmd, "."))

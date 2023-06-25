@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-t_global global;
+t_global g_global;
 
 void free_tokens(Token **tokens)
 {
@@ -76,14 +76,14 @@ int	main(int ac, char **av, char **env)
 		tcgetattr(0, &original);
 		term.c_lflag &= ~(ECHOCTL);
 		tcsetattr(0, TCSANOW, &term);
-		global.readline = 1;
+		g_global.readline = 1;
 		input = readline("minishell$ ");
-		global.readline = 0;
+		g_global.readline = 0;
 		tcsetattr(0, TCSANOW, &original);
 		if (!input)
 		{
 			write(2, "exit\n", 6);
-			exit(global.exit_status);
+			exit(g_global.exit_status);
 		}
 		else if (!ft_strcmp("", input))
 		{
@@ -113,7 +113,7 @@ int	main(int ac, char **av, char **env)
 		{
 			write(2, "syntax error\n", 14);
 			free(input);
-			global.exit_status = 258;
+			g_global.exit_status = 258;
 			continue;
 		}
 		tokens = (Token **)malloc(sizeof(Token *) * (size + 1));

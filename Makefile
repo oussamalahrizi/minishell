@@ -14,7 +14,6 @@ SRCS = 	minishell.c \
 		lib/extract/extract.c \
 		lib/extract/extract_helpers.c \
 		lib/extract/extract_helpers2.c \
-		lib/extract/allocate_strings.c \
 		lib/extract/allocate_files.c \
 		lib/other_utils/utils.c \
 		lib/other_utils/utils2.c \
@@ -33,8 +32,11 @@ SRCS = 	minishell.c \
 		exec/builtins/build_env.c \
 		exec/builtins/build_unset.c \
 		exec/builtins/utils.c \
-		exec/utils.c \
-		exec/here_doc.c \
+		exec/open_files/open_files.c \
+		exec/open_files/open_files_helpers.c \
+		exec/here_doc/here_doc.c \
+		exec/here_doc/here_doc_helpers.c \
+		exec/here_doc/here_doc_helpers2.c \
 		exec/childprocess.c
 
 OBJS = ${SRCS:.c=.o}

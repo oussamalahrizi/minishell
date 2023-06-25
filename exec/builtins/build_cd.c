@@ -6,12 +6,13 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/04 20:05:40 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/24 21:49:01 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/25 10:49:21 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minishell.h"
 
+extern t_global g_global;
 
 t_env *get_pwd_env(t_env *env)
 {
@@ -156,7 +157,7 @@ void build_cd(char **cmd_args, t_env *env)
 				}
 				change_oldpwd(env);
 				change_pwd(env);
-				global.exit_status = 0;
+				g_global.exit_status = 0;
 				return;
 			}
 			node = node->next;
@@ -184,7 +185,7 @@ void build_cd(char **cmd_args, t_env *env)
 			temp = ft_strjoin(temp, "/.");
 			change_oldpwd(env);
 			change_pwd_failed(env, temp);
-			global.exit_status = 1;
+			g_global.exit_status = 1;
 			free(temp);
 			return ;
 		}
@@ -196,7 +197,7 @@ void build_cd(char **cmd_args, t_env *env)
 				write(2, temp, ft_strlen(temp));
 				write(2, ": ", 2);
 				perror("");
-				global.exit_status = 1;
+				g_global.exit_status = 1;
 				free(temp);
 				return ;
 			}
@@ -204,6 +205,6 @@ void build_cd(char **cmd_args, t_env *env)
 		change_oldpwd(env);
 		change_pwd(env);
 		free(temp);
-		global.exit_status = 0;
+		g_global.exit_status = 0;
 	}
 }

@@ -6,12 +6,13 @@
 /*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/05 21:34:53 by olahrizi          #+#    #+#             */
-/*   Updated: 2023/06/22 09:20:49 by olahrizi         ###   ########.fr       */
+/*   Updated: 2023/06/25 10:49:10 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+extern t_global g_global;
 
 files *get_last_infile(files *cmd_files)
 {
@@ -74,18 +75,22 @@ int is_built_in(char *cmd)
 
 void exec_builtin(t_vars *vars, int i)
 {
+	files *outfile = get_last_outfile(vars->commands[i]->files);
+	int fd_out = STDOUT_FILENO;
+	if (outfile && outfile->fd != -1)
+		fd_out = outfile->fd;
 	if (!ft_strcmp("exit", vars->commands[i]->cmd))
 		build_exit(vars->commands[i]->cmd_args);
 	else if (!ft_strcmp("cd", vars->commands[i]->cmd))
 		build_cd(vars->commands[i]->cmd_args, vars->env);
 	else if (!ft_strcmp("pwd", vars->commands[i]->cmd))
-		build_pwd(get_pwd_env(vars->env)->value, vars->env);
+		build_pwd(get_pwd_env(vars->env)->value, vars->env, fd_out);
 	else if (!ft_strcmp("echo", vars->commands[i]->cmd))
-		build_echo(vars->commands[i]->cmd_args);
+		build_echo(vars->commands[i]->cmd_args, fd_out);
 	else if (!ft_strcmp("export", vars->commands[i]->cmd))
 		build_export(vars->commands[i]->cmd_args, vars->env);
 	else if (!ft_strcmp("env", vars->commands[i]->cmd))
-		build_env(vars->env);
+		build_env(vars->env, fd_out);
 	else if (!ft_strcmp("unset", vars->commands[i]->cmd))
 		build_unset(vars->commands[i]->cmd_args, &vars->env);
 }
@@ -130,7 +135,7 @@ void exec(t_vars *vars)
 			}
 			else
 			{
-				global.child = 1;
+				g_global.child = 1;
 				if (nbr_cmd > 1)
 				{
 					close(fd[1]);
@@ -158,11 +163,11 @@ void exec(t_vars *vars)
 			waitpid(pids[i], &child_status, 0);
 			i++;
 		}
-		global.child = 0;
+		g_global.child = 0;
 		if (WIFEXITED(child_status))
-			global.exit_status = WEXITSTATUS(child_status);
+			g_global.exit_status = WEXITSTATUS(child_status);
 		else if(WIFSIGNALED(child_status))
-			global.exit_status = 128 + WTERMSIG(child_status);
+			g_global.exit_status = 128 + WTERMSIG(child_status);
 		close(fd_in);
 		free(pids);
 	}
