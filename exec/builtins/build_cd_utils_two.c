@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build_cd_utils_two.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
+/*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/25 04:28:36 by idelfag           #+#    #+#             */
-/*   Updated: 2023/06/25 06:07:50 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/06/25 20:23:58 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ void	oldpwd_supp(t_env *env)
 			new = malloc(sizeof(t_env));
 			new->name = ft_strdup("OLDPWD");
 			new->value = ft_strdup(pwd->value);
+			new->flag = 1;
+			new->next = NULL;
 			env_add_back(&env, new);
 			return ;
 		}
@@ -52,6 +54,8 @@ void	pwd_supp(t_env *env)
 			new = malloc(sizeof(t_env));
 			new->name = ft_strdup("PWD");
 			new->value = ft_strdup(pwd);
+			new->flag = 1;
+			new->next = NULL;
 			env_add_back(&env, new);
 			free(pwd);
 			return ;

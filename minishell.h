@@ -193,7 +193,7 @@ int				count_args(char **cmd_args);
 void			exec(t_vars *vars);
 void			build_exit(char **cmd_args);
 void			build_cd(char **cmd, t_env *env);
-void			build_pwd(char *pwd_fail, t_env *env, int fd);
+void			build_pwd(t_env *pwd_fail, t_env *env, int fd);
 void			build_echo(char **cmd_args, int fd);
 void			child_process(t_vars *vars, t_command *command, t_args *args);
 t_token			*new_token(char type, char *value);

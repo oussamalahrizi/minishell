@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build_cd_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
+/*   By: olahrizi <olahrizi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/25 03:08:50 by idelfag           #+#    #+#             */
-/*   Updated: 2023/06/25 10:38:39 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/06/25 20:14:06 by olahrizi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ int	if_cd_alone(char **cmd_args, t_env *env)
 	if (len == 1)
 	{
 		node = env;
-		if (cd_alone_supp(env))
+		if (cd_alone_supp(node))
 			return (1);
 		if (!node)
 		{

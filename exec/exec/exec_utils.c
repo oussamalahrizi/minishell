@@ -89,7 +89,7 @@ void	exec_builtin(t_vars *vars, int i)
 	else if (!ft_strcmp("cd", vars->commands[i]->cmd))
 		build_cd(vars->commands[i]->cmd_args, vars->env);
 	else if (!ft_strcmp("pwd", vars->commands[i]->cmd))
-		build_pwd(get_pwd_env(vars->env)->value, vars->env, fd_out);
+		build_pwd(get_pwd_env(vars->env), vars->env, fd_out);
 	else if (!ft_strcmp("echo", vars->commands[i]->cmd))
 		build_echo(vars->commands[i]->cmd_args, fd_out);
 	else if (!ft_strcmp("export", vars->commands[i]->cmd))
